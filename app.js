@@ -88,8 +88,8 @@ function getTetrominoHeight(matrix) {
 }
 
 function drawTetronimo(piece, offset){
-    context.fillStyle = "#000";
-    context.fillRect(0,0, canvas.clientWidth, canvas.height);
+    //context.fillStyle = "#000";
+    //context.fillRect(0,0, canvas.clientWidth, canvas.height);
 
     piece.forEach((row, y) => {
         row.forEach((value, x) => {
@@ -110,6 +110,13 @@ const player = {
 const gameBoard = {
     width: 10,
     height: 20,
+    grid: []
+};
+
+function initializeGameBoard() {
+    for (let row = 0; row < gameBoard.height; row++) {
+        gameBoard.grid[row] = new Array(gameBoard.width).fill(0);
+    }
 }
 
 function updatePlayerPiece(piece){
@@ -130,13 +137,19 @@ function update(time = 0){
         lastFall = time;
     }
     updatePlayerPiece(player.pieceType);
-    drawTetronimo(player.piece, player.position);
+    //drawTetronimo(player.piece, player.position);
+    drawGameBoard();
     requestAnimationFrame(update);
 }
 
 function fall(){
     player.position.y += 1;
-    player.position.y = Math.min(player.position.y, gameBoard.height - getTetrominoHeight(player.piece));
+    if(pieceCollided()){
+        player.position.y -= 1;
+        freezePiece();
+        spawnNewPiece();
+    }
+    //player.position.y = Math.min(player.position.y, gameBoard.height - getTetrominoHeight(player.piece));
 }
 
 function rotatePiece(matrix){
@@ -149,6 +162,73 @@ function rotatePieceMirror(matrix){
     return matrix;
 }
 
+function pieceCollided() {
+    for (let y = 0; y < player.piece.length; y++) {
+        for (let x = 0; x < player.piece[y].length; x++) {
+            if (player.piece[y][x] !== 0) {
+                let boardX = player.position.x + x;
+                let boardY = player.position.y + y;
+
+                // Check if the piece is outside the game board horizontally or has reached the bottom
+                if (boardX < 0 || boardX >= gameBoard.width || boardY >= gameBoard.height) {
+                    return true;
+                }
+
+                // Prevent accessing gameBoard.grid[boardY] if boardY is out of bounds
+                // This also implicitly checks if boardY is below the bottom of the game board
+                if (boardY < 0 || !gameBoard.grid[boardY] || gameBoard.grid[boardY][boardX] !== 0) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+function freezePiece(){
+    player.piece.forEach((row, y) => {
+        row.forEach((value, x) => {
+            if (value !== 0) {
+                gameBoard.grid[y + player.position.y][x + player.position.x] = value;
+            }
+        });
+    });
+    //TODO: check for completed lines.
+}
+
+function spawnNewPiece(){
+    player.pieceType = getRandomPieceType();
+    player.piece = getTetronimo(player.pieceType);
+    player.position = {x: 5, y: 5};
+}
+
+const tetrominoTypes = ["T", "L", "J", "S", "Z", "O", "I"];
+function getRandomPieceType() {
+    const index = Math.floor(Math.random() * tetrominoTypes.length);
+    return tetrominoTypes[index];
+}
+
+function drawGameBoard() {
+    context.fillStyle = "#000";
+    context.fillRect(0, 0, canvas.clientWidth, canvas.height);
+
+    // Draw the static pieces
+    gameBoard.grid.forEach((row, y) => {
+        row.forEach((value, x) => {
+            if (value !== 0) {
+                context.fillStyle = "red";
+                context.fillRect(x, y, 1, 1);
+            }
+        });
+    });
+
+    // Draw the moving piece
+    if (player.piece) {
+        drawTetronimo(player.piece, player.position);
+    }
+}
+
+initializeGameBoard();
 update();
 
 
