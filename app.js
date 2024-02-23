@@ -17,6 +17,10 @@ document.addEventListener("keydown", event => {
     } else if(event.key === "e"){
         player.piece = rotatePiece(player.piece);
     }
+    else if(event.key === " "){
+        instantDrop();
+
+    }
 
     player.position.x = Math.max(0, Math.min(player.position.x, gameBoard.width - getTetrominoWidth(player.piece)));
     player.position.y = Math.min(player.position.y, gameBoard.height - getTetrominoHeight(player.piece));
@@ -85,6 +89,17 @@ function getTetrominoWidth(matrix) {
 
 function getTetrominoHeight(matrix) {
     return matrix.length;
+}
+
+function instantDrop() {
+    while (!pieceCollided()) {
+        player.position.y += 1;
+    }
+    player.position.y -= 1;
+    freezePiece();
+    spawnNewPiece();
+
+return"";
 }
 
 function drawTetronimo(piece, offset){
