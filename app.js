@@ -213,7 +213,7 @@ function freezePiece(){
 function spawnNewPiece(){
     player.pieceType = getRandomPieceType();
     player.piece = getTetronimo(player.pieceType);
-    player.position = {x: 5, y: 0};
+    player.position = {x: 6-player.piece[0].length, y: 0};
 }
 
 const tetrominoTypes = ["T", "L", "J", "S", "Z", "O", "I"];
