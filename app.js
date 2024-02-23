@@ -116,7 +116,7 @@ function drawTetronimo(piece, offset){
 }
 
 const player = {
-    position: {x: 5, y: 5},
+    position: {x: 5, y: 0},
     piece: null,
     pieceType: "T",
 }
@@ -213,7 +213,7 @@ function freezePiece(){
 function spawnNewPiece(){
     player.pieceType = getRandomPieceType();
     player.piece = getTetronimo(player.pieceType);
-    player.position = {x: 5, y: 5};
+    player.position = {x: 5, y: 0};
 }
 
 const tetrominoTypes = ["T", "L", "J", "S", "Z", "O", "I"];
