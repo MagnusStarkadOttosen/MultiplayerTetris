@@ -35,42 +35,42 @@ function getTetronimo(piece){
             break;
         case "L":
             result = [
-                [1, 0],
-                [1, 0],
-                [1, 1],
+                [2, 0],
+                [2, 0],
+                [2, 2],
             ];
             break;
         case "J":
             result = [
-                [0, 1],
-                [0, 1],
-                [1, 1],
+                [0, 3],
+                [0, 3],
+                [3, 3],
             ];
             break;
         case "S":
             result = [
-                [0, 1, 1],
-                [1, 1, 0],
+                [0, 4, 4],
+                [4, 4, 0],
             ];
             break;
         case "Z":
             result = [
-                [1, 1, 0],
-                [0, 1, 1],
+                [5, 5, 0],
+                [0, 5, 5],
             ];
             break;
         case "O":
             result = [
-                [1, 1],
-                [1, 1],
+                [6, 6],
+                [6, 6],
             ];
             break;
         case "I":
             result = [
-                [1],
-                [1],
-                [1],
-                [1],
+                [7],
+                [7],
+                [7],
+                [7],
             ];
             break;
         default:
@@ -94,7 +94,21 @@ function drawTetronimo(piece, offset){
     piece.forEach((row, y) => {
         row.forEach((value, x) => {
             if(value !== 0){
-                context.fillStyle = "red";
+                if(value === 1){
+                    context.fillStyle = "red";
+                } else if(value === 2){
+                    context.fillStyle = "blue";
+                } else if(value === 3){
+                    context.fillStyle = "green";
+                } else if(value === 4){
+                    context.fillStyle = "yellow";
+                } else if(value === 5){
+                    context.fillStyle = "orange";
+                } else if(value === 6){
+                    context.fillStyle = "cyan";
+                } else if(value === 7){
+                    context.fillStyle = "pink";
+                }
                 context.fillRect(x + offset.x, y + offset.y, 1, 1);
             }
         });
@@ -215,8 +229,22 @@ function drawGameBoard() {
     // Draw the static pieces
     gameBoard.grid.forEach((row, y) => {
         row.forEach((value, x) => {
-            if (value !== 0) {
-                context.fillStyle = "red";
+            if(value !== 0){
+                if(value === 1){
+                    context.fillStyle = "red";
+                } else if(value === 2){
+                    context.fillStyle = "blue";
+                } else if(value === 3){
+                    context.fillStyle = "green";
+                } else if(value === 4){
+                    context.fillStyle = "yellow";
+                } else if(value === 5){
+                    context.fillStyle = "orange";
+                } else if(value === 6){
+                    context.fillStyle = "cyan";
+                } else if(value === 7){
+                    context.fillStyle = "pink";
+                }
                 context.fillRect(x, y, 1, 1);
             }
         });
