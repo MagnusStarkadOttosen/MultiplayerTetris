@@ -2,7 +2,8 @@ const canvas = document.getElementById("tetris");
 const context = canvas.getContext("2d");
 
 context.scale(20,20);
-
+heldPiece=null
+holdBoolean=0
 document.addEventListener("keydown", event => {
     if(event.key === "ArrowLeft" || event.key === "a"){
         player.position.x -= 1;
@@ -16,6 +17,9 @@ document.addEventListener("keydown", event => {
         player.piece = rotatePieceMirror(player.piece);
     } else if(event.key === "e"){
         player.piece = rotatePiece(player.piece);
+    }
+    else if(event.key === "c" && holdBoolean==0){
+        holdPiece(player.piece);
     }
 
     player.position.x = Math.max(0, Math.min(player.position.x, gameBoard.width - getTetrominoWidth(player.piece)));
@@ -165,6 +169,18 @@ function fall(){
     }
     //player.position.y = Math.min(player.position.y, gameBoard.height - getTetrominoHeight(player.piece));
 }
+function holdPiece(matrix){
+    if(heldPiece==null) {
+        heldPiece = matrix
+        spawnNewPiece()
+
+    }
+    else{
+        player.piece=heldPiece
+        heldPiece=null
+    }
+    holdBoolean=1
+}
 
 function rotatePiece(matrix){
     matrix = matrix[0].map((val, index) => matrix.map(row => row[index]).reverse())
@@ -214,6 +230,7 @@ function spawnNewPiece(){
     player.pieceType = getRandomPieceType();
     player.piece = getTetronimo(player.pieceType);
     player.position = {x: 5, y: 5};
+    holdBoolean=0
 }
 
 const tetrominoTypes = ["T", "L", "J", "S", "Z", "O", "I"];
