@@ -10,12 +10,13 @@ document.addEventListener("keydown", event => {
         player.position.x += 1;
     } else if(event.key === "ArrowDown" || event.key === "s"){
         player.position.y += 1;
-    } else if(event.key === "ArrowUp" || event.key === "w"){
-        player.position.y -= 1;
     } else if(event.key === "q"){
         player.piece = rotatePieceMirror(player.piece);
-    } else if(event.key === "e"){
+        // shadow.piece = rotatePieceMirror(shadow.piece)
+
+    } else if(event.key === "e" || event.key === "ArrowUp"){
         player.piece = rotatePiece(player.piece);
+        // shadow.piece = rotatePiece(shadow.piece)
     }
     else if(event.key === " "){
         instantDrop();
@@ -28,7 +29,7 @@ document.addEventListener("keydown", event => {
 })
 
 //Tetronimo = T L J S Z O I
-function getTetronimo(piece){
+function getTetromino(piece){
     let result;
     switch(piece){
         case "T":
@@ -92,17 +93,38 @@ function getTetrominoHeight(matrix) {
 }
 
 function instantDrop() {
-    while (!pieceCollided()) {
+    while (!pieceCollided(player.piece,player.position)) {
         player.position.y += 1;
     }
     player.position.y -= 1;
     freezePiece();
     spawnNewPiece();
 
-return"";
+
 }
 
-function drawTetronimo(piece, offset){
+function dropShadow(){
+    shadow.piece = []
+    for (let i = 0; i < player.piece.length; i++)
+        shadow.piece[i] = player.piece[i].slice();
+    shadow.position =  {x:player.position.x,y:player.position.y}
+
+    while(!pieceCollided(shadow.piece,shadow.position)){
+        shadow.position.y ++
+
+    }
+    shadow.position.y--
+    shadow.piece.forEach((row, y) => {
+        row.forEach((value, x) => {
+            if(value !== 0){
+
+                    shadow.piece[y][x] = 8}})})
+    drawTetromino(shadow.piece,shadow.position);
+
+}
+
+
+function drawTetromino(piece, offset){
     //context.fillStyle = "#000";
     //context.fillRect(0,0, canvas.clientWidth, canvas.height);
 
@@ -123,6 +145,8 @@ function drawTetronimo(piece, offset){
                     context.fillStyle = "cyan";
                 } else if(value === 7){
                     context.fillStyle = "pink";
+                }else if(value === 8){
+                    context.fillStyle = "grey";
                 }
                 context.fillRect(x + offset.x, y + offset.y, 1, 1);
             }
@@ -131,9 +155,14 @@ function drawTetronimo(piece, offset){
 }
 
 const player = {
-    position: {x: 5, y: 0},
+    position: {x: 4, y: 0},
     piece: null,
     pieceType: "T",
+}
+
+const shadow = {
+    position: {x: player.position.x, y: player.position.y},
+    piece: null,
 }
 
 const gameBoard = {
@@ -148,10 +177,11 @@ function initializeGameBoard() {
     }
 }
 
-function updatePlayerPiece(piece){
+function updatePlayerPiece(pieceType){
     if(player.piece === null){
-        player.piece = getTetronimo(piece);
+        player.piece = getTetromino(pieceType);
     }
+
 }
 
 let lastFall = 0;
@@ -165,6 +195,7 @@ function update(time = 0){
         fall();
         lastFall = time;
     }
+    console.log(player.pieceType)
     updatePlayerPiece(player.pieceType);
     //drawTetronimo(player.piece, player.position);
     drawGameBoard();
@@ -173,7 +204,7 @@ function update(time = 0){
 
 function fall(){
     player.position.y += 1;
-    if(pieceCollided()){
+    if(pieceCollided(player.piece,player.position)){
         player.position.y -= 1;
         freezePiece();
         spawnNewPiece();
@@ -191,12 +222,12 @@ function rotatePieceMirror(matrix){
     return matrix;
 }
 
-function pieceCollided() {
-    for (let y = 0; y < player.piece.length; y++) {
-        for (let x = 0; x < player.piece[y].length; x++) {
-            if (player.piece[y][x] !== 0) {
-                let boardX = player.position.x + x;
-                let boardY = player.position.y + y;
+function pieceCollided(piece,position) {
+    for (let y = 0; y < piece.length; y++) {
+        for (let x = 0; x < piece[y].length; x++) {
+            if (piece[y][x] !== 0) {
+                let boardX = position.x + x;
+                let boardY = position.y + y;
 
                 // Check if the piece is outside the game board horizontally or has reached the bottom
                 if (boardX < 0 || boardX >= gameBoard.width || boardY >= gameBoard.height) {
@@ -227,7 +258,7 @@ function freezePiece(){
 
 function spawnNewPiece(){
     player.pieceType = getRandomPieceType();
-    player.piece = getTetronimo(player.pieceType);
+    player.piece = getTetromino(player.pieceType);
     player.position = {x: 6-player.piece[0].length, y: 0};
 }
 
@@ -267,7 +298,8 @@ function drawGameBoard() {
 
     // Draw the moving piece
     if (player.piece) {
-        drawTetronimo(player.piece, player.position);
+        drawTetromino(player.piece, player.position);
+        dropShadow();
     }
 }
 
