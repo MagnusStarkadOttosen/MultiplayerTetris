@@ -202,10 +202,15 @@ function holdPiece(matrix){
 
     }
     else{
+        nextPiece.piece=player.piece
+        temp=player.piece
         player.piece=heldPiece
-
-        heldPiece=null
+        heldPiece=temp
         clearCanvas(context2)
+        drawHeldPiece(matrix)
+
+
+
     }
     holdBoolean=1
 }
