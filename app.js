@@ -1,16 +1,16 @@
-const canvas = document.getElementById("tetris");
-const context = canvas.getContext("2d");
-const canvas1 = document.getElementById("hold");
-const context1 = canvas1.getContext("2d");
+const canvas = document.getElementById('tetris');
+const canvas2 = document.getElementById('hold');
 
+const context = canvas.getContext('2d');
+const context2 = canvas2.getContext('2d');
 
 context.scale(20,20);
-context1.scale(20,20);
-
-
+context2.scale(20,20);
 
 heldPiece=null
 holdBoolean=0
+
+
 document.addEventListener("keydown", event => {
     if(event.key === "ArrowLeft" || event.key === "a"){
         player.position.x -= 1;
@@ -33,6 +33,11 @@ document.addEventListener("keydown", event => {
     player.position.y = Math.min(player.position.y, gameBoard.height - getTetrominoHeight(player.piece));
 
 })
+function draw(canvas, context, color) {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.fillStyle = color;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+}
 
 //Tetronimo = T L J S Z O I
 function getTetronimo(piece){
@@ -98,7 +103,7 @@ function getTetrominoHeight(matrix) {
     return matrix.length;
 }
 
-function drawTetronimo(piece, offset,context){
+function drawTetronimo(piece, offset,ctx){
     //context.fillStyle = "#000";
     //context.fillRect(0,0, canvas.clientWidth, canvas.height);
 
@@ -106,21 +111,21 @@ function drawTetronimo(piece, offset,context){
         row.forEach((value, x) => {
             if(value !== 0){
                 if(value === 1){
-                    context.fillStyle = "red";
+                     ctx.fillStyle = "red";
                 } else if(value === 2){
-                    context.fillStyle = "blue";
+                    ctx.fillStyle = "blue";
                 } else if(value === 3){
-                    context.fillStyle = "green";
+                    ctx.fillStyle = "green";
                 } else if(value === 4){
-                    context.fillStyle = "yellow";
+                    ctx.fillStyle = "yellow";
                 } else if(value === 5){
-                    context.fillStyle = "orange";
+                    ctx.fillStyle = "orange";
                 } else if(value === 6){
-                    context.fillStyle = "cyan";
+                    ctx.fillStyle = "cyan";
                 } else if(value === 7){
-                    context.fillStyle = "pink";
+                    ctx.fillStyle = "pink";
                 }
-                context.fillRect(x + offset.x, y + offset.y, 1, 1);
+                ctx.fillRect(x + offset.x, y + offset.y, 1, 1);
             }
         });
     });
@@ -285,7 +290,10 @@ function drawHeldPiece(){
 }
 
 initializeGameBoard();
-drawHeldPiece();
+draw(canvas2,context2,'red');
+draw(canvas,context,'green');
+
+//drawHeldPiece();
 update();
 
 
