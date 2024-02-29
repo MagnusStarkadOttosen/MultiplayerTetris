@@ -1,11 +1,15 @@
 const canvas = document.getElementById('tetris');
 const canvas2 = document.getElementById('hold');
+const canvas3 = document.getElementById('preview');
 
 const context = canvas.getContext('2d');
 const context2 = canvas2.getContext('2d');
+const context3 = canvas3.getContext('2d');
+
 
 context.scale(20,20);
 context2.scale(20,20);
+context3.scale(20,20);
 
 heldPiece= null;
 
@@ -134,6 +138,11 @@ const player = {
     piece: null,
     pieceType: "T",
 }
+const nextPiece = {
+    position: {x: 5, y: 5},
+    piece: null,
+    pieceType: "T",
+}
 
 const gameBoard = {
     width: 10,
@@ -175,7 +184,9 @@ function fall(){
     if(pieceCollided()){
         player.position.y -= 1;
         freezePiece();
-        spawnNewPiece();
+
+
+        spawnNewPiece(nextPiece);
     }
     //player.position.y = Math.min(player.position.y, gameBoard.height - getTetrominoHeight(player.piece));
 }
@@ -184,7 +195,10 @@ function holdPiece(matrix){
         heldPiece = matrix
         drawHeldPiece(matrix)
 
-        spawnNewPiece()
+
+
+
+        spawnNewPiece(nextPiece)
 
     }
     else{
@@ -241,10 +255,19 @@ function freezePiece(){
 }
 
 function spawnNewPiece(){
-    player.pieceType = getRandomPieceType();
-    player.piece = getTetronimo(player.pieceType);
-    player.position = {x: 5, y: 5};
+
+    player.piece = nextPiece.piece
+    player.position=nextPiece.position
+    player.pieceType=nextPiece.pieceType
+
+    nextPiece.pieceType = getRandomPieceType();
+    nextPiece.piece = getTetronimo(player.pieceType);
+    nextPiece.position = {x: 5, y: 5};
     holdBoolean=0
+
+    clearCanvas(context3)
+    drawPreviewPiece(nextPiece.piece)
+
 }
 
 const tetrominoTypes = ["T", "L", "J", "S", "Z", "O", "I"];
@@ -295,8 +318,15 @@ function drawHeldPiece(matrix){
     drawTetronimo(matrix,{x: 2, y: 2},context2)
 }
 
+function drawPreviewPiece(matrix){
+    drawTetronimo(matrix,{x: 2, y: 2},context3)
+}
+
 initializeGameBoard();
 
+
 update();
+
+
 
 
