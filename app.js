@@ -7,7 +7,8 @@ const context2 = canvas2.getContext('2d');
 context.scale(20,20);
 context2.scale(20,20);
 
-heldPiece=null
+heldPiece= null;
+
 holdBoolean=0
 
 
@@ -27,17 +28,14 @@ document.addEventListener("keydown", event => {
     }
     else if(event.key === "c" && holdBoolean==0){
         holdPiece(player.piece);
+
     }
 
     player.position.x = Math.max(0, Math.min(player.position.x, gameBoard.width - getTetrominoWidth(player.piece)));
     player.position.y = Math.min(player.position.y, gameBoard.height - getTetrominoHeight(player.piece));
 
 })
-function draw(canvas, context, color) {
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    context.fillStyle = color;
-    context.fillRect(0, 0, canvas.width, canvas.height);
-}
+
 
 //Tetronimo = T L J S Z O I
 function getTetronimo(piece){
@@ -184,12 +182,16 @@ function fall(){
 function holdPiece(matrix){
     if(heldPiece==null) {
         heldPiece = matrix
+        drawHeldPiece(matrix)
+
         spawnNewPiece()
 
     }
     else{
         player.piece=heldPiece
+
         heldPiece=null
+        clearCanvas(context2)
     }
     holdBoolean=1
 }
@@ -285,15 +287,16 @@ function drawGameBoard() {
         drawTetronimo(player.piece, player.position,context);
     }
 }
-function drawHeldPiece(){
-    drawTetronimo(heldPiece,0,context2)
+function clearCanvas(context) {
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+}
+function drawHeldPiece(matrix){
+
+    drawTetronimo(matrix,{x: 2, y: 2},context2)
 }
 
 initializeGameBoard();
-draw(canvas2,context2,'red');
-draw(canvas,context,'green');
 
-//drawHeldPiece();
 update();
 
 
