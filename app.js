@@ -1,7 +1,14 @@
 const canvas = document.getElementById("tetris");
 const context = canvas.getContext("2d");
+const canvas1 = document.getElementById("hold");
+const context1 = canvas1.getContext("2d");
+
 
 context.scale(20,20);
+context1.scale(20,20);
+
+
+
 heldPiece=null
 holdBoolean=0
 document.addEventListener("keydown", event => {
@@ -91,7 +98,7 @@ function getTetrominoHeight(matrix) {
     return matrix.length;
 }
 
-function drawTetronimo(piece, offset){
+function drawTetronimo(piece, offset,context){
     //context.fillStyle = "#000";
     //context.fillRect(0,0, canvas.clientWidth, canvas.height);
 
@@ -267,13 +274,18 @@ function drawGameBoard() {
         });
     });
 
+
     // Draw the moving piece
     if (player.piece) {
-        drawTetronimo(player.piece, player.position);
+        drawTetronimo(player.piece, player.position,context);
     }
+}
+function drawHeldPiece(){
+    drawTetronimo(heldPiece,0,context2)
 }
 
 initializeGameBoard();
+drawHeldPiece();
 update();
 
 
