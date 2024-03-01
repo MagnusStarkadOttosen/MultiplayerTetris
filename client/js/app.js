@@ -9,7 +9,7 @@ document.addEventListener("keydown", event => {
     } else if(event.key === "ArrowRight" || event.key === "d"){
         player.position.x += 1;
     } else if(event.key === "ArrowDown" || event.key === "s"){
-        player.position.y += 1;
+     fall()
     } else if(event.key === "q"){
         player.piece = rotatePieceMirror(player.piece);
         // shadow.piece = rotatePieceMirror(shadow.piece)
