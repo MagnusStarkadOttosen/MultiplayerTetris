@@ -333,6 +333,7 @@ function drawPreviewPiece(matrix){
 }
 randomPieceGenerator(player)
 randomPieceGenerator(nextPiece)
+drawPreviewPiece(nextPiece.piece)
 
 initializeGameBoard();
 
