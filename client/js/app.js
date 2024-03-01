@@ -105,7 +105,7 @@ function updateHighScores (newhighScores){
 const highscoresElement = document.getElementById("highscore") ;
 highscoresElement.textContent = newhighScores;
 }
-let highscore = 1000;
+let highscore =0;
 updateHighScores(highscore);
 
 function getTetrominoWidth(matrix) {
@@ -123,7 +123,6 @@ function instantDrop() {
     player.position.y -= 1;
     freezePiece();
     spawnNewPiece();
-
 
 }
 
@@ -245,20 +244,26 @@ function checkFullLine(){
     if(value === 0){
         check = false
     }
-
-
-
         })
 
         if(check){
             checkArray.push(y)
         }
-
-
-
-
     })
+    checkArray.length;
+    point =0;
+    switch(length){
+case 1 : point = 40
+break;
+case 2 : point = 100
+break;
+case 3 : point = 300
+break;
+case 4 : point = 1200
+    }
 
+    player.highScores += point;
+    updateHighScores(player.highScores);
     removeFullLine(checkArray)
 }
 
@@ -272,8 +277,6 @@ for(let i = 0;i<removeArray.length;i++) {
 }
 
 }
-
-
 
 
 
@@ -301,8 +304,6 @@ function holdPiece(matrix){
         drawHeldPiece(heldPiece)
 
 
-
-
         spawnNewPiece(nextPiece)
 
     }
@@ -313,8 +314,6 @@ function holdPiece(matrix){
         heldPiece=temp
         clearCanvas(context2)
         drawHeldPiece(matrix)
-
-
 
     }
     holdBoolean=1
