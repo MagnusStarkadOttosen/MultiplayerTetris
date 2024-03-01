@@ -250,16 +250,13 @@ function checkFullLine(){
             checkArray.push(y)
         }
     })
-    checkArray.length;
+    
     point =0;
-    switch(length){
-case 1 : point = 40
-break;
-case 2 : point = 100
-break;
-case 3 : point = 300
-break;
-case 4 : point = 1200
+    switch(checkArray.length){
+        case 1 : point = 40; break;
+        case 2 : point = 100; break;
+        case 3 : point = 300; break;
+        case 4 : point = 1200;
     }
 
     player.highScores += point;
