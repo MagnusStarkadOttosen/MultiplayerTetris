@@ -136,14 +136,14 @@ function dropShadow(){
             if(value !== 0){
 
                     shadow.piece[y][x] = 8}})})
-    drawTetromino(shadow.piece,shadow.position);
+    drawTetromino(shadow.piece,shadow.position,context);
 
 }
 
 
 function drawTetromino(piece, offset,ctx){
     //context.fillStyle = "#000";
-    //context.fillRect(0,0, canvas.clientWidth, canvas.height);
+   // context.fillRect(0,0, canvas.clientWidth, canvas.height);
 
     piece.forEach((row, y) => {
         row.forEach((value, x) => {
@@ -238,17 +238,17 @@ function fall(){
     }
     //player.position.y = Math.min(player.position.y, gameBoard.height - getTetrominoHeight(player.piece));
 }
-function randomPieceGenerator (player){
-    player.pieceType = getRandomPieceType();
-    player.piece = getTetronimo(player.pieceType);
-    player.position = {x: 5, y: 5};
+function randomPieceGenerator (play){
+    play.pieceType = getRandomPieceType();
+    play.piece = getTetromino(play.pieceType);
+    play.position = {x: 5, y: 5};
 
 }
 
 function holdPiece(matrix){
     if(heldPiece==null) {
         heldPiece = matrix
-        drawHeldPiece(matrix)
+        drawHeldPiece(heldPiece)
 
 
 
@@ -335,7 +335,7 @@ function getRandomPieceType() {
 }
 
 function drawGameBoard() {
-    context.fillStyle = "#000";
+      context.fillStyle = "#000";
     context.fillRect(0, 0, canvas.clientWidth, canvas.height);
 
     // Draw the static pieces
@@ -364,7 +364,7 @@ function drawGameBoard() {
 
     // Draw the moving piece
     if (player.piece) {
-        drawTetromino(player.piece, player.position);
+        drawTetromino(player.piece, player.position,context);
         dropShadow();
     }
 }
@@ -373,11 +373,11 @@ function clearCanvas(context) {
 }
 function drawHeldPiece(matrix){
 
-    drawTetronimo(matrix,{x: 2, y: 2},context2)
+    drawTetromino(matrix,{x: 2, y: 2},context2)
 }
 
 function drawPreviewPiece(matrix){
-    drawTetronimo(matrix,{x: 2, y: 2},context3)
+    drawTetromino(matrix,{x: 2, y: 2},context3)
 }
 
 initializeGameBoard();
