@@ -22,13 +22,18 @@ document.addEventListener("keydown", event => {
     } else if(event.key === "ArrowRight" || event.key === "d"){
         player.position.x += 1;
     } else if(event.key === "ArrowDown" || event.key === "s"){
-        fall()
-    } else if(event.key === "ArrowUp" || event.key === "w"){
-        player.position.y -= 1;
+     fall()
     } else if(event.key === "q"){
         player.piece = rotatePieceMirror(player.piece);
-    } else if(event.key === "e"){
+        // shadow.piece = rotatePieceMirror(shadow.piece)
+
+    } else if(event.key === "e" || event.key === "ArrowUp"){
         player.piece = rotatePiece(player.piece);
+        // shadow.piece = rotatePiece(shadow.piece)
+    }
+    else if(event.key === " "){
+        instantDrop();
+
     }
     else if(event.key === "c" && holdBoolean==0){
         holdPiece(player.piece);
@@ -40,9 +45,8 @@ document.addEventListener("keydown", event => {
 
 })
 
-
 //Tetronimo = T L J S Z O I
-function getTetronimo(piece){
+function getTetromino(piece){
     let result;
     switch(piece){
         case "T":
@@ -112,9 +116,41 @@ function getTetrominoHeight(matrix) {
     return matrix.length;
 }
 
-function drawTetronimo(piece, offset,ctx){
+function instantDrop() {
+    while (!pieceCollided(player.piece,player.position)) {
+        player.position.y += 1;
+    }
+    player.position.y -= 1;
+    freezePiece();
+    spawnNewPiece();
+
+
+}
+
+function dropShadow(){
+    shadow.piece = []
+    for (let i = 0; i < player.piece.length; i++)
+        shadow.piece[i] = player.piece[i].slice();
+    shadow.position =  {x:player.position.x,y:player.position.y}
+
+    while(!pieceCollided(shadow.piece,shadow.position)){
+        shadow.position.y ++
+
+    }
+    shadow.position.y--
+    shadow.piece.forEach((row, y) => {
+        row.forEach((value, x) => {
+            if(value !== 0){
+
+                    shadow.piece[y][x] = 8}})})
+    drawTetromino(shadow.piece,shadow.position,context);
+
+}
+
+
+function drawTetromino(piece, offset,ctx){
     //context.fillStyle = "#000";
-    //context.fillRect(0,0, canvas.clientWidth, canvas.height);
+   // context.fillRect(0,0, canvas.clientWidth, canvas.height);
 
     piece.forEach((row, y) => {
         row.forEach((value, x) => {
@@ -133,6 +169,8 @@ function drawTetronimo(piece, offset,ctx){
                     ctx.fillStyle = "cyan";
                 } else if(value === 7){
                     ctx.fillStyle = "pink";
+                }else if(value === 8){
+                    ctx.fillStyle = "grey";
                 }
                 ctx.fillRect(x + offset.x, y + offset.y, 1, 1);
             }
@@ -141,7 +179,7 @@ function drawTetronimo(piece, offset,ctx){
 }
 
 const player = {
-    position: {x: 5, y: 5},
+    position: {x: 4, y: 0},
     piece: null,
     pieceType: "T",
     highScores: 0,
@@ -150,6 +188,11 @@ const nextPiece = {
     position: {x: 5, y: 5},
     piece: null,
     pieceType: "T",
+}
+
+const shadow = {
+    position: {x: player.position.x, y: player.position.y},
+    piece: null,
 }
 
 const gameBoard = {
@@ -167,10 +210,11 @@ function initializeGameBoard() {
     drawPreviewPiece(nextPiece.piece)
 }
 
-function updatePlayerPiece(piece){
+function updatePlayerPiece(pieceType){
     if(player.piece === null){
-        player.piece = getTetronimo(piece);
+        player.piece = getTetromino(pieceType);
     }
+
 }
 
 let lastFall = 0;
@@ -184,15 +228,58 @@ function update(time = 0){
         fall();
         lastFall = time;
     }
+    // console.log(player.pieceType)
     updatePlayerPiece(player.pieceType);
     //drawTetronimo(player.piece, player.position);
     drawGameBoard();
     requestAnimationFrame(update);
+    checkFullLine()
 }
+
+function checkFullLine(){
+    let checkArray = []
+    gameBoard.grid.forEach((row, y) => {
+    let check = true;
+        row.forEach((value,x) =>{
+
+    if(value === 0){
+        check = false
+    }
+
+
+
+        })
+
+        if(check){
+            checkArray.push(y)
+        }
+
+
+
+
+    })
+
+    removeFullLine(checkArray)
+}
+
+function removeFullLine(removeArray){
+removeArray = removeArray.toSorted()
+for(let i = 0;i<removeArray.length;i++) {
+    for (let i2 = removeArray[i]; i2 > 0; i2--) {
+
+    gameBoard.grid[i2] = gameBoard.grid[i2-1].slice()
+    }
+}
+
+}
+
+
+
+
 
 function fall(){
     player.position.y += 1;
-    if(pieceCollided()){
+    if(pieceCollided(player.piece,player.position)){
         player.position.y -= 1;
         freezePiece();
 
@@ -201,17 +288,17 @@ function fall(){
     }
     //player.position.y = Math.min(player.position.y, gameBoard.height - getTetrominoHeight(player.piece));
 }
-function randomPieceGenerator (player){
-    player.pieceType = getRandomPieceType();
-    player.piece = getTetronimo(player.pieceType);
-    player.position = {x: 5, y: 5};
+function randomPieceGenerator (play){
+    play.pieceType = getRandomPieceType();
+    play.piece = getTetromino(play.pieceType);
+    play.position = {x: 5, y: 5};
 
 }
 
 function holdPiece(matrix){
     if(heldPiece==null) {
         heldPiece = matrix
-        drawHeldPiece(matrix)
+        drawHeldPiece(heldPiece)
 
 
 
@@ -243,12 +330,12 @@ function rotatePieceMirror(matrix){
     return matrix;
 }
 
-function pieceCollided() {
-    for (let y = 0; y < player.piece.length; y++) {
-        for (let x = 0; x < player.piece[y].length; x++) {
-            if (player.piece[y][x] !== 0) {
-                let boardX = player.position.x + x;
-                let boardY = player.position.y + y;
+function pieceCollided(piece,position) {
+    for (let y = 0; y < piece.length; y++) {
+        for (let x = 0; x < piece[y].length; x++) {
+            if (piece[y][x] !== 0) {
+                let boardX = position.x + x;
+                let boardY = position.y + y;
 
                 // Check if the piece is outside the game board horizontally or has reached the bottom
                 if (boardX < 0 || boardX >= gameBoard.width || boardY >= gameBoard.height) {
@@ -298,7 +385,7 @@ function getRandomPieceType() {
 }
 
 function drawGameBoard() {
-    context.fillStyle = "#000";
+      context.fillStyle = "#000";
     context.fillRect(0, 0, canvas.clientWidth, canvas.height);
 
     // Draw the static pieces
@@ -325,10 +412,10 @@ function drawGameBoard() {
         });
     });
 
-
     // Draw the moving piece
     if (player.piece) {
-        drawTetronimo(player.piece, player.position,context);
+        drawTetromino(player.piece, player.position,context);
+        dropShadow();
     }
 }
 function clearCanvas(context) {
@@ -336,19 +423,16 @@ function clearCanvas(context) {
 }
 function drawHeldPiece(matrix){
 
-    drawTetronimo(matrix,{x: 2, y: 2},context2)
+    drawTetromino(matrix,{x: 2, y: 2},context2)
 }
 
 function drawPreviewPiece(matrix){
-    drawTetronimo(matrix,{x: 2, y: 2},context3)
+    drawTetromino(matrix,{x: 2, y: 2},context3)
 }
-
 
 initializeGameBoard();
 
 
 update();
-
-
 
 
