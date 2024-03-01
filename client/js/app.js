@@ -197,6 +197,9 @@ function initializeGameBoard() {
     for (let row = 0; row < gameBoard.height; row++) {
         gameBoard.grid[row] = new Array(gameBoard.width).fill(0);
     }
+    randomPieceGenerator(player)
+    randomPieceGenerator(nextPiece)
+    drawPreviewPiece(nextPiece.piece)
 }
 
 function updatePlayerPiece(pieceType){
@@ -235,6 +238,13 @@ function fall(){
     }
     //player.position.y = Math.min(player.position.y, gameBoard.height - getTetrominoHeight(player.piece));
 }
+function randomPieceGenerator (player){
+    player.pieceType = getRandomPieceType();
+    player.piece = getTetronimo(player.pieceType);
+    player.position = {x: 5, y: 5};
+
+}
+
 function holdPiece(matrix){
     if(heldPiece==null) {
         heldPiece = matrix
@@ -247,10 +257,15 @@ function holdPiece(matrix){
 
     }
     else{
+        nextPiece.piece=player.piece
+        temp=player.piece
         player.piece=heldPiece
-
-        heldPiece=null
+        heldPiece=temp
         clearCanvas(context2)
+        drawHeldPiece(matrix)
+
+
+
     }
     holdBoolean=1
 }
@@ -305,9 +320,7 @@ function spawnNewPiece(){
     player.position=nextPiece.position
     player.pieceType=nextPiece.pieceType
 
-    nextPiece.pieceType = getRandomPieceType();
-    nextPiece.piece = getTetronimo(player.pieceType);
-    nextPiece.position = {x: 6-player.piece[0].length, y: 0};
+ randomPieceGenerator(nextPiece)
     holdBoolean=0
 
     clearCanvas(context3)
