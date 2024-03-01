@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en"></html>
 <head>
+    <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tetris</title>
     <style>
-
         canvas{
             display: inline-block; /* Display canvases inline */
             margin: 20px; /* Add some margin between canvases */
@@ -16,17 +17,25 @@
             border-radius: 10px;
 
         }
+p {
+    font-size: 15px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 
+}
 
     </style>
 </head>
 <body>
     <p>Hold   Preview   </p>
+    
+    <p> High Scores : <span id ="highscore">0</span>  </p>
     <canvas id="hold" width="100" height="150" class="holdBox"></canvas >
 
     <canvas id="tetris" width="200" height="400" class="tetrisGame" ></canvas >
     <canvas id="preview" width="100" height="150" class="pre"></canvas >
 
+ 
+    
     <script src="app.js"></script>
 
 

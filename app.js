@@ -96,6 +96,13 @@ function getTetronimo(piece){
     }
     return result;
 }
+// High scores
+function updateHighScores (newhighScores){
+const highscoresElement = document.getElementById("highscore") ;
+highscoresElement.textContent = newhighScores;
+}
+let highscore = 1000;
+updateHighScores(highscore);
 
 function getTetrominoWidth(matrix) {
     return matrix[0].length;
@@ -137,6 +144,7 @@ const player = {
     position: {x: 5, y: 5},
     piece: null,
     pieceType: "T",
+    highScores: 0,
 }
 const nextPiece = {
     position: {x: 5, y: 5},
