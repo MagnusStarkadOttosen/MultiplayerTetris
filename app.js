@@ -22,7 +22,7 @@ document.addEventListener("keydown", event => {
     } else if(event.key === "ArrowRight" || event.key === "d"){
         player.position.x += 1;
     } else if(event.key === "ArrowDown" || event.key === "s"){
-        player.position.y += 1;
+        fall()
     } else if(event.key === "ArrowUp" || event.key === "w"){
         player.position.y -= 1;
     } else if(event.key === "q"){
@@ -154,6 +154,9 @@ function initializeGameBoard() {
     for (let row = 0; row < gameBoard.height; row++) {
         gameBoard.grid[row] = new Array(gameBoard.width).fill(0);
     }
+    randomPieceGenerator(player)
+    randomPieceGenerator(nextPiece)
+    drawPreviewPiece(nextPiece.piece)
 }
 
 function updatePlayerPiece(piece){
@@ -331,9 +334,7 @@ function drawHeldPiece(matrix){
 function drawPreviewPiece(matrix){
     drawTetronimo(matrix,{x: 2, y: 2},context3)
 }
-randomPieceGenerator(player)
-randomPieceGenerator(nextPiece)
-drawPreviewPiece(nextPiece.piece)
+
 
 initializeGameBoard();
 
