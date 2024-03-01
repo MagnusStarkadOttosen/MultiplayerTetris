@@ -19,8 +19,14 @@ holdBoolean=0
 document.addEventListener("keydown", event => {
     if(event.key === "ArrowLeft" || event.key === "a"){
         player.position.x -= 1;
+        if(pieceCollided(player.piece,player.position)){
+            player.position.x++
+        }
     } else if(event.key === "ArrowRight" || event.key === "d"){
         player.position.x += 1;
+        if(pieceCollided(player.piece,player.position)){
+            player.position.x--
+        }
     } else if(event.key === "ArrowDown" || event.key === "s"){
      fall()
     } else if(event.key === "q"){
@@ -172,12 +178,12 @@ function drawTetromino(piece, offset,ctx){
 }
 
 const player = {
-    position: {x: 4, y: 0},
+    position: {},
     piece: null,
     pieceType: "T",
 }
 const nextPiece = {
-    position: {x: 5, y: 5},
+    position:{},
     piece: null,
     pieceType: "T",
 }
@@ -283,7 +289,7 @@ function fall(){
 function randomPieceGenerator (play){
     play.pieceType = getRandomPieceType();
     play.piece = getTetromino(play.pieceType);
-    play.position = {x: 5, y: 5};
+    play.position = {x: 4, y: 0};
 
 }
 
