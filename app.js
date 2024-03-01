@@ -190,6 +190,13 @@ function fall(){
     }
     //player.position.y = Math.min(player.position.y, gameBoard.height - getTetrominoHeight(player.piece));
 }
+function randomPieceGenerator (player){
+    player.pieceType = getRandomPieceType();
+    player.piece = getTetronimo(player.pieceType);
+    player.position = {x: 5, y: 5};
+
+}
+
 function holdPiece(matrix){
     if(heldPiece==null) {
         heldPiece = matrix
@@ -265,9 +272,7 @@ function spawnNewPiece(){
     player.position=nextPiece.position
     player.pieceType=nextPiece.pieceType
 
-    nextPiece.pieceType = getRandomPieceType();
-    nextPiece.piece = getTetronimo(player.pieceType);
-    nextPiece.position = {x: 5, y: 5};
+ randomPieceGenerator(nextPiece)
     holdBoolean=0
 
     clearCanvas(context3)
@@ -326,6 +331,8 @@ function drawHeldPiece(matrix){
 function drawPreviewPiece(matrix){
     drawTetronimo(matrix,{x: 2, y: 2},context3)
 }
+randomPieceGenerator(player)
+randomPieceGenerator(nextPiece)
 
 initializeGameBoard();
 
