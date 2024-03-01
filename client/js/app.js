@@ -195,12 +195,54 @@ function update(time = 0){
         fall();
         lastFall = time;
     }
-    console.log(player.pieceType)
+    // console.log(player.pieceType)
     updatePlayerPiece(player.pieceType);
     //drawTetronimo(player.piece, player.position);
     drawGameBoard();
     requestAnimationFrame(update);
+    checkFullLine()
 }
+
+function checkFullLine(){
+    let checkArray = []
+    gameBoard.grid.forEach((row, y) => {
+    let check = true;
+        row.forEach((value,x) =>{
+
+    if(value === 0){
+        check = false
+    }
+
+
+
+        })
+
+        if(check){
+            checkArray.push(y)
+        }
+
+
+
+
+    })
+
+    removeFullLine(checkArray)
+}
+
+function removeFullLine(removeArray){
+removeArray = removeArray.toSorted()
+for(let i = 0;i<removeArray.length;i++) {
+    for (let i2 = removeArray[i]; i2 > 0; i2--) {
+
+    gameBoard.grid[i2] = gameBoard.grid[i2-1].slice()
+    }
+}
+
+}
+
+
+
+
 
 function fall(){
     player.position.y += 1;
