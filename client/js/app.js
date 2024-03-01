@@ -31,11 +31,17 @@ document.addEventListener("keydown", event => {
      fall()
     } else if(event.key === "q"){
         player.piece = rotatePieceMirror(player.piece);
-        // shadow.piece = rotatePieceMirror(shadow.piece)
+        if(pieceCollided(player.piece,player.position)) {
+            player.piece = rotatePiece(player.piece);
+        }
+            // shadow.piece = rotatePieceMirror(shadow.piece)
 
     } else if(event.key === "e" || event.key === "ArrowUp"){
         player.piece = rotatePiece(player.piece);
-        // shadow.piece = rotatePiece(shadow.piece)
+        if(pieceCollided(player.piece,player.position)) {
+            player.piece = rotatePieceMirror(player.piece);}
+
+            // shadow.piece = rotatePiece(shadow.piece)
     }
     else if(event.key === " "){
         instantDrop();
