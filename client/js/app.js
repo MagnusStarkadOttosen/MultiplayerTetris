@@ -63,22 +63,22 @@ function getTetromino(piece){
     switch(piece){
         case "T":
             result = [
-                [1, 1, 1],
                 [0, 1, 0],
+                [1, 1, 1],
             ];
             break;
         case "L":
             result = [
-                [2, 0],
-                [2, 0],
-                [2, 2],
+
+                [0,0,2],
+                [2,2,2]
             ];
             break;
         case "J":
             result = [
-                [0, 3],
-                [0, 3],
-                [3, 3],
+
+                [3],
+                [3,3,3]
             ];
             break;
         case "S":
@@ -95,16 +95,13 @@ function getTetromino(piece){
             break;
         case "O":
             result = [
-                [6, 6],
-                [6, 6],
+                [0,6, 6],
+                [0,6, 6],
             ];
             break;
         case "I":
             result = [
-                [7],
-                [7],
-                [7],
-                [7],
+              [7,7,7,7]
             ];
             break;
         default:
@@ -187,6 +184,8 @@ const player = {
     position: {},
     piece: null,
     pieceType: "T",
+    gamePhase: 0,
+
 }
 const nextPiece = {
     position:{},
@@ -265,6 +264,12 @@ function checkFullLine(){
 
     removeFullLine(checkArray)
 }
+function chechTopLine(){
+    if(gameBoard.grid[0][4]!=0 || gameBoard.grid[0][5]!=0 )
+        return true
+    else return false
+}
+
 
 function removeFullLine(removeArray){
 removeArray = removeArray.toSorted()
@@ -379,6 +384,9 @@ function spawnNewPiece(){
 
     clearCanvas(context3)
     drawPreviewPiece(nextPiece.piece)
+    if (chechTopLine()){
+        player.gamePhase=1
+    }
 
 }
 
@@ -436,7 +444,9 @@ function drawPreviewPiece(matrix){
 
 initializeGameBoard();
 
-
+if(player.gamePhase==0)
 update();
+else
+    console.log("Game Over");
 
 
