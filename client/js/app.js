@@ -173,6 +173,7 @@ function drawTetromino(piece, offset,ctx){
                     ctx.fillStyle = "pink";
                 }else if(value === 8){
                     ctx.fillStyle = "grey";
+                    ctx.globalAlpha = 0.5;
                 }
                 ctx.fillRect(x + offset.x, y + offset.y, 1, 1);
             }
@@ -426,8 +427,9 @@ function drawGameBoard() {
 
     // Draw the moving piece
     if (player.piece) {
-        drawTetromino(player.piece, player.position,context);
         dropShadow();
+        drawTetromino(player.piece, player.position,context);
+
     }
 }
 function clearCanvas(context) {
