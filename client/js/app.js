@@ -44,6 +44,7 @@ document.addEventListener("keydown", event => {
             // shadow.piece = rotatePiece(shadow.piece)
     }
     else if(event.key === " "){
+        console.log(queue)
         instantDrop();
 
     }
@@ -124,7 +125,7 @@ function instantDrop() {
     }
     player.position.y -= 1;
     freezePiece();
-    spawnNewPiece();
+    spawnNewPiece(queue.shift());
 
 
 }
@@ -182,16 +183,21 @@ function drawTetromino(piece, offset,ctx){
 }
 
 const player = {
-    position: {},
+    position: {x:0,y:0},
     piece: null,
     pieceType: "T",
     gamePhase: 0,
 
 }
-const nextPiece = {
-    position:{},
+const queue = []
+
+
+const tempPiece ={
+    position: {},
     piece: null,
     pieceType: "T",
+
+
 }
 
 const shadow = {
@@ -210,8 +216,11 @@ function initializeGameBoard() {
         gameBoard.grid[row] = new Array(gameBoard.width).fill(0);
     }
     randomPieceGenerator(player)
-    randomPieceGenerator(nextPiece)
-    drawPreviewPiece(nextPiece.piece)
+    for(let i = 0; i<=4;i++){
+    randomPieceGenerator(tempPiece)
+    queue.push({piece:tempPiece.piece,position:{x:tempPiece.position.x,y:tempPiece.position.y}})
+}
+    drawPreviewPiece()
 }
 
 function updatePlayerPiece(pieceType){
@@ -294,7 +303,7 @@ function fall(){
         freezePiece();
 
 
-        spawnNewPiece(nextPiece);
+        spawnNewPiece(queue.shift());
     }
     //player.position.y = Math.min(player.position.y, gameBoard.height - getTetrominoHeight(player.piece));
 }
@@ -313,11 +322,11 @@ function holdPiece(matrix){
 
 
 
-        spawnNewPiece(nextPiece)
+        spawnNewPiece(queue.shift())
 
     }
     else{
-        nextPiece.piece=player.piece
+        queue[0].piece=player.piece
         temp=player.piece
         player.piece=heldPiece
         heldPiece=temp
@@ -374,17 +383,18 @@ function freezePiece(){
     //TODO: check for completed lines.
 }
 
-function spawnNewPiece(){
+function spawnNewPiece(piece){
+console.log(piece)
+    player.piece = piece.piece
+    player.position=piece.position
+    player.pieceType=piece.pieceType
 
-    player.piece = nextPiece.piece
-    player.position=nextPiece.position
-    player.pieceType=nextPiece.pieceType
-
- randomPieceGenerator(nextPiece)
+ randomPieceGenerator(tempPiece)
+    queue.push({piece:tempPiece.piece,position:{x:tempPiece.position.x,y:tempPiece.position.y}})
     holdBoolean=0
 
     clearCanvas(context3)
-    drawPreviewPiece(nextPiece.piece)
+    drawPreviewPiece()
     if (chechTopLine()){
         player.gamePhase=1
     }
@@ -440,13 +450,15 @@ function drawHeldPiece(matrix){
     drawTetromino(matrix,{x: 2, y: 2},context2)
 }
 
-function drawPreviewPiece(matrix){
-    drawTetromino(matrix,{x: 2, y: 2},context3)
+function drawPreviewPiece(){
+
+    for(let i =0;i<queue.length;i++){
+    drawTetromino(queue[i].piece,{x: 2, y: 2+(5*i)},context3)}
 }
 
 initializeGameBoard();
 
-if(player.gamePhase==0)
+if(player.gamePhase===0)
 update();
 else
     console.log("Game Over");
