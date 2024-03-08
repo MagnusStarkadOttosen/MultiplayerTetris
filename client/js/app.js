@@ -20,6 +20,7 @@ document.addEventListener("keydown", event => {
     if(event.key === "ArrowLeft" || event.key === "a"){
         player.position.x -= 1;
         if(pieceCollided(player.piece,player.position)){
+            console.log("left collision")
             player.position.x++
         }
     } else if(event.key === "ArrowRight" || event.key === "d"){
@@ -30,21 +31,22 @@ document.addEventListener("keydown", event => {
     } else if(event.key === "ArrowDown" || event.key === "s"){
      fall()
     } else if(event.key === "q"){
-        player.piece = rotatePieceMirror(player.piece);
+        rotatePieceMirror(player.piece);
         if(pieceCollided(player.piece,player.position)) {
-            player.piece = rotatePiece(player.piece);
+        rotatePiece()
         }
             // shadow.piece = rotatePieceMirror(shadow.piece)
 
     } else if(event.key === "e" || event.key === "ArrowUp"){
-        player.piece = rotatePiece(player.piece);
+        rotatePiece(player.piece)
+        console.log(player.pieceType)
         if(pieceCollided(player.piece,player.position)) {
-            player.piece = rotatePieceMirror(player.piece);}
+            rotatePieceMirror(player.piece);}
 
             // shadow.piece = rotatePiece(shadow.piece)
     }
     else if(event.key === " "){
-        console.log(queue)
+        // console.log(queue)
         instantDrop();
 
     }
@@ -53,8 +55,8 @@ document.addEventListener("keydown", event => {
 
     }
 
-    player.position.x = Math.max(0, Math.min(player.position.x, gameBoard.width - getTetrominoWidth(player.piece)));
-    player.position.y = Math.min(player.position.y, gameBoard.height - getTetrominoHeight(player.piece));
+    // player.position.x = Math.max(0, Math.min(player.position.x, gameBoard.width - getTetrominoWidth(player.piece)));
+    // player.position.y = Math.min(player.position.y, gameBoard.height - getTetrominoHeight(player.piece));
 
 })
 
@@ -63,46 +65,138 @@ function getTetromino(piece){
     let result;
     switch(piece){
         case "T":
-            result = [
+            result = [[
                 [0, 1, 0],
                 [1, 1, 1],
+                [0,0,0],
+            ],
+            [
+                [0, 1, 0],
+                [0, 1, 1],
+                [0,1,0]
+            ],
+                [
+                [0, 0, 0],
+                [1, 1, 1],
+                [0,1,0],
+                ],
+            [       [0, 1, 0],
+                    [1, 1, 0],
+                    [0,1,0],
+            ]
             ];
             break;
         case "L":
-            result = [
+            result = [[
 
                 [0,0,2],
-                [2,2,2]
-            ];
+                [2,2,2],
+                [0,0,0],
+            ],[
+                [0,2,0],
+                [0,2,0],
+                [0,2,2],
+            ],[
+                [0,0,0],
+                [2,2,2],
+                [2,0,0],
+            ],[
+                [2,2,0],
+                [0,2,0],
+                [0,2,0],
+            ]];
             break;
         case "J":
-            result = [
+            result = [[
 
                 [3,0,0],
-                [3,3,3]
-            ];
+                [3,3,3],
+                [0,0,0],
+            ],[
+                [0,3,3],
+                [0,3,0],
+                [0,3,0],
+            ],[
+                [0,0,0],
+                [3,3,3],
+                [0,0,3],
+            ],[
+                [0,3,0],
+                [0,3,0],
+                [3,3,0],
+            ]];
             break;
         case "S":
-            result = [
+            result = [[
                 [0, 4, 4],
                 [4, 4, 0],
-            ];
+                [0 ,0 ,0],
+            ],[
+                [0, 4, 0],
+                [0, 4, 4],
+                [0 ,0 ,4],
+            ],[
+                [0, 0, 0],
+                [0, 4, 4],
+                [4 ,4 ,0],
+            ],[
+                [0, 4, 0],
+                [4, 4, 0],
+                [4 ,0 ,0],
+            ]];
             break;
         case "Z":
-            result = [
+            result = [[
                 [5, 5, 0],
                 [0, 5, 5],
-            ];
+                [0,0,0],
+            ],[
+                [0, 0, 5],
+                [0, 5, 5],
+                [0,5,0],],
+
+[
+                [0, 0, 0],
+                [5, 5, 0],
+                [0,5,5],],
+                [
+                [0, 5, 0],
+                [5, 5, 0],
+                [5,0,0],]];
             break;
         case "O":
-            result = [
+            result = [[
                 [0,6, 6],
                 [0,6, 6],
+            ],[                [0,6, 6],
+                [0,6, 6],],[                [0,6, 6],
+                [0,6, 6],],[                [0,6, 6],
+                [0,6, 6],]
+
+
             ];
             break;
         case "I":
-            result = [
-              [7,7,7,7]
+            result = [[
+              [7,7,7,7],
+              [0,0,0,0],
+    ],
+            [
+                [0,7],
+                [0,7],
+                [0,7],
+                [0,7],
+
+            ],[
+                    [0,0,0,0],
+                    [7,7,7,7],
+                ],[
+                    [7,0],
+                    [7,0],
+                    [7,0],
+                    [7,0],
+
+                ]
             ];
             break;
         default:
@@ -187,6 +281,7 @@ const player = {
     piece: null,
     pieceType: "T",
     gamePhase: 0,
+    rotation: 0,
 
 }
 const queue = []
@@ -218,14 +313,14 @@ function initializeGameBoard() {
     randomPieceGenerator(player)
     for(let i = 0; i<=4;i++){
     randomPieceGenerator(tempPiece)
-    queue.push({piece:tempPiece.piece,position:{x:tempPiece.position.x,y:tempPiece.position.y}})
+    queue.push({piece:tempPiece.piece,position:{x:tempPiece.position.x,y:tempPiece.position.y},pieceType: tempPiece.pieceType})
 }
     drawPreviewPiece()
 }
 
 function updatePlayerPiece(pieceType){
     if(player.piece === null){
-        player.piece = getTetromino(pieceType);
+        player.piece = getTetromino(pieceType)[player.rotation];
     }
 
 }
@@ -309,7 +404,7 @@ function fall(){
 }
 function randomPieceGenerator (play){
     play.pieceType = getRandomPieceType();
-    play.piece = getTetromino(play.pieceType);
+    play.piece = getTetromino(play.pieceType)[player.rotation];
     play.position = {x: 4, y: 0};
 
 }
@@ -340,21 +435,42 @@ function holdPiece(matrix){
 }
 
 function rotatePiece(matrix){
-    matrix = matrix[0].map((val, index) => matrix.map(row => row[index]).reverse())
-    return matrix;
+    player.rotation++
+    if(player.rotation>=4){
+        player.rotation=0
+    }
+    player.piece = getTetromino(player.pieceType)[player.rotation]
+
 }
 
 function rotatePieceMirror(matrix){
-    matrix = matrix[0].map((val, index) => matrix.map(row => row[row.length-1-index]));
-    return matrix;
+    player.rotation--
+    if(player.rotation<0){
+        player.rotation=3
+    }
+    player.piece = getTetromino(player.pieceType)[player.rotation]
+
 }
 
 function pieceCollided(piece,position) {
+
+    // let xCount = 0
+    // let yCount = 0
+    // for (let y = 0; y < piece.length; y++) {
+    //     let check = false
+    //     for (let x = 0; x < piece[y].length; x++) {
+    //         if(check ===true&&piece[y][x] !== 0){
+    //             yCount++
+    //         }
+    //
+    //     }}
+
     for (let y = 0; y < piece.length; y++) {
         for (let x = 0; x < piece[y].length; x++) {
             if (piece[y][x] !== 0) {
                 let boardX = position.x + x;
                 let boardY = position.y + y;
+                // console.log((position.x+x)+":"+position.y)
 
                 // Check if the piece is outside the game board horizontally or has reached the bottom
                 if (boardX < 0 || boardX >= gameBoard.width || boardY >= gameBoard.height) {
@@ -385,12 +501,13 @@ function freezePiece(){
 
 function spawnNewPiece(piece){
 console.log(piece)
+    player.rotation=0
     player.piece = piece.piece
-    player.position=piece.position
+    player.position= piece.position
     player.pieceType=piece.pieceType
 
  randomPieceGenerator(tempPiece)
-    queue.push({piece:tempPiece.piece,position:{x:tempPiece.position.x,y:tempPiece.position.y}})
+    queue.push({piece:tempPiece.piece,position:{x:tempPiece.position.x,y:tempPiece.position.y},pieceType: tempPiece.pieceType})
     holdBoolean=0
 
     clearCanvas(context3)
@@ -410,7 +527,6 @@ function getRandomPieceType() {
 function drawGameBoard() {
       context.fillStyle = "#000";
     context.fillRect(0, 0, canvas.clientWidth, canvas.height);
-
     // Draw the static pieces
     gameBoard.grid.forEach((row, y) => {
         row.forEach((value, x) => {
