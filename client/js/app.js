@@ -17,44 +17,45 @@ holdBoolean=0
 
 
 document.addEventListener("keydown", event => {
-    if(event.key === "ArrowLeft" || event.key === "a"){
-        player.position.x -= 1;
-        if(pieceCollided(player.piece,player.position)){
-            player.position.x++
-        }
-    } else if(event.key === "ArrowRight" || event.key === "d"){
-        player.position.x += 1;
-        if(pieceCollided(player.piece,player.position)){
-            player.position.x--
-        }
-    } else if(event.key === "ArrowDown" || event.key === "s"){
-     fall()
-    } else if(event.key === "q"){
-        player.piece = rotatePieceMirror(player.piece);
-        if(pieceCollided(player.piece,player.position)) {
-            player.piece = rotatePiece(player.piece);
-        }
+    if(player.gamePhase===0) {
+        if (event.key === "ArrowLeft" || event.key === "a") {
+            player.position.x -= 1;
+            if (pieceCollided(player.piece, player.position)) {
+                player.position.x++
+            }
+        } else if (event.key === "ArrowRight" || event.key === "d") {
+            player.position.x += 1;
+            if (pieceCollided(player.piece, player.position)) {
+                player.position.x--
+            }
+        } else if (event.key === "ArrowDown" || event.key === "s") {
+            fall()
+        } else if (event.key === "q") {
+            player.piece = rotatePieceMirror(player.piece);
+            if (pieceCollided(player.piece, player.position)) {
+                player.piece = rotatePiece(player.piece);
+            }
             // shadow.piece = rotatePieceMirror(shadow.piece)
 
-    } else if(event.key === "e" || event.key === "ArrowUp"){
-        player.piece = rotatePiece(player.piece);
-        if(pieceCollided(player.piece,player.position)) {
-            player.piece = rotatePieceMirror(player.piece);}
+        } else if (event.key === "e" || event.key === "ArrowUp") {
+            player.piece = rotatePiece(player.piece);
+            if (pieceCollided(player.piece, player.position)) {
+                player.piece = rotatePieceMirror(player.piece);
+            }
 
             // shadow.piece = rotatePiece(shadow.piece)
-    }
-    else if(event.key === " "){
-        console.log(queue)
-        instantDrop();
+        } else if (event.key === " ") {
+            console.log(queue)
+            instantDrop();
 
-    }
-    else if(event.key === "c" && holdBoolean==0){
-        holdPiece(player.piece);
+        } else if (event.key === "c" && holdBoolean == 0) {
+            holdPiece(player.piece);
 
-    }
+        }
 
-    player.position.x = Math.max(0, Math.min(player.position.x, gameBoard.width - getTetrominoWidth(player.piece)));
-    player.position.y = Math.min(player.position.y, gameBoard.height - getTetrominoHeight(player.piece));
+      //  player.position.x = Math.max(0, Math.min(player.position.x, gameBoard.width - getTetrominoWidth(player.piece)));
+    //    player.position.y = Math.min(player.position.y, gameBoard.height - getTetrominoHeight(player.piece));
+    }
 
 })
 
@@ -207,7 +208,7 @@ const shadow = {
 
 const gameBoard = {
     width: 10,
-    height: 20,
+    height: 25,
     grid: []
 };
 
@@ -241,12 +242,23 @@ function update(time = 0){
         fall();
         lastFall = time;
     }
+
+    if(chechTopLine()){
+        console.log("Game Over");
+        player.position.y=120
+        player.gamePhase = 1
+
+    }
     // console.log(player.pieceType)
     updatePlayerPiece(player.pieceType);
     //drawTetronimo(player.piece, player.position);
     drawGameBoard();
-    requestAnimationFrame(update);
     checkFullLine()
+    requestAnimationFrame(update);
+
+
+
+
 }
 
 function checkFullLine(){
@@ -274,10 +286,15 @@ function checkFullLine(){
 
     removeFullLine(checkArray)
 }
-function chechTopLine(){
-    if(gameBoard.grid[0][4]!=0 || gameBoard.grid[0][5]!=0 )
+function chechTopLine() {
+    for (let i = 0; i < gameBoard.width; i++) {
+
+
+
+    if (gameBoard.grid[4][i] !== 0)
         return true
-    else return false
+}
+return false
 }
 
 
@@ -373,21 +390,26 @@ function pieceCollided(piece,position) {
 }
 
 function freezePiece(){
+    if(player.gamePhase===0){
     player.piece.forEach((row, y) => {
         row.forEach((value, x) => {
             if (value !== 0) {
                 gameBoard.grid[y + player.position.y][x + player.position.x] = value;
             }
         });
-    });
+    });}
     //TODO: check for completed lines.
 }
 
 function spawnNewPiece(piece){
+    if(player.gamePhase === 0){
 console.log(piece)
+
+
     player.piece = piece.piece
     player.position=piece.position
     player.pieceType=piece.pieceType
+
 
  randomPieceGenerator(tempPiece)
     queue.push({piece:tempPiece.piece,position:{x:tempPiece.position.x,y:tempPiece.position.y}})
@@ -395,11 +417,14 @@ console.log(piece)
 
     clearCanvas(context3)
     drawPreviewPiece()
-    if (chechTopLine()){
-        player.gamePhase=1
-    }
+    //    if (chechTopLine()){
+      //  player.position.y=120
 
-}
+        //player.gamePhase=1
+        //console.log("gamephase1")
+    //}
+
+}}
 
 const tetrominoTypes = ["T", "L", "J", "S", "Z", "O", "I"];
 function getRandomPieceType() {
@@ -408,9 +433,10 @@ function getRandomPieceType() {
 }
 
 function drawGameBoard() {
-      context.fillStyle = "#000";
-    context.fillRect(0, 0, canvas.clientWidth, canvas.height);
-
+    context.fillStyle = "#000";
+    context.fillRect(0, 5, canvas.clientWidth, canvas.height);
+    context.fillStyle = "#fff";
+    context.fillRect(0, 0, canvas.clientWidth, 5);
     // Draw the static pieces
     gameBoard.grid.forEach((row, y) => {
         row.forEach((value, x) => {
@@ -437,6 +463,7 @@ function drawGameBoard() {
 
     // Draw the moving piece
     if (player.piece) {
+        if(player.gamePhase==0)
         dropShadow();
         drawTetromino(player.piece, player.position,context);
 
