@@ -3,13 +3,15 @@
 const http = require("http");
 const express = require("express");
 const socketIo = require("socket.io");
+const path = require('path');
 
 const app = express();
 
 const server = http.createServer(app);
 const io = socketIo(server);
 
-app.use(express.static("client"));
+const clientPath = path.join(__dirname, '..', 'client');
+app.use(express.static(clientPath));
 
 io.on("connection", (socket) => {
     console.log("A user connected");
