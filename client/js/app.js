@@ -78,7 +78,7 @@ function getTetromino(piece){
         case "J":
             result = [
 
-                [3],
+                [3,0,0],
                 [3,3,3]
             ];
             break;
