@@ -14,10 +14,17 @@ context3.scale(20,20);
 heldPiece= null;
 
 holdBoolean=0
+const player = {
+    position: {x:0,y:0},
+    piece: null,
+    pieceType: "T",
+    gamePhase: 0,
+    rotation: 0,
 
+}
 
 document.addEventListener("keydown", event => {
-    if(player.gamePhase===0) {
+    if (player.gamePhase === 0) {
         if (event.key === "ArrowLeft" || event.key === "a") {
             player.position.x -= 1;
             if (pieceCollided(player.piece, player.position)) {
@@ -49,556 +56,557 @@ document.addEventListener("keydown", event => {
             instantDrop();
 
         } else if (event.key === "c" && holdBoolean == 0) {
-            holdPiece(player.piece);
+            holdPiece(player.piece)
+
 
         }
 
+        }})
     // player.position.x = Math.max(0, Math.min(player.position.x, gameBoard.width - getTetrominoWidth(player.piece)));
     // player.position.y = Math.min(player.position.y, gameBoard.height - getTetrominoHeight(player.piece));
 
-})
 
 //Tetronimo = T L J S Z O I
-function getTetromino(piece){
-    let result;
-    switch(piece){
-        case "T":
-            result = [[
-                [0, 1, 0],
-                [1, 1, 1],
-                [0,0,0],
-            ],
-            [
-                [0, 1, 0],
-                [0, 1, 1],
-                [0,1,0]
-            ],
-                [
-                [0, 0, 0],
-                [1, 1, 1],
-                [0,1,0],
+    function getTetromino(piece) {
+        let result;
+        switch (piece) {
+            case "T":
+                result = [[
+                    [0, 1, 0],
+                    [1, 1, 1],
+                    [0, 0, 0],
                 ],
-            [       [0, 1, 0],
-                    [1, 1, 0],
-                    [0,1,0],
-            ]
-            ];
-            break;
-        case "L":
-            result = [[
+                    [
+                        [0, 1, 0],
+                        [0, 1, 1],
+                        [0, 1, 0]
+                    ],
+                    [
+                        [0, 0, 0],
+                        [1, 1, 1],
+                        [0, 1, 0],
+                    ],
+                    [[0, 1, 0],
+                        [1, 1, 0],
+                        [0, 1, 0],
+                    ]
+                ];
+                break;
+            case "L":
+                result = [[
 
-                [0,0,2],
-                [2,2,2],
-                [0,0,0],
-            ],[
-                [0,2,0],
-                [0,2,0],
-                [0,2,2],
-            ],[
-                [0,0,0],
-                [2,2,2],
-                [2,0,0],
-            ],[
-                [2,2,0],
-                [0,2,0],
-                [0,2,0],
-            ]];
-            break;
-        case "J":
-            result = [[
+                    [0, 0, 2],
+                    [2, 2, 2],
+                    [0, 0, 0],
+                ], [
+                    [0, 2, 0],
+                    [0, 2, 0],
+                    [0, 2, 2],
+                ], [
+                    [0, 0, 0],
+                    [2, 2, 2],
+                    [2, 0, 0],
+                ], [
+                    [2, 2, 0],
+                    [0, 2, 0],
+                    [0, 2, 0],
+                ]];
+                break;
+            case "J":
+                result = [[
 
-                [3,0,0],
-                [3,3,3],
-                [0,0,0],
-            ],[
-                [0,3,3],
-                [0,3,0],
-                [0,3,0],
-            ],[
-                [0,0,0],
-                [3,3,3],
-                [0,0,3],
-            ],[
-                [0,3,0],
-                [0,3,0],
-                [3,3,0],
-            ]];
-            break;
-        case "S":
-            result = [[
-                [0, 4, 4],
-                [4, 4, 0],
-                [0 ,0 ,0],
-            ],[
-                [0, 4, 0],
-                [0, 4, 4],
-                [0 ,0 ,4],
-            ],[
-                [0, 0, 0],
-                [0, 4, 4],
-                [4 ,4 ,0],
-            ],[
-                [0, 4, 0],
-                [4, 4, 0],
-                [4 ,0 ,0],
-            ]];
-            break;
-        case "Z":
-            result = [[
-                [5, 5, 0],
-                [0, 5, 5],
-                [0,0,0],
-            ],[
-                [0, 0, 5],
-                [0, 5, 5],
-                [0,5,0],],
+                    [3, 0, 0],
+                    [3, 3, 3],
+                    [0, 0, 0],
+                ], [
+                    [0, 3, 3],
+                    [0, 3, 0],
+                    [0, 3, 0],
+                ], [
+                    [0, 0, 0],
+                    [3, 3, 3],
+                    [0, 0, 3],
+                ], [
+                    [0, 3, 0],
+                    [0, 3, 0],
+                    [3, 3, 0],
+                ]];
+                break;
+            case "S":
+                result = [[
+                    [0, 4, 4],
+                    [4, 4, 0],
+                    [0, 0, 0],
+                ], [
+                    [0, 4, 0],
+                    [0, 4, 4],
+                    [0, 0, 4],
+                ], [
+                    [0, 0, 0],
+                    [0, 4, 4],
+                    [4, 4, 0],
+                ], [
+                    [0, 4, 0],
+                    [4, 4, 0],
+                    [4, 0, 0],
+                ]];
+                break;
+            case "Z":
+                result = [[
+                    [5, 5, 0],
+                    [0, 5, 5],
+                    [0, 0, 0],
+                ], [
+                    [0, 0, 5],
+                    [0, 5, 5],
+                    [0, 5, 0],],
 
-[
-                [0, 0, 0],
-                [5, 5, 0],
-                [0,5,5],],
-                [
-                [0, 5, 0],
-                [5, 5, 0],
-                [5,0,0],]];
-            break;
-        case "O":
-            result = [[
-                [0,6, 6],
-                [0,6, 6],
-            ],[                [0,6, 6],
-                [0,6, 6],],[                [0,6, 6],
-                [0,6, 6],],[                [0,6, 6],
-                [0,6, 6],]
+                    [
+                        [0, 0, 0],
+                        [5, 5, 0],
+                        [0, 5, 5],],
+                    [
+                        [0, 5, 0],
+                        [5, 5, 0],
+                        [5, 0, 0],]];
+                break;
+            case "O":
+                result = [[
+                    [0, 6, 6],
+                    [0, 6, 6],
+                ], [[0, 6, 6],
+                    [0, 6, 6],], [[0, 6, 6],
+                    [0, 6, 6],], [[0, 6, 6],
+                    [0, 6, 6],]
 
 
-            ];
-            break;
-        case "I":
-            result = [[
-              [7,7,7,7],
-              [0,0,0,0],
-    ],
-            [
-                [0,7],
-                [0,7],
-                [0,7],
-                [0,7],
+                ];
+                break;
+            case "I":
+                result = [[
+                    [7, 7, 7, 7],
+                    [0, 0, 0, 0],
+                ],
+                    [
+                        [0, 7],
+                        [0, 7],
+                        [0, 7],
+                        [0, 7],
 
-            ],[
-                    [0,0,0,0],
-                    [7,7,7,7],
-                ],[
-                    [7,0],
-                    [7,0],
-                    [7,0],
-                    [7,0],
+                    ], [
+                        [0, 0, 0, 0],
+                        [7, 7, 7, 7],
+                    ], [
+                        [7, 0],
+                        [7, 0],
+                        [7, 0],
+                        [7, 0],
 
-                ]
-            ];
-            break;
-        default:
-            throw new Error("Invalid Tetromino type!");
+                    ]
+                ];
+                break;
+            default:
+                throw new Error("Invalid Tetromino type!");
+        }
+        return result;
     }
-    return result;
-}
 
-function getTetrominoWidth(matrix) {
-    return matrix[0].length;
-}
-
-function getTetrominoHeight(matrix) {
-    return matrix.length;
-}
-
-function instantDrop() {
-    while (!pieceCollided(player.piece,player.position)) {
-        player.position.y += 1;
+    function getTetrominoWidth(matrix) {
+        return matrix[0].length;
     }
-    player.position.y -= 1;
-    freezePiece();
-    spawnNewPiece(queue.shift());
 
+    function getTetrominoHeight(matrix) {
+        return matrix.length;
+    }
 
-}
+    function instantDrop() {
+        while (!pieceCollided(player.piece, player.position)) {
+            player.position.y += 1;
+        }
+        player.position.y -= 1;
+        freezePiece();
+        spawnNewPiece(queue.shift());
 
-function dropShadow(){
-    shadow.piece = []
-    for (let i = 0; i < player.piece.length; i++)
-        shadow.piece[i] = player.piece[i].slice();
-    shadow.position =  {x:player.position.x,y:player.position.y}
-
-    while(!pieceCollided(shadow.piece,shadow.position)){
-        shadow.position.y ++
 
     }
-    shadow.position.y--
-    shadow.piece.forEach((row, y) => {
-        row.forEach((value, x) => {
-            if(value !== 0){
 
-                    shadow.piece[y][x] = 8}})})
-    drawTetromino(shadow.piece,shadow.position,context);
+    function dropShadow() {
+        shadow.piece = []
+        for (let i = 0; i < player.piece.length; i++)
+            shadow.piece[i] = player.piece[i].slice();
+        shadow.position = {x: player.position.x, y: player.position.y}
 
-}
+        while (!pieceCollided(shadow.piece, shadow.position)) {
+            shadow.position.y++
 
+        }
+        shadow.position.y--
+        shadow.piece.forEach((row, y) => {
+            row.forEach((value, x) => {
+                if (value !== 0) {
 
-function drawTetromino(piece, offset,ctx){
-    //context.fillStyle = "#000";
-   // context.fillRect(0,0, canvas.clientWidth, canvas.height);
-
-    piece.forEach((row, y) => {
-        row.forEach((value, x) => {
-            if(value !== 0){
-                if(value === 1){
-                     ctx.fillStyle = "red";
-                } else if(value === 2){
-                    ctx.fillStyle = "blue";
-                } else if(value === 3){
-                    ctx.fillStyle = "green";
-                } else if(value === 4){
-                    ctx.fillStyle = "yellow";
-                } else if(value === 5){
-                    ctx.fillStyle = "orange";
-                } else if(value === 6){
-                    ctx.fillStyle = "cyan";
-                } else if(value === 7){
-                    ctx.fillStyle = "pink";
-                }else if(value === 8){
-                    ctx.fillStyle = "grey";
-                    ctx.globalAlpha = 0.5;
+                    shadow.piece[y][x] = 8
                 }
-                ctx.fillRect(x + offset.x, y + offset.y, 1, 1);
-            }
+            })
+        })
+        drawTetromino(shadow.piece, shadow.position, context);
+
+    }
+
+
+    function drawTetromino(piece, offset, ctx) {
+        //context.fillStyle = "#000";
+        // context.fillRect(0,0, canvas.clientWidth, canvas.height);
+
+        piece.forEach((row, y) => {
+            row.forEach((value, x) => {
+                if (value !== 0) {
+                    if (value === 1) {
+                        ctx.fillStyle = "red";
+                    } else if (value === 2) {
+                        ctx.fillStyle = "blue";
+                    } else if (value === 3) {
+                        ctx.fillStyle = "green";
+                    } else if (value === 4) {
+                        ctx.fillStyle = "yellow";
+                    } else if (value === 5) {
+                        ctx.fillStyle = "orange";
+                    } else if (value === 6) {
+                        ctx.fillStyle = "cyan";
+                    } else if (value === 7) {
+                        ctx.fillStyle = "pink";
+                    } else if (value === 8) {
+                        ctx.fillStyle = "grey";
+                        ctx.globalAlpha = 0.5;
+                    }
+                    ctx.fillRect(x + offset.x, y + offset.y, 1, 1);
+                }
+            });
         });
-    });
-}
-
-const player = {
-    position: {x:0,y:0},
-    piece: null,
-    pieceType: "T",
-    gamePhase: 0,
-    rotation: 0,
-
-}
-const queue = []
-
-
-const tempPiece ={
-    position: {},
-    piece: null,
-    pieceType: "T",
-
-
-}
-
-const shadow = {
-    position: {x: player.position.x, y: player.position.y},
-    piece: null,
-}
-
-const gameBoard = {
-    width: 10,
-    height: 25,
-    grid: []
-};
-
-function initializeGameBoard() {
-    for (let row = 0; row < gameBoard.height; row++) {
-        gameBoard.grid[row] = new Array(gameBoard.width).fill(0);
-    }
-    randomPieceGenerator(player)
-    for(let i = 0; i<=4;i++){
-    randomPieceGenerator(tempPiece)
-    queue.push({piece:tempPiece.piece,position:{x:tempPiece.position.x,y:tempPiece.position.y},pieceType: tempPiece.pieceType})
-}
-    drawPreviewPiece()
-}
-
-function updatePlayerPiece(pieceType){
-    if(player.piece === null){
-        player.piece = getTetromino(pieceType)[player.rotation];
     }
 
-}
 
-let lastFall = 0;
-const fallInterval = 1000;
+    const queue = []
 
-function update(time = 0){
-    if(!lastFall) lastFall = time;
-    const deltaTime = time - lastFall;
 
-    if (deltaTime > fallInterval) {
-        fall();
-        lastFall = time;
+    const tempPiece = {
+        position: {},
+        piece: null,
+        pieceType: "T",
+
+
     }
 
-    if(chechTopLine()){
-        console.log("Game Over");
-        player.position.y=120
-        player.gamePhase = 1
-
-    }
-    // console.log(player.pieceType)
-    updatePlayerPiece(player.pieceType);
-    //drawTetronimo(player.piece, player.position);
-    drawGameBoard();
-    checkFullLine()
-    requestAnimationFrame(update);
-
-
-
-
-}
-
-function checkFullLine(){
-    let checkArray = []
-    gameBoard.grid.forEach((row, y) => {
-    let check = true;
-        row.forEach((value,x) =>{
-
-    if(value === 0){
-        check = false
+    const shadow = {
+        position: {x: player.position.x, y: player.position.y},
+        piece: null,
     }
 
+    const gameBoard = {
+        width: 10,
+        height: 25,
+        grid: []
+    };
+
+    function initializeGameBoard() {
+        for (let row = 0; row < gameBoard.height; row++) {
+            gameBoard.grid[row] = new Array(gameBoard.width).fill(0);
+        }
+        randomPieceGenerator(player)
+        for (let i = 0; i <= 4; i++) {
+            randomPieceGenerator(tempPiece)
+            queue.push({
+                piece: tempPiece.piece,
+                position: {x: tempPiece.position.x, y: tempPiece.position.y},
+                pieceType: tempPiece.pieceType
+            })
+        }
+        drawPreviewPiece()
+    }
+
+    function updatePlayerPiece(pieceType) {
+        if (player.piece === null) {
+            player.piece = getTetromino(pieceType)[player.rotation];
+        }
+
+    }
+
+    let lastFall = 0;
+    const fallInterval = 1000;
+
+    function update(time = 0) {
+        if (!lastFall) lastFall = time;
+        const deltaTime = time - lastFall;
+
+        if (deltaTime > fallInterval) {
+            fall();
+            lastFall = time;
+        }
+
+        if (chechTopLine()) {
+            console.log("Game Over");
+            player.position.y = 120
+            player.gamePhase = 1
+
+        }
+        // console.log(player.pieceType)
+        updatePlayerPiece(player.pieceType);
+        //drawTetronimo(player.piece, player.position);
+        drawGameBoard();
+        checkFullLine()
+        requestAnimationFrame(update);
+
+
+    }
+
+    function checkFullLine() {
+        let checkArray = []
+        gameBoard.grid.forEach((row, y) => {
+            let check = true;
+            row.forEach((value, x) => {
+
+                if (value === 0) {
+                    check = false
+                }
+
+
+            })
+
+            if (check) {
+                checkArray.push(y)
+            }
 
 
         })
 
-        if(check){
-            checkArray.push(y)
+        removeFullLine(checkArray)
+    }
+
+    function chechTopLine() {
+        for (let i = 0; i < gameBoard.width; i++) {
+
+
+            if (gameBoard.grid[4][i] !== 0)
+                return true
+        }
+        return false
+    }
+
+
+    function removeFullLine(removeArray) {
+        removeArray = removeArray.toSorted()
+        for (let i = 0; i < removeArray.length; i++) {
+            for (let i2 = removeArray[i]; i2 > 0; i2--) {
+
+                gameBoard.grid[i2] = gameBoard.grid[i2 - 1].slice()
+            }
         }
 
-
-
-
-    })
-
-    removeFullLine(checkArray)
-}
-function chechTopLine() {
-    for (let i = 0; i < gameBoard.width; i++) {
-
-
-
-    if (gameBoard.grid[4][i] !== 0)
-        return true
-}
-return false
-}
-
-
-function removeFullLine(removeArray){
-removeArray = removeArray.toSorted()
-for(let i = 0;i<removeArray.length;i++) {
-    for (let i2 = removeArray[i]; i2 > 0; i2--) {
-
-    gameBoard.grid[i2] = gameBoard.grid[i2-1].slice()
     }
-}
-
-}
 
 
+    function fall() {
+        player.position.y += 1;
+        if (pieceCollided(player.piece, player.position)) {
+            player.position.y -= 1;
+            freezePiece();
 
 
-
-function fall(){
-    player.position.y += 1;
-    if(pieceCollided(player.piece,player.position)){
-        player.position.y -= 1;
-        freezePiece();
-
-
-        spawnNewPiece(queue.shift());
+            spawnNewPiece(queue.shift());
+        }
+        //player.position.y = Math.min(player.position.y, gameBoard.height - getTetrominoHeight(player.piece));
     }
-    //player.position.y = Math.min(player.position.y, gameBoard.height - getTetrominoHeight(player.piece));
-}
-function randomPieceGenerator (play){
-    play.pieceType = getRandomPieceType();
-    play.piece = getTetromino(play.pieceType)[player.rotation];
-    play.position = {x: 4, y: 0};
 
-}
-
-function holdPiece(matrix){
-    if(heldPiece==null) {
-        heldPiece = matrix
-        drawHeldPiece(heldPiece)
-
-
-
-
-        spawnNewPiece(queue.shift())
+    function randomPieceGenerator(play) {
+        play.pieceType = getRandomPieceType();
+        play.piece = getTetromino(play.pieceType)[player.rotation];
+        play.position = {x: 4, y: 0};
 
     }
-    else{
-        queue[0].piece=player.piece
-        temp=player.piece
-        player.piece=heldPiece
-        heldPiece=temp
-        clearCanvas(context2)
-        drawHeldPiece(matrix)
+
+    function holdPiece(matrix) {
+        if (heldPiece == null) {
+            heldPiece = matrix
+            drawHeldPiece(heldPiece)
 
 
+            spawnNewPiece(queue.shift())
+
+        } else {
+            queue[0].piece = player.piece
+            temp = player.piece
+            player.piece = heldPiece
+            heldPiece = temp
+            clearCanvas(context2)
+            drawHeldPiece(matrix)
+
+
+        }
+        holdBoolean = 1
+    }
+
+    function rotatePiece(matrix) {
+        player.rotation++
+        if (player.rotation >= 4) {
+            player.rotation = 0
+        }
+        player.piece = getTetromino(player.pieceType)[player.rotation]
 
     }
-    holdBoolean=1
-}
 
-function rotatePiece(matrix){
-    player.rotation++
-    if(player.rotation>=4){
-        player.rotation=0
+    function rotatePieceMirror(matrix) {
+        player.rotation--
+        if (player.rotation < 0) {
+            player.rotation = 3
+        }
+        player.piece = getTetromino(player.pieceType)[player.rotation]
+
     }
-    player.piece = getTetromino(player.pieceType)[player.rotation]
 
-}
+    function pieceCollided(piece, position) {
 
-function rotatePieceMirror(matrix){
-    player.rotation--
-    if(player.rotation<0){
-        player.rotation=3
-    }
-    player.piece = getTetromino(player.pieceType)[player.rotation]
+        // let xCount = 0
+        // let yCount = 0
+        // for (let y = 0; y < piece.length; y++) {
+        //     let check = false
+        //     for (let x = 0; x < piece[y].length; x++) {
+        //         if(check ===true&&piece[y][x] !== 0){
+        //             yCount++
+        //         }
+        //
+        //     }}
 
-}
+        for (let y = 0; y < piece.length; y++) {
+            for (let x = 0; x < piece[y].length; x++) {
+                if (piece[y][x] !== 0) {
+                    let boardX = position.x + x;
+                    let boardY = position.y + y;
+                    // console.log((position.x+x)+":"+position.y)
 
-function pieceCollided(piece,position) {
+                    // Check if the piece is outside the game board horizontally or has reached the bottom
+                    if (boardX < 0 || boardX >= gameBoard.width || boardY >= gameBoard.height) {
+                        return true;
+                    }
 
-    // let xCount = 0
-    // let yCount = 0
-    // for (let y = 0; y < piece.length; y++) {
-    //     let check = false
-    //     for (let x = 0; x < piece[y].length; x++) {
-    //         if(check ===true&&piece[y][x] !== 0){
-    //             yCount++
-    //         }
-    //
-    //     }}
-
-    for (let y = 0; y < piece.length; y++) {
-        for (let x = 0; x < piece[y].length; x++) {
-            if (piece[y][x] !== 0) {
-                let boardX = position.x + x;
-                let boardY = position.y + y;
-                // console.log((position.x+x)+":"+position.y)
-
-                // Check if the piece is outside the game board horizontally or has reached the bottom
-                if (boardX < 0 || boardX >= gameBoard.width || boardY >= gameBoard.height) {
-                    return true;
-                }
-
-                // Prevent accessing gameBoard.grid[boardY] if boardY is out of bounds
-                // This also implicitly checks if boardY is below the bottom of the game board
-                if (boardY < 0 || !gameBoard.grid[boardY] || gameBoard.grid[boardY][boardX] !== 0) {
-                    return true;
+                    // Prevent accessing gameBoard.grid[boardY] if boardY is out of bounds
+                    // This also implicitly checks if boardY is below the bottom of the game board
+                    if (boardY < 0 || !gameBoard.grid[boardY] || gameBoard.grid[boardY][boardX] !== 0) {
+                        return true;
+                    }
                 }
             }
         }
+        return false;
     }
-    return false;
-}
 
-function freezePiece(){
-    if(player.gamePhase===0){
-    player.piece.forEach((row, y) => {
-        row.forEach((value, x) => {
-            if (value !== 0) {
-                gameBoard.grid[y + player.position.y][x + player.position.x] = value;
-            }
-        });
-    });}
-    //TODO: check for completed lines.
-}
+    function freezePiece() {
+        if (player.gamePhase === 0) {
+            player.piece.forEach((row, y) => {
+                row.forEach((value, x) => {
+                    if (value !== 0) {
+                        gameBoard.grid[y + player.position.y][x + player.position.x] = value;
+                    }
+                });
+            });
+        }
+        //TODO: check for completed lines.
+    }
 
-function spawnNewPiece(piece){
-    if(player.gamePhase === 0){
-console.log(piece)
-    player.rotation=0
-    player.piece = piece.piece
-    player.position= piece.position
-    player.pieceType=piece.pieceType
+    function spawnNewPiece(piece) {
+        if (player.gamePhase === 0) {
+            console.log(piece)
+            player.rotation = 0
+            player.piece = piece.piece
+            player.position = piece.position
+            player.pieceType = piece.pieceType
 
- randomPieceGenerator(tempPiece)
-    queue.push({piece:tempPiece.piece,position:{x:tempPiece.position.x,y:tempPiece.position.y},pieceType: tempPiece.pieceType})
-    holdBoolean=0
+            randomPieceGenerator(tempPiece)
+            queue.push({
+                piece: tempPiece.piece,
+                position: {x: tempPiece.position.x, y: tempPiece.position.y},
+                pieceType: tempPiece.pieceType
+            })
+            holdBoolean = 0
 
-    clearCanvas(context3)
-    drawPreviewPiece()
-    //    if (chechTopLine()){
-      //  player.position.y=120
+            clearCanvas(context3)
+            drawPreviewPiece()
+            //    if (chechTopLine()){
+            //  player.position.y=120
 
-        //player.gamePhase=1
-        //console.log("gamephase1")
-    //}
+            //player.gamePhase=1
+            //console.log("gamephase1")
+            //}
 
-}}
+        }
+    }
 
-const tetrominoTypes = ["T", "L", "J", "S", "Z", "O", "I"];
-function getRandomPieceType() {
-    const index = Math.floor(Math.random() * tetrominoTypes.length);
-    return tetrominoTypes[index];
-}
+    const tetrominoTypes = ["T", "L", "J", "S", "Z", "O", "I"];
 
-function drawGameBoard() {
-    context.fillStyle = "#000";
-    context.fillRect(0, 5, canvas.clientWidth, canvas.height);
-    context.fillStyle = "#fff";
-    context.fillRect(0, 0, canvas.clientWidth, 5);
-    // Draw the static pieces
-    gameBoard.grid.forEach((row, y) => {
-        row.forEach((value, x) => {
-            if(value !== 0){
-                if(value === 1){
-                    context.fillStyle = "red";
-                } else if(value === 2){
-                    context.fillStyle = "blue";
-                } else if(value === 3){
-                    context.fillStyle = "green";
-                } else if(value === 4){
-                    context.fillStyle = "yellow";
-                } else if(value === 5){
-                    context.fillStyle = "orange";
-                } else if(value === 6){
-                    context.fillStyle = "cyan";
-                } else if(value === 7){
-                    context.fillStyle = "pink";
+    function getRandomPieceType() {
+        const index = Math.floor(Math.random() * tetrominoTypes.length);
+        return tetrominoTypes[index];
+    }
+
+    function drawGameBoard() {
+        context.fillStyle = "#000";
+        context.fillRect(0, 5, canvas.clientWidth, canvas.height);
+        context.fillStyle = "#fff";
+        context.fillRect(0, 0, canvas.clientWidth, 5);
+        // Draw the static pieces
+        gameBoard.grid.forEach((row, y) => {
+            row.forEach((value, x) => {
+                if (value !== 0) {
+                    if (value === 1) {
+                        context.fillStyle = "red";
+                    } else if (value === 2) {
+                        context.fillStyle = "blue";
+                    } else if (value === 3) {
+                        context.fillStyle = "green";
+                    } else if (value === 4) {
+                        context.fillStyle = "yellow";
+                    } else if (value === 5) {
+                        context.fillStyle = "orange";
+                    } else if (value === 6) {
+                        context.fillStyle = "cyan";
+                    } else if (value === 7) {
+                        context.fillStyle = "pink";
+                    }
+                    context.fillRect(x, y, 1, 1);
                 }
-                context.fillRect(x, y, 1, 1);
-            }
+            });
         });
-    });
 
-    // Draw the moving piece
-    if (player.piece) {
-        if(player.gamePhase==0)
-        dropShadow();
-        drawTetromino(player.piece, player.position,context);
+        // Draw the moving piece
+        if (player.piece) {
+            if (player.gamePhase == 0)
+                dropShadow();
+            drawTetromino(player.piece, player.position, context);
 
+        }
     }
-}
-function clearCanvas(context) {
-    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-}
-function drawHeldPiece(matrix){
 
-    drawTetromino(matrix,{x: 2, y: 2},context2)
-}
+    function clearCanvas(context) {
+        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+    }
 
-function drawPreviewPiece(){
+    function drawHeldPiece(matrix) {
 
-    for(let i =0;i<queue.length;i++){
-    drawTetromino(queue[i].piece,{x: 2, y: 2+(5*i)},context3)}
-}
+        drawTetromino(matrix, {x: 2, y: 2}, context2)
+    }
 
-initializeGameBoard();
+    function drawPreviewPiece() {
 
-if(player.gamePhase===0)
-update();
-else
-    console.log("Game Over");
+        for (let i = 0; i < queue.length; i++) {
+            drawTetromino(queue[i].piece, {x: 2, y: 2 + (5 * i)}, context3)
+        }
+    }
 
+    initializeGameBoard();
+
+    if (player.gamePhase === 0)
+        update();
+
+    else {
+        console.log("Game Over");
+    }
 
