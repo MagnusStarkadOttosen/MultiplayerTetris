@@ -38,16 +38,16 @@ document.addEventListener("keydown", event => {
         } else if (event.key === "ArrowDown" || event.key === "s") {
             fall()
         } else if (event.key === "q") {
-            player.piece = rotatePieceMirror(player.piece);
+            rotatePieceMirror(player.piece);
             if (pieceCollided(player.piece, player.position)) {
-                player.piece = rotatePiece(player.piece);
+                rotatePiece(player.piece);
             }
             // shadow.piece = rotatePieceMirror(shadow.piece)
 
         } else if (event.key === "e" || event.key === "ArrowUp") {
-            player.piece = rotatePiece(player.piece);
+            rotatePiece(player.piece);
             if (pieceCollided(player.piece, player.position)) {
-                player.piece = rotatePieceMirror(player.piece);
+                rotatePieceMirror(player.piece);
             }
 
             // shadow.piece = rotatePiece(shadow.piece)
@@ -450,6 +450,7 @@ document.addEventListener("keydown", event => {
         if (player.rotation >= 4) {
             player.rotation = 0
         }
+
         player.piece = getTetromino(player.pieceType)[player.rotation]
 
     }
@@ -476,6 +477,7 @@ document.addEventListener("keydown", event => {
         //
         //     }}
 
+        console.log("check "+ player.piece)
         for (let y = 0; y < piece.length; y++) {
             for (let x = 0; x < piece[y].length; x++) {
                 if (piece[y][x] !== 0) {
