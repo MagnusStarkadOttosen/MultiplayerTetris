@@ -207,7 +207,7 @@ document.addEventListener("keydown", event => {
                 ];
                 break;
             default:
-                throw new Error("Invalid Tetromino type!");
+                throw new Error("Invalid Tetromino type!"+piece);
         }
         return result;
     }
@@ -550,12 +550,24 @@ function endGame (newhighScores){
 
         }
     }
-
     const tetrominoTypes = ["T", "L", "J", "S", "Z", "O", "I"];
+    let set = ["T", "L", "J", "S", "Z", "O", "I"];
 
-    function getRandomPieceType() {
-        const index = Math.floor(Math.random() * tetrominoTypes.length);
-        return tetrominoTypes[index];
+
+
+
+function getRandomPieceType() {
+    if(set.length==0)
+        set=["T", "L", "J", "S", "Z", "O", "I"];
+
+        console.log("sets",set)
+    console.log("tetrominoTypes",tetrominoTypes)
+
+        const index = Math.floor(Math.random() * set.length);
+        let value = set[index]
+        set.splice(    index,1)
+
+        return value;
     }
 
     function drawGameBoard() {
