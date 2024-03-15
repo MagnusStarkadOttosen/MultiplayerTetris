@@ -13,6 +13,7 @@ context3.scale(20,20);
 
 heldPiece= null;
 
+
 holdBoolean=0
 const player = {
     position: {x:0,y:0},
@@ -230,6 +231,11 @@ document.addEventListener("keydown", event => {
 
     }
 
+function endGame (newhighScores){
+    const highscoresElement = document.getElementById("highscore") ;
+    highscoresElement.textContent = newhighScores;
+}
+
     function dropShadow() {
         shadow.piece = []
         for (let i = 0; i < player.piece.length; i++)
@@ -344,7 +350,8 @@ document.addEventListener("keydown", event => {
         }
 
         if (chechTopLine()) {
-            console.log("Game Over");
+            setGameOverMsg("Game over")
+
             player.position.y = 120
             player.gamePhase = 1
 
@@ -425,6 +432,8 @@ document.addEventListener("keydown", event => {
     }
 
     function holdPiece(matrix) {
+        setGameOverMsg("Game over")
+
         if (heldPiece == null) {
             heldPiece = matrix
             drawHeldPiece(heldPiece)
@@ -586,7 +595,10 @@ document.addEventListener("keydown", event => {
 
         }
     }
-
+function setGameOverMsg (msg){
+    const gameOverElement = document.getElementById("gameOverMsg") ;
+    gameOverElement.textContent = msg;
+}
     function clearCanvas(context) {
         context.clearRect(0, 0, context.canvas.width, context.canvas.height);
     }
@@ -604,11 +616,9 @@ document.addEventListener("keydown", event => {
     }
 
     initializeGameBoard();
+    update();
 
-    if (player.gamePhase === 0)
-        update();
 
-    else {
-        console.log("Game Over");
-    }
+
+
 
