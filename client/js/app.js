@@ -11,7 +11,10 @@ context.scale(20,20);
 context2.scale(20,20);
 context3.scale(20,20);
 
-heldPiece= null;
+let heldPiece= {
+    piece: null,
+    pieceType: "T"
+}
 
 
 holdBoolean=0
@@ -57,7 +60,7 @@ document.addEventListener("keydown", event => {
             instantDrop();
 
         } else if (event.key === "c" && holdBoolean == 0) {
-            holdPiece(player.piece)
+            holdPiece(player.piece,player.pieceType)
 
 
         }
@@ -431,12 +434,12 @@ function endGame (newhighScores){
 
     }
 
-    function holdPiece(matrix) {
-        setGameOverMsg("Game over")
+    function holdPiece(matrix,type) {
 
-        if (heldPiece == null) {
-            heldPiece = matrix
-            drawHeldPiece(heldPiece)
+        if (heldPiece.piece == null) {
+            heldPiece.piece = matrix
+            heldPiece.pieceType=type
+            drawHeldPiece(heldPiece.piece)
 
 
             spawnNewPiece(queue.shift())
@@ -444,8 +447,11 @@ function endGame (newhighScores){
         } else {
             queue[0].piece = player.piece
             temp = player.piece
-            player.piece = heldPiece
-            heldPiece = temp
+            tem2= player.pieceType
+            player.piece = heldPiece.piece
+            player.pieceType=heldPiece.pieceType
+            heldPiece.piece = temp
+            heldPiece.pieceType= tem2
             clearCanvas(context2)
             drawHeldPiece(matrix)
 
@@ -617,13 +623,13 @@ function setGameOverMsg (msg){
 
     function drawHeldPiece(matrix) {
 
-        drawTetromino(matrix, {x: 2, y: 2}, context2)
+        drawTetromino(matrix, {x: 1, y: 2}, context2)
     }
 
     function drawPreviewPiece() {
 
         for (let i = 0; i < queue.length; i++) {
-            drawTetromino(queue[i].piece, {x: 2, y: 2 + (5 * i)}, context3)
+            drawTetromino(queue[i].piece, {x: 1, y: 2 + (5 * i)}, context3)
         }
     }
 
