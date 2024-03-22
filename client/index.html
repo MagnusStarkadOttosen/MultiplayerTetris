@@ -1,53 +1,92 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
-    <title>Tetris</title>
-    <style>
-        body{
-            background-color: #ffcccc;
-        }
-
-        canvas{
-            margin: 20px; /* Add some margin between canvases */
-            border: 2px solid black;        }
-
-
-        .holdBox {
-            border: 2px solid green;
-            border-radius: 10px;
-
-        }
-        .screen-container{
-            display: grid;
-            grid-template-columns: auto auto auto;
-            margin-right: auto;
-        }
-
-
-
-
-    </style>
+    <meta charset="UTF-8">
+    <title>Title</title>
 </head>
 <body>
-<div id="section 2"></div>
-<div class="screen-container">
-    <h2>Hold      </h2>
-    <h2> <span id="gameOverMsg">  </span>    </h2>
-    <h2> Preview   </h2>
-</div>
+    <style>
+        .button{
+            border-radius: 5px;
+            width: 240px;
+            height: 30px;
 
-    <div class="screen-container">
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-    <canvas id="hold" width="120" height="150" class="holdBox"></canvas >
-    <canvas id="tetris" width="200" height="500" class="tetrisGame" ></canvas >
-    <canvas id="preview" width="120" height="500" class="pre"></canvas >
+        .inputBox{
+            width: 250px;
+            padding: 8px 12px;
+            font-size: 16px;
+            border: 1px solid #ced4da;
+            box-shadow: 0 0 4px #00000019;
+            border-radius: 5px;
+            margin: 10px;
+        }
+
+
+
+        #menu{
+            padding-top: 160px;
+            text-align: center;
+        }
+        body{
+            background-color: #ffcccc;
+
+        }
+
+    </style>
+
+    <!-- Here we have our tetris title -->
+    <img src="/public/images/tetrisTitle.png" alt="Tetris" />
+
+
+
+    <!-- Here we have our Menu options -->
+
+    <div id="menu">
+        <br>
+        <button class="button" onclick="window.location.href = 'tetris.html'">Play</button>
+
+
+        </button>
+        <br/>
+        <button class="button"> Join game </button>
+        <br>
+        <button class="button"> Create game </button>
+        <br/>
 
     </div>
 
-    <script src="js/app.js"></script>
+
+    <!-- here we take out user input -->
+
+    <input class="inputBox" name="Lobby name" type="text" placeholder="Lobby name"></input>
+    <select id="lobbyName" class="inputBox">
+        <option value="lobby1">Lobby 1</option>
+        <option value="lobby2">Lobby 2</option>
+        <option value="lobby3">Lobby 3</option>
+    </select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 </body>
-
 </html>
