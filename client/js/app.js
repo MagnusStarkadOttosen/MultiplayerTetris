@@ -524,6 +524,12 @@ function getRandomPieceType() {
     return tetrominoTypes[index];
 }
 
+// function getRandomPieceSet(){
+//     const in
+//
+// }
+
+
 function drawGameBoard() {
       context.fillStyle = "#000";
     context.fillRect(0, 0, canvas.clientWidth, canvas.height);
