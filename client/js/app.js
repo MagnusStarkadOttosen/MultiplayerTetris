@@ -1,3 +1,4 @@
+
 const canvas = document.getElementById('tetris');
 const canvas2 = document.getElementById('hold');
 const canvas3 = document.getElementById('preview');
@@ -11,10 +12,18 @@ context.scale(20,20);
 context2.scale(20,20);
 context3.scale(20,20);
 
+const gameBoard = {
+    width: 10,
+    height: 20,
+    grid: []
+};
+
+
 heldPiece= null;
 
 holdBoolean=0
 
+//
 
 document.addEventListener("keydown", event => {
     if(event.key === "ArrowLeft" || event.key === "a"){
@@ -126,8 +135,6 @@ function instantDrop() {
     player.position.y -= 1;
     freezePiece();
     spawnNewPiece(queue.shift());
-
-
 }
 
 function dropShadow(){
@@ -149,34 +156,70 @@ function dropShadow(){
     drawTetromino(shadow.piece,shadow.position,context);
 
 }
-
+function drawBlock(x,y,value,offset,ctx){
+    let gradient = ctx.createLinearGradient(
+        x+offset.x,
+        y+offset.y,
+        x+offset.x+1, 
+        y+offset.y+1);
+    if(value === 1){
+        gradient.addColorStop(1, '#FF6347');
+        gradient.addColorStop(0, '#8B0000');
+          ctx.fillStyle = "red";
+    } else if(value === 2){
+        ctx.fillStyle = "blue";
+        gradient.addColorStop(1, '#87CEFA');
+        gradient.addColorStop(0, '#00008B');
+        
+    } else if(value === 3){
+        ctx.fillStyle = "green";
+        gradient.addColorStop(1, '#90EE90');
+        gradient.addColorStop(0, '#006400');
+        
+    } else if(value === 4){
+        ctx.fillStyle = "yellow";
+        gradient.addColorStop(1, '#FFFF99');
+        gradient.addColorStop(0, '#CCCC00');
+        
+    } else if(value === 5){
+        ctx.fillStyle = "orange";
+        gradient.addColorStop(1, '#FFBD45');
+        gradient.addColorStop(0, '#FF8C00');
+        
+    } else if(value === 6){
+        ctx.fillStyle = "cyan";
+        gradient.addColorStop(1, '#E0FFFF');
+        gradient.addColorStop(0, '#008B8B');
+        
+    } else if(value === 7){
+        ctx.fillStyle = "purple";
+        gradient.addColorStop(1, '#d8b0d1');
+        gradient.addColorStop(0, '#6a0dad'); 
+        
+    }else if(value === 8){
+        ctx.fillStyle = "grey";
+        ctx.globalAlpha = 0.5;
+    }
+    ctx.fillStyle = gradient;
+    ctx.fillRect(x + offset.x, y + offset.y, 1, 1);
+                
+    ctx.lineWidth = 0.05;
+    ctx.strokeStyle = "black";
+}
+// to player's peices
+   
 
 function drawTetromino(piece, offset,ctx){
-    //context.fillStyle = "#000";
-   // context.fillRect(0,0, canvas.clientWidth, canvas.height);
+
+   ctx.shadowOffsetX = 10; 
+   ctx.shadowOffsetY = 10;
+   ctx.shadowBlur = 15; 
 
     piece.forEach((row, y) => {
         row.forEach((value, x) => {
             if(value !== 0){
-                if(value === 1){
-                     ctx.fillStyle = "red";
-                } else if(value === 2){
-                    ctx.fillStyle = "blue";
-                } else if(value === 3){
-                    ctx.fillStyle = "green";
-                } else if(value === 4){
-                    ctx.fillStyle = "yellow";
-                } else if(value === 5){
-                    ctx.fillStyle = "orange";
-                } else if(value === 6){
-                    ctx.fillStyle = "cyan";
-                } else if(value === 7){
-                    ctx.fillStyle = "pink";
-                }else if(value === 8){
-                    ctx.fillStyle = "grey";
-                    ctx.globalAlpha = 0.5;
-                }
-                ctx.fillRect(x + offset.x, y + offset.y, 1, 1);
+                drawBlock(x,y,value,offset,ctx);
+                
             }
         });
     });
@@ -187,6 +230,7 @@ const player = {
     piece: null,
     pieceType: "T",
     gamePhase: 0,
+    score:0,
 
 }
 const queue = []
@@ -205,11 +249,7 @@ const shadow = {
     piece: null,
 }
 
-const gameBoard = {
-    width: 10,
-    height: 20,
-    grid: []
-};
+
 
 function initializeGameBoard() {
     for (let row = 0; row < gameBoard.height; row++) {
@@ -259,16 +299,11 @@ function checkFullLine(){
         check = false
     }
 
-
-
         })
 
         if(check){
             checkArray.push(y)
         }
-
-
-
 
     })
 
@@ -286,15 +321,14 @@ removeArray = removeArray.toSorted()
 for(let i = 0;i<removeArray.length;i++) {
     for (let i2 = removeArray[i]; i2 > 0; i2--) {
 
-    gameBoard.grid[i2] = gameBoard.grid[i2-1].slice()
+    gameBoard.grid[i2] = gameBoard.grid[i2-1].slice().fill(0);
+    gameBoard.grid.unshift(row);
+        y++;
+        player.score +=rowCount*10;
+        rowCount *=2;
     }
 }
-
 }
-
-
-
-
 
 function fall(){
     player.position.y += 1;
@@ -319,9 +353,6 @@ function holdPiece(matrix){
         heldPiece = matrix
         drawHeldPiece(heldPiece)
 
-
-
-
         spawnNewPiece(queue.shift())
 
     }
@@ -332,8 +363,6 @@ function holdPiece(matrix){
         heldPiece=temp
         clearCanvas(context2)
         drawHeldPiece(matrix)
-
-
 
     }
     holdBoolean=1
@@ -408,29 +437,33 @@ function getRandomPieceType() {
 }
 
 function drawGameBoard() {
-      context.fillStyle = "#000";
+    
+    context.shadowColor = 'transparent';
+    context.fillStyle = "#000000";
     context.fillRect(0, 0, canvas.clientWidth, canvas.height);
+    // Draw the grid lines (optional)
+    context.strokeStyle = "#f0f1f5"; // New grid line color
+    context.lineWidth = 0.05;
+    for (let i = 0; i <= gameBoard.width; i++) {
+        context.beginPath();
+        context.moveTo(i, 0);
+        context.lineTo(i, gameBoard.height);
+        context.stroke();
+    }
+    for (let i = 0; i <= gameBoard.height; i++) {
+        context.beginPath();
+        context.moveTo(0, i);
+        context.lineTo(gameBoard.width, i);
+        context.stroke();
+    }
 
-    // Draw the static pieces
+    // // Draw the static pieces
+
     gameBoard.grid.forEach((row, y) => {
         row.forEach((value, x) => {
             if(value !== 0){
-                if(value === 1){
-                    context.fillStyle = "red";
-                } else if(value === 2){
-                    context.fillStyle = "blue";
-                } else if(value === 3){
-                    context.fillStyle = "green";
-                } else if(value === 4){
-                    context.fillStyle = "yellow";
-                } else if(value === 5){
-                    context.fillStyle = "orange";
-                } else if(value === 6){
-                    context.fillStyle = "cyan";
-                } else if(value === 7){
-                    context.fillStyle = "pink";
-                }
-                context.fillRect(x, y, 1, 1);
+                drawBlock(x,y,value,{x:0,y:0},context);
+               
             }
         });
     });
