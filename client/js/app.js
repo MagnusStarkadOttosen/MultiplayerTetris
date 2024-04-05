@@ -343,7 +343,7 @@ function endGame (newhighScores){
     }
 
     let lastFall = 0;
-    const fallInterval = 1000;
+    let fallInterval = 1000;
 
     function update(time = 0) {
         if (!lastFall) lastFall = time;
@@ -440,7 +440,7 @@ function endGame (newhighScores){
     function holdPiece(matrix,type) {
 
         if (heldPiece.piece == null) {
-            heldPiece.piece = matrix
+            heldPiece.piece = getTetromino(type)[0]
             heldPiece.pieceType=type
             drawHeldPiece(heldPiece.piece)
 
@@ -448,19 +448,23 @@ function endGame (newhighScores){
             spawnNewPiece(queue.shift())
 
         } else {
-            queue[0].piece = player.piece
-            temp = player.piece
+            temp = getTetromino(player.pieceType)[0]
             tem2= player.pieceType
             player.piece = heldPiece.piece
             player.pieceType=heldPiece.pieceType
             heldPiece.piece = temp
             heldPiece.pieceType= tem2
+
             clearCanvas(context2)
-            drawHeldPiece(matrix)
+            drawHeldPiece(heldPiece.piece)
 
 
         }
         holdBoolean = 1
+    }
+    function increaseFallspeed(){
+        fallInterval= fallInterval-10
+
     }
 
     function rotatePiece(matrix) {
