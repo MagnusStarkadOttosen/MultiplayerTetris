@@ -11,13 +11,8 @@ context.scale(20,20);
 context2.scale(20,20);
 context3.scale(20,20);
 
-let heldPiece= {
-    piece: null,
-    pieceType: "T"
-}
 
 
-holdBoolean=0
 const player = {
     position: {x:0,y:0},
     piece: null,
@@ -25,6 +20,10 @@ const player = {
     gamePhase: 0,
     rotation: 0,
     pieceMoved: true,
+    level:0,
+    holdBoolean:0,
+    Heldpiece: null,
+    HeldpieceType: "T"
 
 }
 
@@ -60,7 +59,7 @@ document.addEventListener("keydown", event => {
             console.log(queue)
             instantDrop();
 
-        } else if (event.key === "c" && holdBoolean == 0) {
+        } else if (event.key === "c" && player.holdBoolean == 0) {
             holdPiece(player.piece,player.pieceType)
 
 
@@ -230,6 +229,7 @@ document.addEventListener("keydown", event => {
         }
         player.position.y -= 1;
         freezePiece();
+        checkFullLine();
         spawnNewPiece(queue.shift());
 
 
@@ -350,6 +350,7 @@ function endGame (newhighScores){
         const deltaTime = time - lastFall;
 
         if (deltaTime > fallInterval) {
+
             fall();
             lastFall = time;
         }
@@ -359,13 +360,14 @@ function endGame (newhighScores){
 
             player.position.y = 120
             player.gamePhase = 1
+            throw new Error('Game is over!');
+
 
         }
         // console.log(player.pieceType)
         updatePlayerPiece(player.pieceType);
         //drawTetronimo(player.piece, player.position);
         drawGameBoard();
-        checkFullLine()
         requestAnimationFrame(update);
 
 
@@ -392,6 +394,7 @@ function endGame (newhighScores){
         })
 
         removeFullLine(checkArray)
+
     }
 
     function chechTopLine() {
@@ -406,6 +409,7 @@ function endGame (newhighScores){
 
 
     function removeFullLine(removeArray) {
+        player.level=player.level+1;
         removeArray = removeArray.toSorted()
         for (let i = 0; i < removeArray.length; i++) {
             for (let i2 = removeArray[i]; i2 > 0; i2--) {
@@ -413,7 +417,8 @@ function endGame (newhighScores){
                 gameBoard.grid[i2] = gameBoard.grid[i2 - 1].slice()
             }
         }
-
+        increaseFallspeed()
+        console.log("testing fall interval"+fallInterval)
     }
 
 
@@ -422,6 +427,7 @@ function endGame (newhighScores){
         if (pieceCollided(player.piece, player.position)) {
             player.position.y -= 1;
             freezePiece();
+            checkFullLine()
 
 
             spawnNewPiece(queue.shift());
@@ -439,10 +445,10 @@ function endGame (newhighScores){
 
     function holdPiece(matrix,type) {
 
-        if (heldPiece.piece == null) {
-            heldPiece.piece = getTetromino(type)[0]
-            heldPiece.pieceType=type
-            drawHeldPiece(heldPiece.piece)
+        if (player.Heldpiece == null) {
+            player.Heldpiece = getTetromino(type)[0]
+            player.HeldpieceType=type
+            drawHeldPiece(player.Heldpiece)
 
 
             spawnNewPiece(queue.shift())
@@ -450,20 +456,21 @@ function endGame (newhighScores){
         } else {
             temp = getTetromino(player.pieceType)[0]
             tem2= player.pieceType
-            player.piece = heldPiece.piece
-            player.pieceType=heldPiece.pieceType
-            heldPiece.piece = temp
-            heldPiece.pieceType= tem2
+            player.piece =player.Heldpiece
+            player.pieceType=player.HeldpieceType
+            player.Heldpiece = temp
+            player.HeldpieceType= tem2
 
             clearCanvas(context2)
-            drawHeldPiece(heldPiece.piece)
+            drawHeldPiece(player.Heldpiece)
 
 
         }
-        holdBoolean = 1
+        player.holdBoolean = 1
     }
     function increaseFallspeed(){
-        fallInterval= fallInterval-10
+        if(player.level % 10==0)
+        fallInterval= fallInterval-70
 
     }
 
@@ -550,7 +557,7 @@ function endGame (newhighScores){
                 position: {x: tempPiece.position.x, y: tempPiece.position.y},
                 pieceType: tempPiece.pieceType
             })
-            holdBoolean = 0
+            player.holdBoolean = 0
 
             clearCanvas(context3)
             drawPreviewPiece()
