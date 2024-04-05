@@ -341,7 +341,7 @@ function endGame (newhighScores){
     }
 
     let lastFall = 0;
-    const fallInterval = 1000;
+    let fallInterval = 1000;
 
     function update(time = 0) {
         if (!lastFall) lastFall = time;
@@ -458,6 +458,10 @@ function endGame (newhighScores){
 
         }
         holdBoolean = 1
+    }
+    function increaseFallspeed(){
+        fallInterval= fallInterval-10
+
     }
 
     function rotatePiece(matrix) {
