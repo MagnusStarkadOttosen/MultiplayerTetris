@@ -1,8 +1,7 @@
 class GameController {
     constructor(io) {
         this.io = io;
-        this.players = {
-        };
+        this.players = {};
         this.gameBoard = { //Creates a 2D array with the given size
             width: 10,
             height: 20,
@@ -19,7 +18,21 @@ class GameController {
     }
 
     addPlayer(socketId) {
-        //Initialize player state
+
+        //TODO: add generate a list of pieces
+        //generatePieceList();
+
+        this.players[socketId] = {
+            position: {x:0, y:0},
+            rotation: 0,
+            currentPiece: "T", //need to be generated
+            holdPiece: null,
+            nextPieces: ["L", "J", "O"], //need to be a list generated
+            points: 0,
+            level: 0,
+            speed: 48,
+        }
+        this.broadcastState();
     }
 
     removePlayer(socketId) {
@@ -40,7 +53,7 @@ class GameController {
         }
 
         if (!this.pieceCollided(player.currentPiece, newPosition)) {
-            updatePlayerPiece(player.currentPiece, player.position, newPosition);
+            this.updatePlayerPiece(player.currentPiece, player.position, newPosition);
             player.position = newPosition;
             this.broadcastState();
         }
@@ -53,18 +66,20 @@ class GameController {
         newPosition.y += 1;
 
         if (!this.pieceCollided(player.currentPiece, newPosition)) {
-            updatePlayerPiece(player.currentPiece, player.position, newPosition);
+            this.updatePlayerPiece(player.currentPiece, player.position, newPosition);
             player.position = newPosition;
             this.broadcastState();
         } else{
-            //Freeze player
-            //Check clear line
+            this.placePiece(player.position, player.currentPiece);
+            this.checkForLineClears();
+
+            this.broadcastState();
         }
     }
 
     updatePiecePosition(piece, oldPosition, newPosition) {
         //Clear the piece's old position
-        clearPiece(oldPosition, piece);
+        this.clearPiece(oldPosition, piece);
         //Place the piece on the board
         this.placePiece(newPosition, piece);
     }
@@ -90,8 +105,11 @@ class GameController {
     }
 
     broadcastState() {
-        // Broadcast the updated game state to all connected clients
-        this.io.emit('game-state', this.players);
+        //Broadcast the updated game state to all connected clients
+        this.io.emit('game-state', {
+            this.players,
+            gameBoard: this.gameBoard.grid,
+        });
     }
 
     pieceCollided(piece, position) {
@@ -113,5 +131,22 @@ class GameController {
             }
         }
         return false;
+    }
+
+    checkForLineClears() {
+        let linesCleared = 0;
+        for (let y = 0; y < this.gameBoard.height; y++) {
+            if (this.gameBoard.grid[y].every(value => value !== 0)) {
+                //Remove the full line
+                this.gameBoard.grid.splice(y, 1);
+                //Add an empty line at the top
+                this.gameBoard.grid.unshift(new Array(this.gameBoard.width).fill(0));
+                linesCleared++;
+                y--; //Check the new line at the same position
+            }
+        }
+
+
+        // Increase score based on linesCleared, adjust game speed, etc.
     }
 }
