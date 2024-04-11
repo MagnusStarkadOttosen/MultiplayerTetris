@@ -13,6 +13,8 @@ context3.scale(20,20);
 
 
 
+
+
 const player = {
     position: {x:0,y:0},
     piece: null,
@@ -677,6 +679,8 @@ function setGameOverMsg (msg){
 
         drawTetromino(matrix, {x: 1, y: 2}, context2)
     }
+
+
 
     function drawPreviewPiece() {
 
