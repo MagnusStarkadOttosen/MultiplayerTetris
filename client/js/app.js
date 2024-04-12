@@ -462,6 +462,7 @@ function endGame (newhighScores){
             player.pieceType=player.HeldpieceType
             player.Heldpiece = temp
             player.HeldpieceType= tem2
+            player.position = {x:4,y:0}
 
             clearCanvas(context2)
             drawHeldPiece(player.Heldpiece)
