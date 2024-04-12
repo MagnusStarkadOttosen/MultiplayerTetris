@@ -13,8 +13,11 @@ const io = socketIo(server);
 const clientPath = path.join(__dirname, '..', 'client');
 app.use(express.static(clientPath));
 
+const gameController = new GameController(io);
+
 io.on("connection", (socket) => {
     console.log("A user connected");
+    GameController.addPlayer(socket.id);
 
     socket.on("send-message", (message) => {
         io.emit("receive-message", message);
@@ -23,6 +26,27 @@ io.on("connection", (socket) => {
     socket.on("disconnect", () => {
         console.log('User disconnected');
     });
+
+    socket.on("playerMove", (direction) => {
+        gameController.handlePlayerMove(socket.id, direction);
+    });
+
+    socket.on("playerRotate", (rotationDirection) => {
+        gameController.handlePlayerRotation(socket.id, rotationDirection);
+    });
+
+    socket.on("playerFall", () => {
+
+    });
+
+    socket.on("playerHold", () => {
+
+    });
+
+    socket.on("playerDrop", () => {
+
+    });
+
 });
 
 const PORT = 3000;
