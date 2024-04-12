@@ -355,7 +355,7 @@ function endGame (newhighScores){
 
     const gameBoard = {
         width: 10,
-        height: 25,
+        height: 22,
         grid: []
     };
 
@@ -432,7 +432,7 @@ function endGame (newhighScores){
         })
 
         removeFullLine(checkArray)
-        //createRandomGreyLine()
+        // createRandomGreyLine()
 
     }
 
@@ -440,7 +440,7 @@ function endGame (newhighScores){
         for (let i = 0; i < gameBoard.width; i++) {
 
 
-            if (gameBoard.grid[4][i] !== 0)
+            if (gameBoard.grid[1][i] !== 0)
                 return true
         }
         return false
@@ -448,15 +448,16 @@ function endGame (newhighScores){
 
 
     function removeFullLine(removeArray) {
-        player.level=player.level+1;
         removeArray = removeArray.toSorted()
         for (let i = 0; i < removeArray.length; i++) {
+            player.level=player.level+1;
+            increaseFallspeed()
+
             for (let i2 = removeArray[i]; i2 > 0; i2--) {
 
                 gameBoard.grid[i2] = gameBoard.grid[i2 - 1].slice()
             }
         }
-        increaseFallspeed()
         console.log("testing fall interval"+fallInterval)
     }
 
@@ -697,7 +698,7 @@ function getRandomPieceType() {
 
 function createRandomGreyLine() {
 
-    for (let i2 = 0; i2 < 24; i2++) {
+    for (let i2 = 0; i2 < 21; i2++) {
 
         gameBoard.grid[i2] = gameBoard.grid[i2 + 1].slice()
 
@@ -705,9 +706,9 @@ function createRandomGreyLine() {
     let random =Math.floor(Math.random()*9)
     console.log(random)
     for (let i = 0; i < 10; i++) {
-        gameBoard.grid[24][i] =0
+        gameBoard.grid[21][i] =0
         if( random !== i){
-        gameBoard.grid[24][i] = 8}
+        gameBoard.grid[21][i] = 8}
 
     }
 
