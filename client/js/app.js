@@ -396,6 +396,7 @@ function endGame (newhighScores){
         })
 
         removeFullLine(checkArray)
+        //createRandomGreyLine()
 
     }
 
@@ -590,33 +591,7 @@ function getRandomPieceType() {
 // }
 
 
-function drawGameBoard() {
-    context.fillStyle = "#000";
-    context.fillRect(0, 0, canvas.clientWidth, canvas.height);
-    // Draw the static pieces
-    gameBoard.grid.forEach((row, y) => {
-        row.forEach((value, x) => {
-            if (value !== 0) {
-                if (value === 1) {
-                    context.fillStyle = "red";
-                } else if (value === 2) {
-                    context.fillStyle = "blue";
-                } else if (value === 3) {
-                    context.fillStyle = "green";
-                } else if (value === 4) {
-                    context.fillStyle = "yellow";
-                } else if (value === 5) {
-                    context.fillStyle = "orange";
-                } else if (value === 6) {
-                    context.fillStyle = "cyan";
-                } else if (value === 7) {
-                    context.fillStyle = "pink";
-                }
-                context.fillRect(x, y, 1, 1);
-            }
-        });
-    });
-}
+
 
         const index = Math.floor(Math.random() * set.length);
         let value = set[index]
@@ -650,6 +625,9 @@ function drawGameBoard() {
                     } else if (value === 7) {
                         context.fillStyle = "pink";
                     }
+                    else if (value === 8) {
+                        context.fillStyle = "grey";
+                    }
                     context.fillRect(x, y, 1, 1);
                 }
             });
@@ -668,6 +646,26 @@ function drawGameBoard() {
 
 
     }
+
+function createRandomGreyLine() {
+
+    for (let i2 = 0; i2 < 24; i2++) {
+
+        gameBoard.grid[i2] = gameBoard.grid[i2 + 1].slice()
+
+    }
+    let random =Math.floor(Math.random()*9)
+    console.log(random)
+    for (let i = 0; i < 10; i++) {
+        gameBoard.grid[24][i] =0
+        if( random !== i){
+        gameBoard.grid[24][i] = 8}
+
+    }
+
+
+
+}
 function setGameOverMsg (msg){
     const gameOverElement = document.getElementById("gameOverMsg") ;
     gameOverElement.textContent = msg;
