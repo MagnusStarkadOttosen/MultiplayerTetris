@@ -115,7 +115,7 @@ class GameController {
     broadcastState() {
         //Broadcast the updated game state to all connected clients
         this.io.emit('game-state', {
-            this.players,
+            players: this.players,
             gameBoard: this.gameBoard.grid,
         });
     }
