@@ -264,39 +264,73 @@ function endGame (newhighScores){
         drawTetromino(shadow.piece, shadow.position, context);
 
     }
-
-
-    function drawTetromino(piece, offset, ctx) {
-        //context.fillStyle = "#000";
-        // context.fillRect(0,0, canvas.clientWidth, canvas.height);
-
-        piece.forEach((row, y) => {
-            row.forEach((value, x) => {
-                if (value !== 0) {
-                    if (value === 1) {
-                        ctx.fillStyle = "red";
-                    } else if (value === 2) {
-                        ctx.fillStyle = "blue";
-                    } else if (value === 3) {
-                        ctx.fillStyle = "green";
-                    } else if (value === 4) {
-                        ctx.fillStyle = "yellow";
-                    } else if (value === 5) {
-                        ctx.fillStyle = "orange";
-                    } else if (value === 6) {
-                        ctx.fillStyle = "cyan";
-                    } else if (value === 7) {
-                        ctx.fillStyle = "pink";
-                    } else if (value === 8) {
-                        ctx.fillStyle = "grey";
-                        ctx.globalAlpha = 0.5;
-                    }
-                    ctx.fillRect(x + offset.x, y + offset.y, 1, 1);
-                    ctx.globalAlpha = 1;
-                }
-            });
-        });
+    function drawBlock(x,y,value,offset,ctx){
+        let gradient = ctx.createLinearGradient(
+            x+offset.x,
+            y+offset.y,
+            x+offset.x+1, 
+            y+offset.y+1);
+        if(value === 1){
+            gradient.addColorStop(1, '#FF6347');
+            gradient.addColorStop(0, '#8B0000');
+              ctx.fillStyle = "red";
+        } else if(value === 2){
+            ctx.fillStyle = "blue";
+            gradient.addColorStop(1, '#87CEFA');
+            gradient.addColorStop(0, '#00008B');
+            
+        } else if(value === 3){
+            ctx.fillStyle = "green";
+            gradient.addColorStop(1, '#90EE90');
+            gradient.addColorStop(0, '#006400');
+            
+        } else if(value === 4){
+            ctx.fillStyle = "yellow";
+            gradient.addColorStop(1, '#FFFF99');
+            gradient.addColorStop(0, '#CCCC00');
+            
+        } else if(value === 5){
+            ctx.fillStyle = "orange";
+            gradient.addColorStop(1, '#FFBD45');
+            gradient.addColorStop(0, '#FF8C00');
+            
+        } else if(value === 6){
+            ctx.fillStyle = "cyan";
+            gradient.addColorStop(1, '#E0FFFF');
+            gradient.addColorStop(0, '#008B8B');
+            
+        } else if(value === 7){
+            ctx.fillStyle = "purple";
+            gradient.addColorStop(1, '#d8b0d1');
+            gradient.addColorStop(0, '#6a0dad'); 
+            
+        }else if(value === 8){
+            ctx.fillStyle = "grey";
+            ctx.globalAlpha = 0.5;
+        }
+        ctx.fillStyle = gradient;
+        ctx.fillRect(x + offset.x, y + offset.y, 1, 1);
+                    
+        ctx.lineWidth = 0.05;
+        ctx.strokeStyle = "black";
     }
+    // to player's peices
+       
+    function drawTetromino(piece, offset,ctx){
+
+        ctx.shadowOffsetX = 10; 
+        ctx.shadowOffsetY = 10;
+        ctx.shadowBlur = 15; 
+     
+         piece.forEach((row, y) => {
+             row.forEach((value, x) => {
+                 if(value !== 0){
+                     drawBlock(x,y,value,offset,ctx);
+                     
+                 }
+             });
+         });
+     }
 
 
     const queue = []
@@ -384,8 +418,6 @@ function endGame (newhighScores){
                 if (value === 0) {
                     check = false
                 }
-
-
             })
 
             if (check) {
@@ -588,85 +620,50 @@ function getRandomPieceType() {
 //
 // }
 
-
 function drawGameBoard() {
-    context.fillStyle = "#000";
+    // Clear the canvas and disable the shadow effect for the grid and board
+    context.shadowColor = 'transparent';
+    context.fillStyle = "#000000";
     context.fillRect(0, 0, canvas.clientWidth, canvas.height);
+
+    // If a piece was moved, draw a white bar at the top (from the second function)
+    if (player.pieceMoved) {
+        context.fillStyle = "#fff";
+        context.fillRect(0, 0, canvas.clientWidth, 2);
+    }
+
+    // Draw the grid lines
+    context.strokeStyle = "#f0f1f5"; // Light grey for grid lines
+    context.lineWidth = 0.05;
+    for (let i = 0; i <= gameBoard.width; i++) {
+        context.beginPath();
+        context.moveTo(i, 0);
+        context.lineTo(i, gameBoard.height);
+        context.stroke();
+    }
+    for (let i = 0; i <= gameBoard.height; i++) {
+        context.beginPath();
+        context.moveTo(0, i);
+        context.lineTo(gameBoard.width, i);
+        context.stroke();
+    }
+
     // Draw the static pieces
     gameBoard.grid.forEach((row, y) => {
         row.forEach((value, x) => {
             if (value !== 0) {
-                if (value === 1) {
-                    context.fillStyle = "red";
-                } else if (value === 2) {
-                    context.fillStyle = "blue";
-                } else if (value === 3) {
-                    context.fillStyle = "green";
-                } else if (value === 4) {
-                    context.fillStyle = "yellow";
-                } else if (value === 5) {
-                    context.fillStyle = "orange";
-                } else if (value === 6) {
-                    context.fillStyle = "cyan";
-                } else if (value === 7) {
-                    context.fillStyle = "pink";
-                }
-                context.fillRect(x, y, 1, 1);
+                drawBlock(x, y, value, {x:0, y:0}, context); // Assuming drawBlock is a function you've defined
             }
         });
     });
+    // Draw the moving piece
+    if (player.piece && player.gamePhase === 0) {
+        dropShadow();
+        drawTetromino(player.piece, player.position, context);
+        player.pieceMoved = false;
+    }
 }
 
-        const index = Math.floor(Math.random() * set.length);
-        let value = set[index]
-        set.splice(    index,1)
-
-        return value;
-    }
-
-    function drawGameBoard() {
-        if (player.pieceMoved) {
-        context.fillStyle = "#000";
-        context.fillRect(0, 5, canvas.clientWidth, canvas.height);
-        context.fillStyle = "#fff";
-        context.fillRect(0, 0, canvas.clientWidth, 5);
-        // Draw the static pieces
-        gameBoard.grid.forEach((row, y) => {
-            row.forEach((value, x) => {
-                if (value !== 0) {
-                    if (value === 1) {
-                        context.fillStyle = "red";
-                    } else if (value === 2) {
-                        context.fillStyle = "blue";
-                    } else if (value === 3) {
-                        context.fillStyle = "green";
-                    } else if (value === 4) {
-                        context.fillStyle = "yellow";
-                    } else if (value === 5) {
-                        context.fillStyle = "orange";
-                    } else if (value === 6) {
-                        context.fillStyle = "cyan";
-                    } else if (value === 7) {
-                        context.fillStyle = "pink";
-                    }
-                    context.fillRect(x, y, 1, 1);
-                }
-            });
-        });
-
-        // Draw the moving piece
-        if (player.piece) {
-            if (player.gamePhase == 0)
-
-
-                    dropShadow();
-                    drawTetromino(player.piece, player.position, context);
-                    player.pieceMoved = false
-                }
-        }
-
-
-    }
 function setGameOverMsg (msg){
     const gameOverElement = document.getElementById("gameOverMsg") ;
     gameOverElement.textContent = msg;
@@ -693,6 +690,6 @@ function setGameOverMsg (msg){
     update();
 
 
-
+}
 
 
