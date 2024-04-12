@@ -183,20 +183,22 @@ class GameController {
     }
 
     clearPiece(piece) {
-        for (let y = 0; y < piece.length; y++) {
-            for (let x = 0; x < piece[y].length; x++) {
-                if (piece[y][x] !== 0) {
-                    this.gameBoard[position.y + y][position.x + x] = 0;
+        const tetromino = this.getTetromino(piece.type)[piece.rotation];
+        for (let y = 0; y < tetromino.length; y++) {
+            for (let x = 0; x < tetromino[y].length; x++) {
+                if (tetromino[y][x] !== 0) {
+                    this.gameBoard[piece.position.y + y][piece.position.x + x] = 0;
                 }
             }
         }
     }
 
-    placePiece(position, piece) {
-        for (let y = 0; y < piece.length; y++) {
-            for (let x = 0; x < piece[y].length; x++) {
-                if (piece[y][x] !== 0) {
-                    this.gameBoard[position.y + y][position.x + x] = piece[y][x];
+    placePiece(piece) {
+        const tetromino = this.getTetromino(piece.type)[piece.rotation];
+        for (let y = 0; y < tetromino.length; y++) {
+            for (let x = 0; x < tetromino[y].length; x++) {
+                if (tetromino[y][x] !== 0) {
+                    this.gameBoard[piece.position.y + y][piece.position.x + x] = tetromino[y][x];
                 }
             }
         }
