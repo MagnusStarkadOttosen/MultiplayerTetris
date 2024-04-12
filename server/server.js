@@ -31,8 +31,8 @@ io.on("connection", (socket) => {
         gameController.handlePlayerMove(socket.id, direction);
     });
 
-    socket.on("playerRotate", data => {
-        //Rotate logic
+    socket.on("playerRotate", (rotationDirection) => {
+        gameController.handlePlayerRotation(socket.id, rotationDirection);
     });
 
     socket.on("playerFall", () => {

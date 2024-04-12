@@ -1,3 +1,5 @@
+import { getTetromino } from './tetrominoes.js';
+
 class GameController {
     constructor(io) {
         this.io = io;
@@ -18,20 +20,53 @@ class GameController {
     }
 
     addPlayer(socketId) {
-
-        //TODO: add generate a list of pieces
-        //generatePieceList();
+        let pieceList = this.generatePieceList();
 
         this.players[socketId] = {
-            position: {x:0, y:0},
-            rotation: 0,
-            currentPiece: "T", //need to be generated
+            currentPiece: pieceList.shift(), //Takes the first element in the list
             holdPiece: null,
-            nextPieces: ["L", "J", "O"], //need to be a list generated
+            nextPieces: pieceList, //The rest of the pieces
             points: 0,
             level: 0,
             speed: 48,
         }
+        this.broadcastState();
+    }
+
+    generatePieceList() {
+        const pieces = ['I', 'T', 'O', 'L', 'J', 'S', 'Z'];
+
+        //Create list with one of each type
+        let list = pieces.map(type => {
+            return {
+                type: type,
+                rotation: 0,
+                position: { x: 5, y: 0 }
+            };
+        });
+
+        //Shuffle the list
+        for (let i = list.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [list[i], list[j]] = [list[j], list[i]];
+        }
+
+        return list;
+    }
+
+    updatePieceQueue(socketId) {
+        let player = this.players[socketId];
+        if (player.nextPieces.length <= 3) {//generates new list if the player only have 3 pieces left
+            //Generate new piece list and append it to the last
+            let newPieces = this.generatePieceList();
+            player.nextPieces.push(...newPieces);
+        }
+    }
+
+    shiftToNextPiece(socketId) {
+        let player = this.players[socketId];
+        player.currentPiece = player.nextPieces.shift();
+        this.updatePieceQueue(socketId);
         this.broadcastState();
     }
 
@@ -41,66 +76,39 @@ class GameController {
 
     handlePlayerMove(socketId, direction) {
         const player = this.players[socketId];
-        let newPosition = { ...player.position };
+        let newPiece = player.piece
 
-        switch(direction) {
+        switch (direction) {
             case 'left':
-                newPosition.x -= 1;
+                newPiece.position.x -= 1;
                 break;
             case 'right':
-                newPosition.x += 1;
+                newPiece.position.x += 1;
                 break;
         }
 
-        if (!this.pieceCollided(player.currentPiece, newPosition)) {
-            this.updatePlayerPiece(player.currentPiece, player.position, newPosition);
-            player.position = newPosition;
+        if (!this.pieceCollided(newPiece)) {
+            this.updatePiece(player.currentPiece, newPiece);
+            player.currentPiece = newPiece;
             this.broadcastState();
         }
     }
 
-    handlePlayerFall(socketId){
+    handlePlayerFall(socketId) {
         const player = this.players[socketId];
-        let newPosition = { ...player.position };
-        
-        newPosition.y += 1;
+        let newPiece = player.piece
 
-        if (!this.pieceCollided(player.currentPiece, newPosition)) {
-            this.updatePlayerPiece(player.currentPiece, player.position, newPosition);
-            player.position = newPosition;
+        newPiece.position.y += 1;
+
+        if (!this.pieceCollided(newPiece)) {
+            this.updatePiece(player.currentPiece, newPiece);
+            player.currentPiece = newPiece;
             this.broadcastState();
-        } else{
-            this.placePiece(player.position, player.currentPiece);
+        } else {
+            this.placePiece(player.currentPiece);
             this.checkForLineClears();
-
+            this.shiftToNextPiece();
             this.broadcastState();
-        }
-    }
-
-    updatePiecePosition(piece, oldPosition, newPosition) {
-        //Clear the piece's old position
-        this.clearPiece(oldPosition, piece);
-        //Place the piece on the board
-        this.placePiece(newPosition, piece);
-    }
-
-    clearPiece(position, piece){
-        for (let y = 0; y < piece.length; y++) {
-            for (let x = 0; x < piece[y].length; x++) {
-                if (piece[y][x] !== 0) {
-                    this.gameBoard[position.y + y][position.x + x] = 0;
-                }
-            }
-        }
-    }
-
-    placePiece(position, piece){
-        for (let y = 0; y < piece.length; y++) {
-            for (let x = 0; x < piece[y].length; x++) {
-                if (piece[y][x] !== 0) {
-                    this.gameBoard[position.y + y][position.x + x] = piece[y][x];
-                }
-            }
         }
     }
 
@@ -112,12 +120,12 @@ class GameController {
         });
     }
 
-    pieceCollided(piece, position) {
+    pieceCollided(piece) {
         for (let y = 0; y < piece.length; y++) {
             for (let x = 0; x < piece[y].length; x++) {
                 if (piece[y][x] !== 0) {
-                    let boardX = position.x + x;
-                    let boardY = position.y + y;
+                    let boardX = piece.position.x + x;
+                    let boardY = piece.position.y + y;
                     // Check if the piece is outside the game board horizontally or has reached the bottom
                     if (boardX < 0 || boardX >= this.gameBoard.width || boardY >= this.gameBoard.height) {
                         return true;
@@ -148,5 +156,49 @@ class GameController {
 
 
         // Increase score based on linesCleared, adjust game speed, etc.
+    }
+
+    handlePlayerRotation(socketId, direction) {
+        let player = this.players[socketId];
+        let newPiece = player.currentPiece
+
+        if (direction == "clockwise") {
+            newPiece.rotation = (newPiece.rotation + 1) % 4;
+        } else {
+            newPiece.rotation = (newPiece.rotation - 1 + 4) % 4;
+        }
+
+        if (!this.pieceCollided(newPiece)) {
+            this.updatePiece(player.currentPiece, newPiece);
+            player.currentPiece = newPiece;
+            this.broadcastState();
+        }
+    }
+
+    updatePiece(oldPiece, newPiece) {
+        //Clear the piece's old position
+        this.clearPiece(oldPiece);
+        //Place the piece on the board
+        this.placePiece(newPiece);
+    }
+
+    clearPiece(piece) {
+        for (let y = 0; y < piece.length; y++) {
+            for (let x = 0; x < piece[y].length; x++) {
+                if (piece[y][x] !== 0) {
+                    this.gameBoard[position.y + y][position.x + x] = 0;
+                }
+            }
+        }
+    }
+
+    placePiece(position, piece) {
+        for (let y = 0; y < piece.length; y++) {
+            for (let x = 0; x < piece[y].length; x++) {
+                if (piece[y][x] !== 0) {
+                    this.gameBoard[position.y + y][position.x + x] = piece[y][x];
+                }
+            }
+        }
     }
 }
