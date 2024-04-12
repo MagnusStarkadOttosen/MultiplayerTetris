@@ -615,26 +615,24 @@ function getRandomPieceType() {
     if(set.length==0)
         set=["T", "L", "J", "S", "Z", "O", "I"];
 
+        drawGameBoard();
 
-// function getRandomPieceSet(){
-//     const in
-//
-// }
+        const index = Math.floor(Math.random() * set.length);
+        let value = set[index]
+        set.splice(    index,1)
 
-function drawGameBoard() {
-    // Clear the canvas and disable the shadow effect for the grid and board
-    context.shadowColor = 'transparent';
-    context.fillStyle = "#000000";
-    context.fillRect(0, 0, canvas.clientWidth, canvas.height);
-
-    // If a piece was moved, draw a white bar at the top (from the second function)
-    if (player.pieceMoved) {
-        context.fillStyle = "#fff";
-        context.fillRect(0, 0, canvas.clientWidth, 2);
+        return value;
     }
 
-    // Draw the grid lines
-    context.strokeStyle = "#f0f1f5"; // Light grey for grid lines
+    function drawGameBoard() {
+        if (player.pieceMoved) {
+    // Clear the canvas
+        context.fillStyle = "#000";
+        context.fillRect(0, 2, canvas.clientWidth, canvas.height);
+        context.fillStyle = "#505050";
+        context.fillRect(0, 0, canvas.clientWidth, 2);
+        // Draw the grid
+    context.strokeStyle = "#505050";
     context.lineWidth = 0.05;
     for (let i = 0; i <= gameBoard.width; i++) {
         context.beginPath();
@@ -648,23 +646,27 @@ function drawGameBoard() {
         context.lineTo(gameBoard.width, i);
         context.stroke();
     }
-
-    // Draw the static pieces
-    gameBoard.grid.forEach((row, y) => {
-        row.forEach((value, x) => {
-            if (value !== 0) {
-                drawBlock(x, y, value, {x:0, y:0}, context); // Assuming drawBlock is a function you've defined
-            }
+        // Draw the static pieces
+        gameBoard.grid.forEach((row, y) => {
+            row.forEach((value, x) => {
+                if (value !== 0) {
+                    drawBlock(x, y, value, {x: 0, y: 0}, context);
+                }
+            });
         });
-    });
-    // Draw the moving piece
-    if (player.piece && player.gamePhase === 0) {
-        dropShadow();
-        drawTetromino(player.piece, player.position, context);
-        player.pieceMoved = false;
-    }
-}
 
+        // Draw the moving piece
+        if (player.piece) {
+            if (player.gamePhase == 0)
+
+                    // dropShadow();
+                    drawTetromino(player.piece, player.position, context);
+                    player.pieceMoved = false
+                }
+        }
+
+
+    }
 function setGameOverMsg (msg){
     const gameOverElement = document.getElementById("gameOverMsg") ;
     gameOverElement.textContent = msg;
@@ -691,6 +693,6 @@ function setGameOverMsg (msg){
     update();
 
 
-}
+
 
 
