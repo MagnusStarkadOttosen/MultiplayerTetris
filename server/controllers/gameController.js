@@ -1,6 +1,6 @@
-// import { getTetromino } from './tetrominoes.js';
+import { getTetromino } from './tetrominoes.js';
 
-class GameController {
+export class GameController {
     constructor(io) {
         this.io = io;
         this.players = {};
