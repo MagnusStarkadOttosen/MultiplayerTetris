@@ -7,30 +7,24 @@
 </head>
 <body>
     <h1>Socket Connection Test</h1>
-    <button onclick="emitTest()">Test Server Connection</button>
     <div id="status">Socket Status: Connecting...</div>
 
     <script src="https://cdn.socket.io/4.3.1/socket.io.js"></script>
     <script src="./js/socket.js"></script>
-    <script>
-        const socket = io('http://130.225.170.52:10311'); // Change the URL to match your server address
-        
-        socket.on('connect', () => {
-            document.getElementById('status').innerText = 'Socket Status: Connected';
-        });
-
-        socket.on('disconnect', () => {
-            document.getElementById('status').innerText = 'Socket Status: Disconnected';
-        });
-
-        function emitTest(){
-            socket.emit("test")
-        }
-
-    </script>
+    <script src="./js/playerControl.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const socket = io(); // Ensure the socket is initialized
+            const socket = io('http://130.225.170.52:10311'); // Connect to the socket server
+
+            socket.on('connect', () => {
+                document.getElementById('status').innerText = 'Socket Status: Connected';
+            });
+
+            socket.on('disconnect', () => {
+                document.getElementById('status').innerText = 'Socket Status: Disconnected';
+            });
+
+            // Initialize player controls with the socket
             initializePlayerControls(socket);
         });
     </script>
