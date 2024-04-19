@@ -1,16 +1,19 @@
 //This is where the server is
-
+import http from 'http';
+import express from 'express';
+import { Server as SocketIO } from 'socket.io';
+import path from 'path';
 import GameController from './controllers/gameController.js';
 
-const http = require("http");
-const express = require("express");
-const socketIo = require("socket.io");
-const path = require('path');
+// const http = require("http");
+// const express = require("express");
+// const socketIo = require("socket.io");
+// const path = require('path');
 
 const app = express();
 
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = SocketIO(server);
 
 const clientPath = path.join(__dirname, '..', 'client');
 app.use(express.static(clientPath));
@@ -19,7 +22,7 @@ const gameController = new GameController(io);
 
 io.on("connection", (socket) => {
     console.log("A user connected");
-    GameController.addPlayer(socket.id);
+    gameController.addPlayer(socket.id);
 
     socket.on("send-message", (message) => {
         io.emit("receive-message", message);
