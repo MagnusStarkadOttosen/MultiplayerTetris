@@ -4,8 +4,8 @@ export class GameController {
     constructor(io) {
         this.io = io;
         this.players = {};
-        this.width: 10,
-        this.height: 20,
+        this.width = 10,
+        this.height = 20,
         this.gameBoard = { //Creates a 2D array with the given size
             width: this.width,
             height: this.height,
