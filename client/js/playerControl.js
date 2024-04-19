@@ -17,12 +17,16 @@ export function initializePlayerControls(socket){
                 break;
             case "q":
                 emitRotate("antiClockwise");
+                break;
             case "e":
                 emitRotate("clockwise");
+                break;
             case " ":
                 emitDrop();
+                break;
             case "c":
                 emitHold();
+                break;
         }
     })
 }
