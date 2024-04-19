@@ -28,5 +28,12 @@
         }
 
     </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const socket = io(); // Ensure the socket is initialized
+            initializePlayerControls(socket);
+        });
+    </script>
+    
 </body>
 </html>
