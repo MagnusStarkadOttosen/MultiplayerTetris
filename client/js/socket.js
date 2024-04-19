@@ -34,6 +34,6 @@ socket.on('gameState', (gameState) => {
     //TODO: update rendering based on gamestate
 });
 
-function emitTest(){
+export function emitTest(){
     socket.emit("test")
 }
