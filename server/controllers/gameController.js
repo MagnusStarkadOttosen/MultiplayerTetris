@@ -1,4 +1,4 @@
-import { getTetromino } from './tetrominoes.js';
+import { getTetromino } from './tetronimoes.js';
 
 export class GameController {
     constructor(io) {
