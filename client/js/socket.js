@@ -1,4 +1,5 @@
 import { initializePlayerControls } from './playerControl.js';
+import { io } from 'https://cdn.socket.io/4.3.1/socket.io.esm.min.js';
 
 const socket = io();
 
