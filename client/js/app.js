@@ -246,7 +246,7 @@ function endGame (newhighScores){
         shadow.piece = []
         for (let i = 0; i < player.piece.length; i++)
             shadow.piece[i] = player.piece[i].slice();
-        shadow.position = {x: player.position.x, y: player.position.y}
+            shadow.position = {x: player.position.x, y: player.position.y}
 
         while (!pieceCollided(shadow.piece, shadow.position)) {
             shadow.position.y++
@@ -261,6 +261,7 @@ function endGame (newhighScores){
                 }
             })
         })
+        console.log(shadow.position)
         drawTetromino(shadow.piece, shadow.position, context);
 
     }
@@ -268,7 +269,7 @@ function endGame (newhighScores){
         let gradient = ctx.createLinearGradient(
             x+offset.x,
             y+offset.y,
-            x+offset.x+1, 
+            x+offset.x+1,
             y+offset.y+1);
         if(value === 1){
             gradient.addColorStop(1, '#FF6347');
@@ -306,6 +307,8 @@ function endGame (newhighScores){
             
         }else if(value === 8){
             ctx.fillStyle = "grey";
+            gradient.addColorStop(1, '#000000');
+            gradient.addColorStop(0, '#FFFFFF');
             ctx.globalAlpha = 0.5;
         }
         ctx.fillStyle = gradient;
@@ -313,14 +316,15 @@ function endGame (newhighScores){
                     
         ctx.lineWidth = 0.05;
         ctx.strokeStyle = "black";
+        ctx.globalAlpha=1
     }
     // to player's peices
        
     function drawTetromino(piece, offset,ctx){
 
-        ctx.shadowOffsetX = 10; 
+        ctx.shadowOffsetX = 10;
         ctx.shadowOffsetY = 10;
-        ctx.shadowBlur = 15; 
+        ctx.shadowBlur = 15;
      
          piece.forEach((row, y) => {
              row.forEach((value, x) => {
@@ -351,7 +355,7 @@ function endGame (newhighScores){
 
     const gameBoard = {
         width: 10,
-        height: 25,
+        height: 22,
         grid: []
     };
 
@@ -428,6 +432,7 @@ function endGame (newhighScores){
         })
 
         removeFullLine(checkArray)
+        // createRandomGreyLine()
 
     }
 
@@ -435,7 +440,7 @@ function endGame (newhighScores){
         for (let i = 0; i < gameBoard.width; i++) {
 
 
-            if (gameBoard.grid[4][i] !== 0)
+            if (gameBoard.grid[1][i] !== 0)
                 return true
         }
         return false
@@ -443,15 +448,16 @@ function endGame (newhighScores){
 
 
     function removeFullLine(removeArray) {
-        player.level=player.level+1;
         removeArray = removeArray.toSorted()
         for (let i = 0; i < removeArray.length; i++) {
+            player.level=player.level+1;
+            increaseFallspeed()
+
             for (let i2 = removeArray[i]; i2 > 0; i2--) {
 
                 gameBoard.grid[i2] = gameBoard.grid[i2 - 1].slice()
             }
         }
-        increaseFallspeed()
         console.log("testing fall interval"+fallInterval)
     }
 
@@ -615,7 +621,9 @@ function getRandomPieceType() {
     if(set.length==0)
         set=["T", "L", "J", "S", "Z", "O", "I"];
 
+
         drawGameBoard();
+
 
         const index = Math.floor(Math.random() * set.length);
         let value = set[index]
@@ -650,7 +658,27 @@ function getRandomPieceType() {
         gameBoard.grid.forEach((row, y) => {
             row.forEach((value, x) => {
                 if (value !== 0) {
+                    if (value === 1) {
+                        context.fillStyle = "red";
+                    } else if (value === 2) {
+                        context.fillStyle = "blue";
+                    } else if (value === 3) {
+                        context.fillStyle = "green";
+                    } else if (value === 4) {
+                        context.fillStyle = "yellow";
+                    } else if (value === 5) {
+                        context.fillStyle = "orange";
+                    } else if (value === 6) {
+                        context.fillStyle = "cyan";
+                    } else if (value === 7) {
+                        context.fillStyle = "pink";
+                    }
+                    else if (value === 8) {
+                        context.fillStyle = "grey";
+                    }
+                    context.fillRect(x, y, 1, 1);
                     drawBlock(x, y, value, {x: 0, y: 0}, context);
+
                 }
             });
         });
@@ -659,7 +687,7 @@ function getRandomPieceType() {
         if (player.piece) {
             if (player.gamePhase == 0)
 
-                    // dropShadow();
+                    dropShadow();
                     drawTetromino(player.piece, player.position, context);
                     player.pieceMoved = false
                 }
@@ -667,6 +695,26 @@ function getRandomPieceType() {
 
 
     }
+
+function createRandomGreyLine() {
+
+    for (let i2 = 0; i2 < 21; i2++) {
+
+        gameBoard.grid[i2] = gameBoard.grid[i2 + 1].slice()
+
+    }
+    let random =Math.floor(Math.random()*9)
+    console.log(random)
+    for (let i = 0; i < 10; i++) {
+        gameBoard.grid[21][i] =0
+        if( random !== i){
+        gameBoard.grid[21][i] = 8}
+
+    }
+
+
+
+}
 function setGameOverMsg (msg){
     const gameOverElement = document.getElementById("gameOverMsg") ;
     gameOverElement.textContent = msg;
