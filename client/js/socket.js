@@ -9,24 +9,24 @@ socket.on('connect', () => {
 });
 
 //Sends the players wants to move the piece
-function emitMove(direction){
+export function emitMove(direction){
     socket.emit("playerMove", direction);
 }
 
 //Sends that the player wants to rotate the piece
-function emitRotate(rotation){
+export function emitRotate(rotation){
     socket.emit("playerRotate", rotation);
 }
 
-function emitFall(){
+export function emitFall(){
     socket.emit("playerFall")
 }
 
-function emitHold(){
+export function emitHold(){
     socket.emit("playerHold")
 }
 
-function emitDrop(){
+export function emitDrop(){
     socket.emit("playerDrop")
 }
 
@@ -38,3 +38,7 @@ socket.on('gameState', (gameState) => {
 export function emitTest(){
     socket.emit("test")
 }
+
+socket.on('receive-message', (message) => {
+    console.log("testing ack");
+});
