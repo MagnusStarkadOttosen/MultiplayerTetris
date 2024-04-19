@@ -1,4 +1,11 @@
+import { initializePlayerControls } from './playerControl.js';
+
 const socket = io();
+
+//Initialize controls once the socket is connected
+socket.on('connect', () => {
+    initializePlayerControls(socket); 
+});
 
 //Sends the players wants to move the piece
 function emitMove(direction){
