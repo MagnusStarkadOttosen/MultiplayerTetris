@@ -1,3 +1,4 @@
+import {emitTest } from "./socket.js";
 
 export function initializePlayerControls(socket){
     document.addEventListener("keydown", event => {
