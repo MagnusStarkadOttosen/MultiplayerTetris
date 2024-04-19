@@ -4,17 +4,19 @@ export class GameController {
     constructor(io) {
         this.io = io;
         this.players = {};
+        this.width: 10,
+        this.height: 20,
         this.gameBoard = { //Creates a 2D array with the given size
-            width: 10,
-            height: 20,
+            width: this.width,
+            height: this.height,
             grid: this.initializeGameBoard(),
         };
     }
 
     initializeGameBoard() { //Makes a 2D array filled with zero
         let grid = [];
-        for (let y = 0; y < this.gameBoard.height; y++) {
-            grid[y] = new Array(this.gameBoard.width).fill(0);
+        for (let y = 0; y < this.height; y++) {
+            grid[y] = new Array(this.width).fill(0);
         }
         return grid;
     }
