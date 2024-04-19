@@ -78,7 +78,8 @@ export class GameController {
 
     handlePlayerMove(socketId, direction) {
         const player = this.players[socketId];
-        let newPiece = player.piece
+        if (!player || !player.currentPiece) return;
+        let newPiece = {...player.currentPiece}
 
         switch (direction) {
             case 'left':
@@ -123,6 +124,8 @@ export class GameController {
     }
 
     pieceCollided(piece) {
+        if (!piece) return true;
+
         for (let y = 0; y < piece.length; y++) {
             for (let x = 0; x < piece[y].length; x++) {
                 if (piece[y][x] !== 0) {
