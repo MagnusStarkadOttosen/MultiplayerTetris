@@ -40,5 +40,5 @@ export function emitTest(){
 }
 
 socket.on('receive-message', (message) => {
-    console.log("testing ack");
+    console.log("Received from server:", message);
 });
