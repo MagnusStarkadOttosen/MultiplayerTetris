@@ -3,7 +3,7 @@ import http from 'http';
 import express from 'express';
 import { Server as SocketIO } from 'socket.io';
 import path from 'path';
-import GameController from './controllers/gameController.js';
+import { GameController } from './controllers/gameController.js';
 
 // const http = require("http");
 // const express = require("express");
