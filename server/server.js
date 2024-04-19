@@ -4,6 +4,7 @@ import express from 'express';
 import { Server } from 'socket.io';
 import path from 'path';
 import { GameController } from './controllers/gameController.js';
+import { fileURLToPath } from 'url';
 
 // const http = require("http");
 // const express = require("express");
@@ -16,6 +17,8 @@ const server = http.createServer(app);
 // const io = new SocketIO(server);
 const io = new Server(server);
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const clientPath = path.join(__dirname, '..', 'client');
 app.use(express.static(clientPath));
 
