@@ -23,6 +23,8 @@ export function initializePlayerControls(socket){
                 emitDrop();
             case "c":
                 emitHold();
+            case "t":
+                emitTest();
         }
     })
 }

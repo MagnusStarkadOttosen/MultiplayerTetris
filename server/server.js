@@ -47,6 +47,10 @@ io.on("connection", (socket) => {
 
     });
 
+    socket.on("test", () => {
+        console.log('testing');
+    });
+
 });
 
 const PORT = 3000;
