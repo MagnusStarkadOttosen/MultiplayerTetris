@@ -7,10 +7,11 @@
 </head>
 <body>
     <h1>Socket Connection Test</h1>
-
+    <button onclick="emitTest()">Test Server Connection</button>
     <div id="status">Socket Status: Connecting...</div>
 
     <script src="https://cdn.socket.io/4.3.1/socket.io.js"></script>
+    <script src="./js/socket.js"></script>
     <script>
         const socket = io('http://130.225.170.52:10311'); // Change the URL to match your server address
         
@@ -22,7 +23,10 @@
             document.getElementById('status').innerText = 'Socket Status: Disconnected';
         });
 
-        initializePlayerControls(socket);
+        function emitTest(){
+            socket.emit("test")
+        }
+
     </script>
 </body>
 </html>
