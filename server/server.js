@@ -13,7 +13,8 @@ import { GameController } from './controllers/gameController.js';
 const app = express();
 
 const server = http.createServer(app);
-const io = SocketIO(server);
+// const io = SocketIO(server);
+const io = new Server(server);
 
 const clientPath = path.join(__dirname, '..', 'client');
 app.use(express.static(clientPath));
