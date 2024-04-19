@@ -15,7 +15,14 @@ const app = express();
 
 const server = http.createServer(app);
 // const io = new SocketIO(server);
-const io = new Server(server);
+const io = new Server(server, {
+    cors: {
+        origin: "*",  // Allows all domains, adjust as needed for security
+        methods: ["GET", "POST"],
+        allowedHeaders: ["my-custom-header"],
+        credentials: true
+    }
+});
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
