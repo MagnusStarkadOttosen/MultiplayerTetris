@@ -1,7 +1,7 @@
 //This is where the server is
 import http from 'http';
 import express from 'express';
-import { Server as SocketIO } from 'socket.io';
+import { Server } from 'socket.io';
 import path from 'path';
 import { GameController } from './controllers/gameController.js';
 
@@ -13,7 +13,8 @@ import { GameController } from './controllers/gameController.js';
 const app = express();
 
 const server = http.createServer(app);
-const io = new SocketIO(server);
+// const io = new SocketIO(server);
+const io = new Server(server);
 
 const clientPath = path.join(__dirname, '..', 'client');
 app.use(express.static(clientPath));
