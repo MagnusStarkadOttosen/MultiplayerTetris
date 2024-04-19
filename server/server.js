@@ -1,5 +1,7 @@
 //This is where the server is
 
+import GameController from './path/to/GameController';
+
 const http = require("http");
 const express = require("express");
 const socketIo = require("socket.io");
