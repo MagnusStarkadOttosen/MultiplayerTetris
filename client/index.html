@@ -37,7 +37,7 @@
 
             socket.on('game-state', (gameState) => {
                 const gameBoardElement = document.getElementById('gameBoard');
-                renderGameBoard(gameBoardElement, gameState.gameBoard.grid);
+                renderGameBoard(gameBoardElement, gameState.gameBoard); // Corrected access
             });
 
             function renderGameBoard(container, grid) {
