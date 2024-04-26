@@ -67,6 +67,14 @@ export class GameController {
 
     shiftToNextPiece(socketId) {
         let player = this.players[socketId];
+        if (!player) {
+            console.error("Player missing for socketId:", socketId);
+            return;
+        }else if(!player.nextPieces){
+            console.error("NextPiece missing for socketId:", socketId);
+            return;
+        }
+
         player.currentPiece = player.nextPieces.shift();
         this.updatePieceQueue(socketId);
         // this.broadcastState();
@@ -267,10 +275,10 @@ export class GameController {
                 // Check for line clears
                 this.checkForLineClears();
 
-                // Shift to next piece if necessary
-                if (this.pieceCollided(player.currentPiece)) {
-                    this.shiftToNextPiece(playerId);
-                }
+                // // Shift to next piece if necessary
+                // if (this.pieceCollided(player.currentPiece)) {
+                //     this.shiftToNextPiece(playerId);
+                // }
             }
         }
 
