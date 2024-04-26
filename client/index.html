@@ -11,6 +11,11 @@
     <h1>Socket Connection Test</h1>
     <div id="status">Socket Status: Connecting...</div>
 
+    <div id="gameBoard" style="display: grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">
+        <!-- Cells will be dynamically inserted here -->
+    </div>
+
+
     <script type="module">
         import { io } from 'https://cdn.socket.io/4.3.1/socket.io.esm.min.js';
         import { initializePlayerControls } from './js/playerControl.js';
@@ -29,6 +34,35 @@
             socket.on('receive-message', (message) => {
                 console.log("Received from server:", message);
             });
+
+            socket.on('game-state', (gameState) => {
+                const gameBoardElement = document.getElementById('gameBoard');
+                renderGameBoard(gameBoardElement, gameState.gameBoard.grid);
+            });
+
+            function renderGameBoard(container, grid) {
+                container.innerHTML = ''; // Clear existing grid cells
+                grid.forEach(row => {
+                    row.forEach(cell => {
+                        const cellElement = document.createElement('div');
+                        cellElement.style.width = '30px';
+                        cellElement.style.height = '30px';
+                        cellElement.style.backgroundColor = getCellColor(cell);
+                        container.appendChild(cellElement);
+                    });
+                });
+            }
+
+            function getCellColor(cell) {
+                // Define color based on cell value
+                const colorMap = {
+                    0: '#FFFFFF', // Empty
+                    1: '#FF0000', // I-tetromino, example
+                    2: '#00FF00', // T-tetromino, example
+                    // Add more mappings as necessary
+                };
+                return colorMap[cell] || '#000000'; // Default to black if undefined
+            }
 
             // Initialize player controls with the socket
             initializePlayerControls(socket);

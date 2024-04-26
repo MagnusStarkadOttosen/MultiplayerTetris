@@ -34,7 +34,7 @@ const gameController = new GameController(io);
 io.on("connection", (socket) => {
     console.log("A user connected");
     gameController.addPlayer(socket.id);
-    gameController.broadcastState();
+    
     socket.on("send-message", (message) => {
         io.emit("receive-message", message);
     });
