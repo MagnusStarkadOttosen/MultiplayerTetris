@@ -110,6 +110,8 @@ export class GameController {
             // this.broadcastState();
         } else {
             console.log("test before place")
+            console.log(player.currentPiece.boardX)
+            console.log(player.currentPiece.boardY)
             this.placePiece(player.currentPiece);
             this.checkForLineClears();
             this.shiftToNextPiece();
