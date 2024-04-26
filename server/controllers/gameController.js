@@ -156,7 +156,7 @@ export class GameController {
                     console.log("Checking position x: ", boardX);
                     console.log("Checking position y: ", boardY);
                     // Check if the piece is outside the game board horizontally or has reached the bottom
-                    if (boardX < 0 || boardX >= this.gameBoard.width || boardY >= 20) {
+                    if (boardX < 0 || boardX >= this.gameBoard.width || boardY >= 19) {
                         return true;
                     }
                     // Prevent accessing gameBoard.grid[boardY] if boardY is out of bounds
