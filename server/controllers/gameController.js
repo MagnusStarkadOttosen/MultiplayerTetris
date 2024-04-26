@@ -11,7 +11,7 @@ export class GameController {
             height: this.height,
             grid: this.initializeGameBoard(),
         };
-        this.initGameLoop();
+        //this.initGameLoop();
     }
 
     initializeGameBoard() { //Makes a 2D array filled with zero
@@ -33,7 +33,7 @@ export class GameController {
             level: 0,
             speed: 48,
         }
-        // this.broadcastState();
+        this.broadcastState();
     }
 
     generatePieceList() {
