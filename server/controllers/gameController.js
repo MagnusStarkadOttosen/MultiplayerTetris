@@ -218,13 +218,13 @@ export class GameController {
     }
 
     updateGame() {
-        if (this.players && Object.keys(this.players).length > 0) {
-            Object.values(this.players).forEach(player => {
-                if (player && player.currentPiece) {
-                    this.handlePlayerFall(player.socketID);
-                }
-            });
-        }
+        // if (this.players && Object.keys(this.players).length > 0) {
+        //     Object.values(this.players).forEach(player => {
+        //         if (player && player.currentPiece) {
+        //             this.handlePlayerFall(player.socketID);
+        //         }
+        //     });
+        // }
         this.broadcastState();
     }
 }
