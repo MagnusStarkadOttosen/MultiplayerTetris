@@ -192,6 +192,10 @@ export class GameController {
         for (let y = 0; y < tetromino.length; y++) {
             for (let x = 0; x < tetromino[y].length; x++) {
                 if (tetromino[y][x] !== 0) {
+                    console.log("ppos y: ", piece.position.y);
+                    console.log("pos y: ", y);
+                    console.log("ppos x: ", piece.position.x);
+                    console.log("ppos x: ", x);
                     this.gameBoard[piece.position.y + y][piece.position.x + x] = 0;
                 }
             }
