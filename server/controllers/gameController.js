@@ -110,10 +110,8 @@ export class GameController {
             // this.broadcastState();
         } else {
             console.log("test before place")
-            console.log(player.currentPiece.boardX)
-            console.log(player.currentPiece.boardY)
             this.placePiece(player.currentPiece);
-            this.checkForLineClears();
+            // this.checkForLineClears();
             this.shiftToNextPiece();
             // this.broadcastState();
         }
@@ -232,6 +230,10 @@ export class GameController {
         const tetromino = getTetromino(piece.type)[piece.rotation];
         for (let y = 0; y < tetromino.length; y++) {
             for (let x = 0; x < tetromino[y].length; x++) {
+                console.log("place at x: ", piece.position.x)
+                console.log("tetro at x: ", x)
+                console.log("place at y: ", piece.position.y)
+                console.log("tetro at y: ", y)
                 if (tetromino[y][x] !== 0) {
                     this.gameBoard.grid[piece.position.y + y][piece.position.x + x] = tetromino[y][x];
                 }
