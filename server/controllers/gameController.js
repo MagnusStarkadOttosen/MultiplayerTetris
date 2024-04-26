@@ -104,6 +104,7 @@ export class GameController {
         newPiece.position.y += 1;
 
         if (!this.pieceCollided(newPiece)) {
+            console.log("not collided")
             this.updatePiece(player.currentPiece, newPiece);
             player.currentPiece = newPiece;
             // this.broadcastState();
@@ -133,7 +134,7 @@ export class GameController {
                     let boardX = piece.position.x + x;
                     let boardY = piece.position.y + y;
                     // Check if the piece is outside the game board horizontally or has reached the bottom
-                    if (boardX > 0 || boardX <= this.gameBoard.width || boardY >= this.gameBoard.height-1) {
+                    if (boardX < 0 || boardX >= this.gameBoard.width || boardY >= 20) {
                         return true;
                     }
                     // Prevent accessing gameBoard.grid[boardY] if boardY is out of bounds
