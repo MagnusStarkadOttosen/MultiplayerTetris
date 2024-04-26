@@ -218,13 +218,9 @@ export class GameController {
     }
 
     updateGame() {
-        this.players.array.forEach(player => {
+        Object.values(this.players).forEach(player => {
             this.handlePlayerFall(player.socketId);
         });
-
-        // Object.keys(this.players).forEach(socketId => {
-        //     this.handlePlayerFall(socketId);
-        // });
         this.broadcastState();
     }
 }
