@@ -131,16 +131,19 @@ export class GameController {
         console.log("before for")
 
         console.log("piece typr: ", piece.type)
-        console.log("piece lenght: ", piece.length)
-        console.log("piece heigth: ", piece[0].length)
 
-        for (let y = 0; y < piece.length; y++) {
-            for (let x = 0; x < piece[y].length; x++) {
+        const tetromino = getTetromino(piece.type)[piece.rotation];
+
+        console.log("tetromino lenght: ", tetromino.length)
+        console.log("tetromino heigth: ", tetromino[0].length)
+
+        for (let y = 0; y < tetromino.length; y++) {
+            for (let x = 0; x < tetromino[y].length; x++) {
                 console.log("before if")
-                if (piece[y][x] !== 0) {
+                if (tetromino[y][x] !== 0) {
                     console.log("after if")
-                    let boardX = piece.position.x + x;
-                    let boardY = piece.position.y + y;
+                    let boardX = tetromino.position.x + x;
+                    let boardY = tetromino.position.y + y;
                     console.log("Checking position x: ", boardX);
                     console.log("Checking position y: ", boardY);
                     // Check if the piece is outside the game board horizontally or has reached the bottom
