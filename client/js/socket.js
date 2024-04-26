@@ -31,7 +31,7 @@ export function emitDrop(){
 }
 
 //Listen for game state updates from the server
-socket.on('gameState', (gameState) => {
+socket.on('game-state', (gameState) => {
     console.log("Received gamestate from server: ", gameState);
 
 
