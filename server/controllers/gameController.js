@@ -4,19 +4,19 @@ export class GameController {
         this.io = io;
         this.players = {};
         this.width = 10,
-            this.height = 20,
-            this.gameBoard = { //Creates a 2D array with the given size
-                width: this.width,
-                height: this.height,
-                grid: this.initializeGameBoard(),
-            };
+        this.height = 20,
+        this.gameBoard = { //Creates a 2D array with the given size
+            width: this.width,
+            height: this.height,
+            grid: this.initializeGameBoard(),
+        };
         this.initGameLoop();
     }
 
     initializeGameBoard() { //Makes a 2D array filled with zero
         let grid = [];
-        for (let y = 0; y < this.height; y++) {
-            grid[y] = new Array(this.width).fill(0);
+        for (let y = 0; y < 20; y++) {
+            grid[y] = new Array(10).fill(0);
         }
         return grid;
     }
@@ -232,13 +232,13 @@ export class GameController {
         for (const playerId in this.players) {
             if (this.players.hasOwnProperty(playerId)) {
                 const player = this.players[playerId];
-    
+
                 // Handle player's piece falling
                 this.handlePlayerFall(playerId);
-    
+
                 // Check for line clears
                 this.checkForLineClears();
-    
+
                 // Shift to next piece if necessary
                 if (this.pieceCollided(player.currentPiece)) {
                     this.shiftToNextPiece(playerId);
