@@ -11,6 +11,7 @@ export class GameController {
             height: this.height,
             grid: this.initializeGameBoard(),
         };
+        this.initGameLoop();
     }
 
     initializeGameBoard() { //Makes a 2D array filled with zero
@@ -207,5 +208,19 @@ export class GameController {
                 }
             }
         }
+    }
+
+    //Updates the game every 1 second
+    initGameLoop() {
+        setInterval(() => {
+            this.updateGame();
+        }, 1000);
+    }
+
+    updateGame() {
+        Object.keys(this.players).forEach(socketId => {
+            this.handlePlayerFall(socketId);
+        });
+        this.broadcastState();
     }
 }
