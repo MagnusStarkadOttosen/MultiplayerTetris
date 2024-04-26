@@ -100,7 +100,7 @@ export class GameController {
 
     handlePlayerFall(socketId) {
         const player = this.players[socketId];
-        let newPiece = player.currentPiece
+        let newPiece = { ...player.currentPiece }
 
         newPiece.position.y += 1;
 
