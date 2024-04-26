@@ -4,12 +4,12 @@ export class GameController {
         this.io = io;
         this.players = {};
         this.width = 10,
-        this.height = 20,
-        this.gameBoard = { //Creates a 2D array with the given size
-            width: this.width,
-            height: this.height,
-            grid: this.initializeGameBoard(),
-        };
+            this.height = 20,
+            this.gameBoard = { //Creates a 2D array with the given size
+                width: this.width,
+                height: this.height,
+                grid: this.initializeGameBoard(),
+            };
         this.initGameLoop();
     }
 
@@ -105,7 +105,7 @@ export class GameController {
 
         if (!this.pieceCollided(newPiece)) {
             console.log("not collided")
-            this.updatePiece(player.currentPiece, newPiece);
+            // this.updatePiece(player.currentPiece, newPiece);
             player.currentPiece = newPiece;
             // this.broadcastState();
         } else {
@@ -118,10 +118,19 @@ export class GameController {
     }
 
     broadcastState() {
+        const playerPieces = {};
+        for (const id in this.players) {
+            playerPieces[id] = {
+                position: this.players[id].currentPiece.position,
+                type: this.players[id].currentPiece.type,
+                rotation: this.players[id].currentPiece.rotation,
+            };
+        }
+
         //Broadcast the updated game state to all connected clients
         this.io.emit('game-state', {
-            players: this.players,
             gameBoard: this.gameBoard.grid,
+            playerPieces: playerPieces,
         });
     }
 
