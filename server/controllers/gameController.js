@@ -5,12 +5,12 @@ export class GameController {
         this.io = io;
         this.players = {};
         this.width = 10,
-        this.height = 20,
-        this.gameBoard = { //Creates a 2D array with the given size
-            width: this.width,
-            height: this.height,
-            grid: this.initializeGameBoard(),
-        };
+            this.height = 20,
+            this.gameBoard = { //Creates a 2D array with the given size
+                width: this.width,
+                height: this.height,
+                grid: this.initializeGameBoard(),
+            };
         this.initGameLoop();
     }
 
@@ -80,7 +80,7 @@ export class GameController {
     handlePlayerMove(socketId, direction) {
         const player = this.players[socketId];
         if (!player || !player.currentPiece) return;
-        let newPiece = {...player.currentPiece}
+        let newPiece = { ...player.currentPiece }
 
         switch (direction) {
             case 'left':
@@ -159,7 +159,7 @@ export class GameController {
                 y--; //Check the new line at the same position
             }
         }
-        
+
 
         // Increase score based on linesCleared, adjust game speed, etc.
     }
@@ -218,6 +218,10 @@ export class GameController {
     }
 
     updateGame() {
+        this.players.array.forEach(player => {
+            this.handlePlayerFall(player.socketId);
+        });
+
         // Object.keys(this.players).forEach(socketId => {
         //     this.handlePlayerFall(socketId);
         // });
