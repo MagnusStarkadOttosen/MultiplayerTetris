@@ -225,6 +225,24 @@ export class GameController {
         //         }
         //     });
         // }
+
+        for (const playerId in this.players) {
+            if (this.players.hasOwnProperty(playerId)) {
+                const player = this.players[playerId];
+    
+                // Handle player's piece falling
+                this.handlePlayerFall(playerId);
+    
+                // Check for line clears
+                this.checkForLineClears();
+    
+                // Shift to next piece if necessary
+                if (this.pieceCollided(player.currentPiece)) {
+                    this.shiftToNextPiece(playerId);
+                }
+            }
+        }
+
         this.broadcastState();
     }
 }
