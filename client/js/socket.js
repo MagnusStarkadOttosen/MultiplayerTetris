@@ -4,9 +4,9 @@ import { io } from 'https://cdn.socket.io/4.3.1/socket.io.esm.min.js';
 const socket = io();
 
 //Initialize controls once the socket is connected
-socket.on('connect', () => {
-    initializePlayerControls(socket); 
-});
+// socket.on('connect', () => {
+//     initializePlayerControls(socket); 
+// });
 
 //Sends the players wants to move the piece
 export function emitMove(direction){

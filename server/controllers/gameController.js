@@ -24,7 +24,7 @@ export class GameController {
 
     addPlayer(socketId) {
         let pieceList = this.generatePieceList();
-
+        console.log("addPlayer 123")
         this.players[socketId] = {
             currentPiece: pieceList.shift(), //Takes the first element in the list
             holdPiece: null,
