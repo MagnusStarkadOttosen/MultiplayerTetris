@@ -4,7 +4,8 @@ const http = require("http");
 const express = require("express");
 const socketIo = require("socket.io");
 const path = require('path');
-
+const GameController = require('./controllers/gameController');
+const socketManager = require('./controllers/socketManager');
 const app = express();
 
 const server = http.createServer(app);
@@ -14,10 +15,12 @@ const clientPath = path.join(__dirname, '..', 'client');
 app.use(express.static(clientPath));
 
 const gameController = new GameController(io);
+const serverPort = process.env.PORT || 3000;
+server.listen(serverPort, '0.0.0.0', () => console.log(`Server running on port ${serverPort}`));
 
 io.on("connection", (socket) => {
     console.log("A user connected");
-    GameController.addPlayer(socket.id);
+    gameController.addPlayer(socket.id);
 
     socket.on("send-message", (message) => {
         io.emit("receive-message", message);

@@ -1,9 +1,8 @@
 import { getTetromino } from './tetrominoes.js';
 
 class GameController {
-    constructor(io, roomManager) {
+    constructor(io) {
         this.io = io;
-        // this.roomManager = roomManager;
         this.players = {};
         this.gameBoard = { //Creates a 2D array with the given size
             width: 10,
@@ -11,29 +10,6 @@ class GameController {
             grid: this.initializeGameBoard(),
         };
     }
-    // handlePlayerMove(playerId, direction) {
-    //     let room = this.roomManager.getRoom(this.players[playerId].roomId);
-    //     let player = this.players[playerId];
-    //     let newPiece = { ...player.currentPiece }; // Create a copy of current piece
-
-    //     // Logic to move the piece
-    //     newPiece.position.x += (direction === 'left' ? -1 : 1);
-
-    //     // Check for collisions
-    //     if (!this.pieceCollided(newPiece, room.gameBoard)) {
-    //         // Update piece position
-    //         player.currentPiece = newPiece;
-    //         this.broadcastState(room);
-    //     }
-    // }
-
-    broadcastState(room) {
-        // Emit updated state to all players in the room
-        room.players.forEach(playerId => {
-            this.io.to(playerId).emit('game-state', { /* state data */ });
-        });
-    }
-
 
     initializeGameBoard() { //Makes a 2D array filled with zero
         let grid = [];
@@ -259,12 +235,4 @@ class GameController {
         }
         this.broadcastState();
     }
-    
-
-
-
-
-
-
-
 }
