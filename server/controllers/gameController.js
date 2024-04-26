@@ -142,8 +142,8 @@ export class GameController {
                 console.log("before if")
                 if (tetromino[y][x] !== 0) {
                     console.log("after if")
-                    let boardX = tetromino.position.x + x;
-                    let boardY = tetromino.position.y + y;
+                    let boardX = piece.position.x + x;
+                    let boardY = piece.position.y + y;
                     console.log("Checking position x: ", boardX);
                     console.log("Checking position y: ", boardY);
                     // Check if the piece is outside the game board horizontally or has reached the bottom
