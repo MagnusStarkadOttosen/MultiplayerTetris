@@ -1,4 +1,4 @@
-import { getTetromino } from tetronimoes
+import { getTetromino } from './tetronimoes.js';
 export class GameController {
     constructor(io) {
         this.io = io;
@@ -188,7 +188,7 @@ export class GameController {
     }
 
     clearPiece(piece) {
-        const tetromino = this.getTetromino(piece.type)[piece.rotation];
+        const tetromino = getTetromino(piece.type)[piece.rotation];
         for (let y = 0; y < tetromino.length; y++) {
             for (let x = 0; x < tetromino[y].length; x++) {
                 if (tetromino[y][x] !== 0) {
