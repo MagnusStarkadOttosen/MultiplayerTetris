@@ -33,7 +33,7 @@ export class GameController {
             level: 0,
             speed: 48,
         }
-        this.broadcastState();
+        // this.broadcastState();
     }
 
     generatePieceList() {
@@ -70,7 +70,7 @@ export class GameController {
         let player = this.players[socketId];
         player.currentPiece = player.nextPieces.shift();
         this.updatePieceQueue(socketId);
-        this.broadcastState();
+        // this.broadcastState();
     }
 
     removePlayer(socketId) {
@@ -94,7 +94,7 @@ export class GameController {
         if (!this.pieceCollided(newPiece)) {
             this.updatePiece(player.currentPiece, newPiece);
             player.currentPiece = newPiece;
-            this.broadcastState();
+            // this.broadcastState();
         }
     }
 
@@ -107,12 +107,12 @@ export class GameController {
         if (!this.pieceCollided(newPiece)) {
             this.updatePiece(player.currentPiece, newPiece);
             player.currentPiece = newPiece;
-            this.broadcastState();
+            // this.broadcastState();
         } else {
             this.placePiece(player.currentPiece);
             this.checkForLineClears();
             this.shiftToNextPiece();
-            this.broadcastState();
+            // this.broadcastState();
         }
     }
 
@@ -177,7 +177,7 @@ export class GameController {
         if (!this.pieceCollided(newPiece)) {
             this.updatePiece(player.currentPiece, newPiece);
             player.currentPiece = newPiece;
-            this.broadcastState();
+            // this.broadcastState();
         }
     }
 
