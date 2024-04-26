@@ -129,6 +129,11 @@ export class GameController {
         console.log("before if piece")
         if (!piece) return true;
         console.log("before for")
+
+        console.log("piece typr: ", piece.type)
+        console.log("piece lenght: ", piece.length)
+        console.log("piece heigth: ", piece[0].length)
+
         for (let y = 0; y < piece.length; y++) {
             for (let x = 0; x < piece[y].length; x++) {
                 console.log("before if")
