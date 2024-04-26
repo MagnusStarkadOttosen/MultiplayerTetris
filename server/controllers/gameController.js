@@ -141,7 +141,7 @@ class GameController {
         return false;
     }
 
-    checkForLineClears() {
+    checkForLineClears(socketId) {
         let linesCleared = 0;
         for (let y = 0; y < this.gameBoard.height; y++) {
             if (this.gameBoard.grid[y].every(value => value !== 0)) {
@@ -153,10 +153,65 @@ class GameController {
                 y--; //Check the new line at the same position
             }
         }
-
-
         // Increase score based on linesCleared, adjust game speed, etc.
+        const player = this.players[socketId];
+        switch (linesCleared){
+            case 1:
+                player.points += 1;
+                break;
+            case 2:
+                player.points += 2;
+                break;
+            case 3:
+                player.points += 3;
+                break;
+            case 4:
+                player.points += 4;
+                break;
+            default:
+                break;
+        }
+        if (linesCleared > 0) {
+            this.addRandomLinesToOpponents(socketId, linesCleared);
+        }
+
     }
+        addRandomLinesToOpponents(clearingPlayerId, linesCleared) {
+        // Iterate through all players
+        for (const [playerId, player] of Object.entries(this.players)) {
+        // Skip the player who cleared the line
+             if (playerId === clearingPlayerId) continue;
+
+        // Add the incomplete lines to the bottom of each opponent's board
+        for (let i = 0; i < linesCleared; i++) {
+            this.addIncompleteLineToBottom(playerId);
+        }
+        }
+        // After modifying the game boards, broadcast the updated state to all players
+        this.broadcastState();
+    }
+
+    addIncompleteLineToBottom(playerId) {
+        const player = this.players[playerId];
+        const gameBoard = player.gameBoard; // Make sure each player has their own game board
+        const incompleteLine = this.createRandomGreyLine();
+
+        // Move all lines up
+        gameBoard.grid.splice(0, 1);
+        // Add the incomplete line to the bottom
+        gameBoard.grid.push(incompleteLine);
+    }
+    createRandomGreyLine() {
+        const line = new Array(this.gameBoard.width).fill(0);
+        const randomIndex = Math.floor(Math.random() * this.gameBoard.width);
+        for (let i = 0; i < this.gameBoard.width; i++) {
+            if (i !== randomIndex) {
+               line[i] = 8; // Assume 8 represents a grey block
+          }
+         }
+        return line;
+    }
+
 
     handlePlayerRotation(socketId, direction) {
         let player = this.players[socketId];
