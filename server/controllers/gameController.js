@@ -120,7 +120,7 @@ export class GameController {
             console.log("test before place")
             this.placePiece(player.currentPiece);
             // this.checkForLineClears();
-            this.shiftToNextPiece();
+            this.shiftToNextPiece(socketId);
             // this.broadcastState();
         }
     }
