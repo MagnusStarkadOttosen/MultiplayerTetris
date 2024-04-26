@@ -21,7 +21,9 @@
         import { initializePlayerControls } from './js/playerControl.js';
 
         document.addEventListener("DOMContentLoaded", function () {
-            const socket = io('http://130.225.170.52:10311'); // Ensure this is your server's correct address
+            const socket = io('http://130.225.170.52:10311', {
+                withCredentials: true
+            });
 
             socket.on('connect', () => {
                 document.getElementById('status').innerText = 'Socket Status: Connected';
