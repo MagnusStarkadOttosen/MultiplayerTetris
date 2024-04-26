@@ -126,8 +126,9 @@ export class GameController {
     }
 
     pieceCollided(piece) {
+        console.log("before if piece")
         if (!piece) return true;
-
+        console.log("before for")
         for (let y = 0; y < piece.length; y++) {
             for (let x = 0; x < piece[y].length; x++) {
                 console.log("before if")
