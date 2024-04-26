@@ -158,7 +158,7 @@ export class GameController {
                 y--; //Check the new line at the same position
             }
         }
-
+        
 
         // Increase score based on linesCleared, adjust game speed, etc.
     }

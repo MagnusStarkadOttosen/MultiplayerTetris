@@ -36,6 +36,7 @@
             });
 
             socket.on('game-state', (gameState) => {
+                console.log("Index Received game state:", gameState);
                 const gameBoardElement = document.getElementById('gameBoard');
                 renderGameBoard(gameBoardElement, gameState.gameBoard); // Corrected access
             });
@@ -56,7 +57,7 @@
             function getCellColor(cell) {
                 // Define color based on cell value
                 const colorMap = {
-                    0: '#FFFFFF', // Empty
+                    0: '#eeeeee', // Empty
                     1: '#FF0000', // I-tetromino, example
                     2: '#00FF00', // T-tetromino, example
                     // Add more mappings as necessary
