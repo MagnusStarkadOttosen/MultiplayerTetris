@@ -11,7 +11,7 @@ export class GameController {
             height: this.height,
             grid: this.initializeGameBoard(),
         };
-        //this.initGameLoop();
+        this.initGameLoop();
     }
 
     initializeGameBoard() { //Makes a 2D array filled with zero
@@ -218,9 +218,9 @@ export class GameController {
     }
 
     updateGame() {
-        Object.keys(this.players).forEach(socketId => {
-            this.handlePlayerFall(socketId);
-        });
+        // Object.keys(this.players).forEach(socketId => {
+        //     this.handlePlayerFall(socketId);
+        // });
         this.broadcastState();
     }
 }
