@@ -32,7 +32,10 @@ export function emitDrop(){
 
 //Listen for game state updates from the server
 socket.on('gameState', (gameState) => {
-    //TODO: update rendering based on gamestate
+    console.log("Received gamestate from server: ", gameState);
+
+
+
 });
 
 export function emitTest(){
