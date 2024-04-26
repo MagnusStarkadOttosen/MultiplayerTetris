@@ -11,7 +11,7 @@ export class GameController {
             height: this.height,
             grid: this.initializeGameBoard(),
         };
-        // this.initGameLoop();
+        this.initGameLoop();
     }
 
     initializeGameBoard() { //Makes a 2D array filled with zero
