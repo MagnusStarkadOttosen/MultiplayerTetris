@@ -535,7 +535,7 @@ function endGame (newhighScores){
     }
 
     function pieceCollided(piece, position) {
-
+return false
         // let xCount = 0
         // let yCount = 0
         // for (let y = 0; y < piece.length; y++) {

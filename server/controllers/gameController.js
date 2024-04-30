@@ -4,12 +4,12 @@ export class GameController {
         this.io = io;
         this.players = {};
         this.width = 10,
-        this.height = 20,
-        this.gameBoard = { //Creates a 2D array with the given size
-            width: this.width,
-            height: this.height,
-            grid: this.initializeGameBoard(),
-        };
+            this.height = 20,
+            this.gameBoard = { //Creates a 2D array with the given size
+                width: this.width,
+                height: this.height,
+                grid: this.initializeGameBoard(),
+            };
         this.initGameLoop();
     }
 
@@ -43,7 +43,7 @@ export class GameController {
             return {
                 type: type,
                 rotation: 0,
-                position: { x: 5, y: 0 }
+                position: {x: 5, y: 0}
             };
         });
 
@@ -76,10 +76,17 @@ export class GameController {
         //Clean up player state
     }
 
+    copyPiece(piece){
+        let newPiece = getTetromino(piece.type)[piece.rotation]
+        newPiece.position = {x:piece.position.x,y:piece.position.y}
+        newPiece.rotation = piece.rotation
+        newPiece.type = piece.type
+        return newPiece
+    }
     handlePlayerMove(socketId, direction) {
         const player = this.players[socketId];
         if (!player || !player.currentPiece) return;
-        let newPiece = { ...player.currentPiece }
+        let newPiece = this.copyPiece(player.currentPiece)
 
         switch (direction) {
             case 'left':
@@ -92,18 +99,25 @@ export class GameController {
 
         if (!this.pieceCollided(newPiece)) {
             this.updatePiece(player.currentPiece, newPiece);
-            player.currentPiece = newPiece;
+            player.currentPiece = getTetromino(player.currentPiece.type)[player.currentPiece.rotation]
+            newPiece.position = {x: 5, y: 5}
+
+            player.currentPiece.position.x = newPiece.position.x
+            player.currentPiece.position.y = newPiece.position.y
             // this.broadcastState();
         }
     }
 
     handlePlayerFall(socketId) {
-        const player = this.players[socketId];
-        let newPiece = { ...player.currentPiece }
 
+        const player = this.players[socketId];
+        if (player.currentPiece!== undefined) {
+    console.log("test: " +player.rotation)
+            let newPiece = this.copyPiece(player.currentPiece)
+console.log("new piece: "+newPiece.position.x+" "+newPiece.position.y+" "+newPiece.rotation)
         newPiece.position.y += 1;
 
-        if (!this.pieceCollided(newPiece)) {
+            if (!this.pieceCollided(newPiece)) {
             console.log("not collided")
             this.updatePiece(player.currentPiece, newPiece);
             player.currentPiece = newPiece;
@@ -116,7 +130,7 @@ export class GameController {
             // this.broadcastState();
         }
     }
-
+}
     broadcastState() {
         //Broadcast the updated game state to all connected clients
         this.io.emit('game-state', {
@@ -200,6 +214,7 @@ export class GameController {
         this.clearPiece(oldPiece);
         //Place the piece on the board
         this.placePiece(newPiece);
+
     }
 
     clearPiece(piece) {
