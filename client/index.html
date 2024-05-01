@@ -26,10 +26,11 @@
 
         document.addEventListener("DOMContentLoaded", function () {
             // const socket = io('http://130.225.170.52:10311', {
-                const socket = io('localhost:25565', {
+            const socket = io('localhost:25565', {
 
-                    withCredentials: true
+                withCredentials: true
             });
+
 
             socket.on('connect', () => {
                 document.getElementById('status').innerText = 'Socket Status: Connected';
@@ -46,7 +47,7 @@
             socket.on('game-state', (gameState) => {
                 console.log("Index Received game state:", gameState);
                 const gameBoardElement = document.getElementById('gameBoard');
-                const playerElement = document.getElementById('player')
+                // const playerElement = document.getElementById('player')
                 renderGameBoard(gameBoardElement, gameState.gameBoard); // Corrected access
 
             });
@@ -64,12 +65,20 @@
                 });
             }
 
+
+
             function getCellColor(cell) {
                 // Define color based on cell value
                 const colorMap = {
                     0: '#eeeeee', // Empty
-                    1: '#FF0000', // I-tetromino, example
-                    2: '#00FF00', // T-tetromino, example
+                    1: '#FF6347', // I-tetromino, example
+                    2: '#87CEFA', // T-tetromino, example
+                    3: '#90EE90', // T-tetromino, example
+                    4: '#FFFF99', // T-tetromino, example
+                    5: '#FFBD45', // T-tetromino, example
+                    6: '#E0FFFF', // T-tetromino, example
+                7: '#d8b0d1', // T-tetromino, example
+
                     // Add more mappings as necessary
                 };
                 return colorMap[cell] || '#000000'; // Default to black if undefined

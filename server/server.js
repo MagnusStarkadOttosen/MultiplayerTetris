@@ -33,6 +33,7 @@ const gameController = new GameController(io);
 
 io.on("connection", (socket) => {
     console.log("A user connected");
+    console.log(socket.connected)
     gameController.addPlayer(socket.id);
     
     socket.on("send-message", (message) => {
