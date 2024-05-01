@@ -53,6 +53,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("playerFall", () => {
+        gameController.handlePlayerFall(socket.id)
 
     });
 

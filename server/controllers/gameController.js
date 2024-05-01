@@ -68,7 +68,7 @@ export class GameController {
 
     shiftToNextPiece(socketId) {
         let player = this.players[socketId];
-        console.log(player.nextPieces)
+
         player.currentPiece = player.nextPieces.shift();
         this.updatePieceQueue(socketId);
         // this.broadcastState();
@@ -99,7 +99,7 @@ export class GameController {
                 break;
         }
 
-        if (!this.pieceCollided(newPiece)) {
+        if (!this.pieceCollided(newPiece,player.currentPiece)) {
             this.updatePiece(player.currentPiece, newPiece);
             player.currentPiece = this.copyPiece(newPiece)
 
@@ -117,16 +117,17 @@ export class GameController {
 //console.log("new piece: "+newPiece.position.x+" "+newPiece.position.y+" "+newPiece.rotation)
         newPiece.position.y += 1;
 
-            if (!this.pieceCollided(newPiece)) {
+            if (!this.pieceCollided(newPiece,player.currentPiece)) {
             //console.log("not collided")
             this.updatePiece(player.currentPiece, newPiece);
             player.currentPiece = newPiece;
             // this.broadcastState();
         } else {
+
             //console.log("test before place")
             this.placePiece(player.currentPiece);
             this.checkForLineClears();
-            this.shiftToNextPiece();
+            this.shiftToNextPiece(socketId);
             // this.broadcastState();
         }
     }
@@ -139,7 +140,7 @@ export class GameController {
         });
     }
 
-    pieceCollided(piece) {
+    pieceCollided(piece,oldpiece) {
 
         //console.log("before if piece")
         if (!piece) return true;
@@ -156,28 +157,40 @@ export class GameController {
             for (let x = 0; x < tetromino[y].length; x++) {
                // console.log("before if")
                 if (tetromino[y][x] !== 0) {
-                 //   console.log("after if")
+                    //   console.log("after if")
                     let boardX = piece.position.x + x;
                     let boardY = piece.position.y + y;
-                 //   console.log("Checking position x: ", boardX);
-                   // console.log("Checking position y: ", boardY);
+                    //   console.log("Checking position x: ", boardX);
+                    // console.log("Checking position y: ", boardY);
                     // Check if the piece is outside the game board horizontally or has reached the bottom
-                    if (boardX < 0 || boardX >= this.gameBoard.width || boardY >= 19) {
+                    if (boardX < 0 || boardX >= this.gameBoard.width || boardY >= 20) {
+
                         return true;
                     }
                     // Prevent accessing gameBoard.grid[boardY] if boardY is out of bounds
                     // This also implicitly checks if boardY is below the bottom of the game board
-                    this.clearPiece(piece);
+                }}}
+        this.clearPiece(oldpiece);
 
-                    if (boardY < 0 || !this.gameBoard.grid[boardY] || (this.gameBoard.grid[boardY][boardX] !== 0&&this.gameBoard.grid[boardY][boardX]!== player )) {
-                        this.placePiece(piece)
+        for (let y = 0; y < tetromino.length; y++) {
+            for (let x = 0; x < tetromino[y].length; x++) {
+                // console.log("before if")
+                if (tetromino[y][x] !== 0) {
+                    //   console.log("after if")
+                    let boardX = piece.position.x + x;
+                    let boardY = piece.position.y + y;
+
+
+// console.log(this.gameBoard.grid[boardY][boardX])
+                    console.log(this.gameBoard.grid)
+
+                    if (boardY < 0 || !this.gameBoard.grid[boardY] || this.gameBoard.grid[boardY][boardX] !== 0) {
 
                         return true;
                     }
                 }
             }
         }
-        this.placePiece(piece)
         return false;
     }
 
@@ -208,7 +221,7 @@ export class GameController {
             newPiece.rotation = (newPiece.rotation - 1 + 4) % 4;
         }
 
-        if (!this.pieceCollided(newPiece)) {
+        if (!this.pieceCollided(newPiece,player.currentPiece)) {
             this.updatePiece(player.currentPiece, newPiece);
             player.currentPiece = newPiece;
             // this.broadcastState();
@@ -232,6 +245,7 @@ export class GameController {
                    // console.log("pos y: ", y);
                     //console.log("ppos x: ", piece.position.x);
                     //console.log("pos x: ", x);
+
                     this.gameBoard.grid[piece.position.y + y][piece.position.x + x] = 0;
                 }
             }
@@ -276,9 +290,9 @@ export class GameController {
                 this.checkForLineClears();
 
                 // Shift to next piece if necessary
-                if (this.pieceCollided(player.currentPiece)) {
-                    this.shiftToNextPiece(playerId);
-                }
+                // if (this.pieceCollided(player.currentPiece)) {
+                //     this.shiftToNextPiece(playerId);
+                // }
             }
         }
 
