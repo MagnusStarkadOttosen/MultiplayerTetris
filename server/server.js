@@ -62,7 +62,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("playerDrop", () => {
-
+        gameController.handleDrop(socket.id)
     });
 
     socket.on("test", () => {

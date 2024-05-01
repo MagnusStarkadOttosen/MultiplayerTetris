@@ -2,7 +2,6 @@ import {emitDrop, emitFall, emitHold, emitMove, emitRotate, emitTest} from "./so
 
 export function initializePlayerControls(socket){
     document.addEventListener("keydown", event => {
-
         switch(event.key){
             case "ArrowLeft":
             case "a":
@@ -19,6 +18,7 @@ export function initializePlayerControls(socket){
             case "q":
                 emitRotate(socket,"antiClockwise");
                 break;
+            case "ArrowUp":
             case "e":
                 emitRotate(socket,"clockwise");
                 break;

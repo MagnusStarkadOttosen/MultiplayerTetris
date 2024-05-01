@@ -129,9 +129,19 @@ export class GameController {
             this.checkForLineClears();
             this.shiftToNextPiece(socketId);
             // this.broadcastState();
+                return false
         }
     }
+        return true
 }
+    handleDrop(socketId){
+        while(this.handlePlayerFall(socketId)){}
+
+
+
+
+}
+
     broadcastState() {
         //Broadcast the updated game state to all connected clients
         this.io.emit('game-state', {
@@ -182,7 +192,7 @@ export class GameController {
 
 
 // console.log(this.gameBoard.grid[boardY][boardX])
-                    console.log(this.gameBoard.grid)
+                    //console.log(this.gameBoard.grid)
 
                     if (boardY < 0 || !this.gameBoard.grid[boardY] || this.gameBoard.grid[boardY][boardX] !== 0) {
 
@@ -213,7 +223,7 @@ export class GameController {
 
     handlePlayerRotation(socketId, direction) {
         let player = this.players[socketId];
-        let newPiece = player.currentPiece
+        let newPiece = this.copyPiece(player.currentPiece)
 
         if (direction == "clockwise") {
             newPiece.rotation = (newPiece.rotation + 1) % 4;
@@ -233,6 +243,7 @@ export class GameController {
         this.clearPiece(oldPiece);
         //Place the piece on the board
         this.placePiece(newPiece);
+        this.broadcastState();
 
     }
 
