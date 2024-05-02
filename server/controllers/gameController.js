@@ -197,6 +197,7 @@ export class GameController {
         this.io.emit('game-state', {
             players: this.players,
             gameBoards: this.gameBoards,
+            playerPieces: playerPieces,
         });
     }
 
