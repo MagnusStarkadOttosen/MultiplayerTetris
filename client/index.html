@@ -60,13 +60,23 @@
                 gameBoardElements[3] = document.getElementById('gameBoard4')
 
                 let boards = Object.values(gameState.gameBoards)
-
-                for (let i = 0; i < boards.length; i++) {
-                    renderGameBoard(gameBoardElements[i], boards[i].grid)
-                }
+                boards.forEach((board, i) => {
+                    if (board && board.grid) {
+                        renderGameBoard(gameBoardElements[i], board.grid);
+                    } else {
+                        console.error("Invalid board data:", board);
+                    }
+                });
+                // for (let i = 0; i < boards.length; i++) {
+                //     renderGameBoard(gameBoardElements[i], boards[i].grid)
+                // }
             });
 
             function renderGameBoard(container, grid, playerPieces) {
+                if (!container) {
+                    console.error("Container not found");
+                    return;
+                }
                 container.innerHTML = ''; // Clear existing grid cells
                 grid.forEach(row => {
                     row.forEach(cell => {
@@ -116,4 +126,5 @@
         });
     </script>
 </body>
+
 </html>
