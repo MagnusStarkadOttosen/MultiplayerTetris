@@ -4,7 +4,7 @@ export class GameController {
         this.io = io;
         this.players = {};
         this.width = 10
-        this.height = 20
+        this.height = 22
             this.gameBoards = { //Creates a 2D array with the given size
 
             };
@@ -13,8 +13,8 @@ export class GameController {
 
     initializeGameBoard() { //Makes a 2D array filled with zero
         let grid = [];
-        for (let y = 0; y < 20; y++) {
-            grid[y] = new Array(10).fill(0);
+        for (let y = 0; y < this.height; y++) {
+            grid[y] = new Array(this.width).fill(0);
         }
         return grid;
     }
@@ -182,7 +182,7 @@ export class GameController {
                     //   console.log("Checking position x: ", boardX);
                     // console.log("Checking position y: ", boardY);
                     // Check if the piece is outside the game board horizontally or has reached the bottom
-                    if (boardX < 0 || boardX >= this.gameBoards[socketId].width || boardY >= 20) {
+                    if (boardX < 0 || boardX >= this.gameBoards[socketId].width || boardY >= this.height) {
 
                         return true;
                     }
