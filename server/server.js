@@ -30,12 +30,29 @@ const clientPath = path.join(__dirname, '..', 'client');
 app.use(express.static(clientPath));
 
 const gameController = new GameController(io);
+const gameController2 = new GameController(io);
+let swit = 0;
+let list1=[]
+let list2=[]
+
 
 io.on("connection", (socket) => {
     console.log("A user connected");
     console.log(socket.connected)
-    gameController.addPlayer(socket.id);
-    gameController.addGameboard(socket.id);
+    if(swit==0) {
+        gameController.addPlayer(socket.id);
+        gameController.addGameboard(socket.id);
+        console.log(socket.id)
+        list1.push(socket.id)
+        swit=1
+    }else
+    {
+        gameController2.addPlayer(socket.id);
+        gameController2.addGameboard(socket.id);
+        list2.push(socket.id)
+        swit=0
+
+    }
     
     socket.on("send-message", (message) => {
         io.emit("receive-message", message);
@@ -46,15 +63,31 @@ io.on("connection", (socket) => {
     });
 
     socket.on("playerMove", (direction) => {
-        gameController.handlePlayerMove(socket.id, direction);
+       if( list1.includes(socket.id,0)){
+           console.log(socket.id)
+           gameController.handlePlayerMove(socket.id, direction);}
+       else{
+           gameController2.handlePlayerMove(socket.id, direction);}
+
+
     });
 
     socket.on("playerRotate", (rotationDirection) => {
-        gameController.handlePlayerRotation(socket.id, rotationDirection);
+        if( list1.includes(socket.id,0)){
+            console.log(socket.id)
+            gameController.handlePlayerRotation(socket.id, rotationDirection);}
+        else{
+            gameController2.handlePlayerRotation(socket.id, rotationDirection);}
+
     });
 
     socket.on("playerFall", () => {
-        gameController.handlePlayerFall(socket.id)
+        if( list1.includes(socket.id,0)){
+            console.log(socket.id)
+            gameController.handlePlayerFall(socket.id)}
+        else{
+            gameController2.handlePlayerFall(socket.id)}
+
 
     });
 
@@ -63,7 +96,14 @@ io.on("connection", (socket) => {
     });
 
     socket.on("playerDrop", () => {
-        gameController.handleDrop(socket.id)
+        if(list1.includes(socket.id,0)){
+            console.log(socket.id)
+            gameController.handleDrop(socket.id)}
+        else{
+            gameController2.handleDrop(socket.id)
+        }
+
+
     });
 
     socket.on("test", () => {
