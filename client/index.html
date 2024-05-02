@@ -78,10 +78,16 @@
                 // renderGameBoard(gameBoardElements[0], gameState.gameBoards[socket.id].grid); // Corrected access
 
                 let boards = Object.values(gameState.gameBoards)
-
+                let players = Object.values(gameState.players)
                 for(let i =0;i<boards.length;i++){
                     renderGameBoard(gameBoardElements[i], boards[i].grid)
+                    if (!players[i].gameOver)
                     playerElements[i].innerText = "Player " + (i+1)
+                    else{
+                        playerElements[i].innerText = "Gameover"
+
+
+                    }
 
 
                 }
