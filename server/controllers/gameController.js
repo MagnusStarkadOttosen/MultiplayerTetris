@@ -180,9 +180,9 @@ export class GameController {
 
 }
 
-    broadcastState() {
+    broadcastState(socketId) {
         //Broadcast the updated game state to all connected clients
-        this.io.emit('game-state', {
+        this.io.to(socketId).emit('game-state', {
             players: this.players,
             gameBoards: this.gameBoards,
         });
@@ -288,7 +288,7 @@ export class GameController {
 
         this.placePiece(newPiece,socketId);
 
-        this.broadcastState();
+        this.broadcastState(socketId);
 
     }
 
@@ -351,6 +351,6 @@ export class GameController {
             }
         }
 
-        this.broadcastState();
+        //this.broadcastState();
     }
 }
