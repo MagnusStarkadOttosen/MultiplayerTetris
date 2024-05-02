@@ -33,7 +33,9 @@ const gameController = new GameController(io);
 
 io.on("connection", (socket) => {
     console.log("A user connected");
+    console.log(socket.connected)
     gameController.addPlayer(socket.id);
+    gameController.addGameboard(socket.id);
     
     socket.on("send-message", (message) => {
         io.emit("receive-message", message);
@@ -52,6 +54,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("playerFall", () => {
+        gameController.handlePlayerFall(socket.id)
 
     });
 
@@ -60,7 +63,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("playerDrop", () => {
-
+        gameController.handleDrop(socket.id)
     });
 
     socket.on("test", () => {
@@ -70,5 +73,5 @@ io.on("connection", (socket) => {
 
 });
 
-const PORT = 3000;
+const PORT = 25565;
 server.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));

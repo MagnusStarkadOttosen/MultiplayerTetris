@@ -1,35 +1,35 @@
-import { emitTest, emitMove, emitRotate, emitFall, emitHold, emitDrop } from "./socket.js";
+import {emitDrop, emitFall, emitHold, emitMove, emitRotate, emitTest} from "./socket.js";
 
 export function initializePlayerControls(socket){
     document.addEventListener("keydown", event => {
-
         switch(event.key){
             case "ArrowLeft":
             case "a":
-                emitMove("left");
+                emitMove(socket,"left");
                 break;
             case "ArrowRight":
             case "d":
-                emitMove("right");
+                emitMove(socket,"right");
                 break;
             case "ArrowDown":
             case "s":
-                emitFall();
+                emitFall(socket);
                 break;
             case "q":
-                emitRotate("antiClockwise");
+                emitRotate(socket,"antiClockwise");
                 break;
+            case "ArrowUp":
             case "e":
-                emitRotate("clockwise");
+                emitRotate(socket,"clockwise");
                 break;
             case " ":
-                emitDrop();
+                emitDrop(socket);
                 break;
             case "c":
-                emitHold();
+                emitHold(socket);
                 break;
             case "t":
-                emitTest();
+                emitTest(socket);
                 break;
         }
     })

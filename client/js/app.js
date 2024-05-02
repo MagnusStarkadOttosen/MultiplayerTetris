@@ -25,7 +25,8 @@ const player = {
     level:0,
     holdBoolean:0,
     Heldpiece: null,
-    HeldpieceType: "T"
+    HeldpieceType: "T",
+    highScores: 0
 
 }
 
@@ -216,6 +217,14 @@ document.addEventListener("keydown", event => {
         }
         return result;
     }
+
+    function updateHighScores (newhighScores){
+        const highscoresElement = document.getElementById("highscore") ;
+    highscoresElement.textContent = ""+newhighScores;
+    console.log(newhighScores)
+    }
+    let highscore =0;
+    updateHighScores(highscore);
 
     function getTetrominoWidth(matrix) {
         return matrix[0].length;
@@ -430,7 +439,17 @@ function endGame (newhighScores){
 
 
         })
+       let point =0;
+        switch(checkArray.length){
+            case 1 : point = 40; break;
+            case 2 : point = 100; break;
+            case 3 : point = 300; break;
+            case 4 : point = 1200;
+        }
 
+        player.highScores += point;
+        console.log(player.highScores)
+        updateHighScores(player.highScores);
         removeFullLine(checkArray)
         // createRandomGreyLine()
 
@@ -535,7 +554,6 @@ function endGame (newhighScores){
     }
 
     function pieceCollided(piece, position) {
-
         // let xCount = 0
         // let yCount = 0
         // for (let y = 0; y < piece.length; y++) {
