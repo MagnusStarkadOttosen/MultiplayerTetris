@@ -17,7 +17,7 @@ const server = http.createServer(app);
 // const io = new SocketIO(server);
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:63342",  // Allows all domains, adjust as needed for security
+        origin: "http://dtu62597.eduhost.dk:10311",  // Allows all domains, adjust as needed for security
         methods: ["GET", "POST"],
         allowedHeaders: ["my-custom-header"],
         credentials: true
@@ -64,7 +64,6 @@ io.on("connection", (socket) => {
 
     socket.on("playerMove", (direction) => {
        if( list1.includes(socket.id,0)){
-           console.log(socket.id)
            gameController.handlePlayerMove(socket.id, direction);}
        else{
            gameController2.handlePlayerMove(socket.id, direction);}
@@ -74,7 +73,6 @@ io.on("connection", (socket) => {
 
     socket.on("playerRotate", (rotationDirection) => {
         if( list1.includes(socket.id,0)){
-            console.log(socket.id)
             gameController.handlePlayerRotation(socket.id, rotationDirection);}
         else{
             gameController2.handlePlayerRotation(socket.id, rotationDirection);}
@@ -83,7 +81,6 @@ io.on("connection", (socket) => {
 
     socket.on("playerFall", () => {
         if( list1.includes(socket.id,0)){
-            console.log(socket.id)
             gameController.handlePlayerFall(socket.id)}
         else{
             gameController2.handlePlayerFall(socket.id)}
@@ -97,7 +94,6 @@ io.on("connection", (socket) => {
 
     socket.on("playerDrop", () => {
         if(list1.includes(socket.id,0)){
-            console.log(socket.id)
             gameController.handleDrop(socket.id)}
         else{
             gameController2.handleDrop(socket.id)
@@ -113,5 +109,5 @@ io.on("connection", (socket) => {
 
 });
 
-const PORT = 25565;
+const PORT = 3000;
 server.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));
