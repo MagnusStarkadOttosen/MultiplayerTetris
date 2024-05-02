@@ -62,7 +62,7 @@
                 let boards = Object.values(gameState.gameBoards)
                 boards.forEach((board, i) => {
                     if (board && board.grid) {
-                        renderGameBoard(gameBoardElements[i], board.grid);
+                        renderGameBoard(gameBoardElements[i], board.grid, gameState.playerPieces);
                     } else {
                         console.error("Invalid board data:", board);
                     }
