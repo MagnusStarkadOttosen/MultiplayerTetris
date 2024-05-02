@@ -23,11 +23,10 @@
     <div id="gameBoard4" style="display: inline grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">
         <!-- Cells will be dynamically inserted here -->
     </div>
-<!--    <div id="player" style="display: grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">-->
-<!--            &lt;!&ndash; Cells will be dynamically inserted here &ndash;&gt;-->
+    <!--    <div id="player" style="display: grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">-->
+    <!--            &lt;!&ndash; Cells will be dynamically inserted here &ndash;&gt;-->
 
-<!--    </div>-->
-
+    <!--    </div>-->
 
     <script type="module">
         import { io } from 'https://cdn.socket.io/4.3.1/socket.io.esm.min.js';
@@ -35,11 +34,10 @@
 
         document.addEventListener("DOMContentLoaded", function () {
             const socket = io('http://130.225.170.52:10311', {
-            // const socket = io('localhost:25565', {
+                // const socket = io('localhost:25565', {
 
                 withCredentials: true
             });
-
 
             socket.on('connect', () => {
                 document.getElementById('status').innerText = 'Socket Status: Connected';
@@ -61,27 +59,11 @@
                 gameBoardElements[2] = document.getElementById('gameBoard3')
                 gameBoardElements[3] = document.getElementById('gameBoard4')
 
-
-                // const playerElement = document.getElementById('player')
-
-                // renderGameBoard(gameBoardElements[0], gameState.gameBoards[socket.id].grid); // Corrected access
-
                 let boards = Object.values(gameState.gameBoards)
 
-                for(let i =0;i<boards.length;i++){
+                for (let i = 0; i < boards.length; i++) {
                     renderGameBoard(gameBoardElements[i], boards[i].grid)
-
-
                 }
-
-
-
-
-
-
-
-
-
             });
 
             function renderGameBoard(container, grid, playerPieces) {
@@ -113,8 +95,6 @@
                 });
             }
 
-
-
             function getCellColor(cell) {
                 // Define color based on cell value
                 const colorMap = {
@@ -125,19 +105,15 @@
                     4: '#FFFF99', // T-tetromino, example
                     5: '#FFBD45', // T-tetromino, example
                     6: '#E0FFFF', // T-tetromino, example
-                7: '#d8b0d1', // T-tetromino, example
-                    8:'#000000',
-
+                    7: '#d8b0d1', // T-tetromino, example
+                    8: '#000000',
                     // Add more mappings as necessary
                 };
                 return colorMap[cell] || '#000000'; // Default to black if undefined
             }
-
             // Initialize player controls with the socket
             initializePlayerControls(socket);
         });
     </script>
-
 </body>
-
 </html>
