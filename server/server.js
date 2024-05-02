@@ -7,7 +7,7 @@ import { GameController } from './controllers/gameController.js';
 import { fileURLToPath } from 'url';
 
 // const http = require("http");
-// const express = require("express");
+// const expraess = require("express");
 // const socketIo = require("socket.io");
 // const path = require('path');
 
@@ -17,7 +17,7 @@ const server = http.createServer(app);
 // const io = new SocketIO(server);
 const io = new Server(server, {
     cors: {
-        origin: "http://dtu62597.eduhost.dk:10311",  // Allows all domains, adjust as needed for security
+        origin: "http://localhost:63342",  // Allows all domains, adjust as needed for security
         methods: ["GET", "POST"],
         allowedHeaders: ["my-custom-header"],
         credentials: true
