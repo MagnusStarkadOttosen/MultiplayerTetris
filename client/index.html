@@ -1,121 +1,78 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket Connection Test</title>
 </head>
+
 <body>
-    <style>
-        .button{
-            border-radius: 5px;
-            width: 250px;
-            height: 30px;
+    <h1>Socket Connection Test</h1>
+    <div id="status">Socket Status: Connecting...</div>
 
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .inputBox{
-            width: 250px;
-            padding: 8px 12px;
-            font-size: 16px;
-            border: 1px solid #ced4da;
-            box-shadow: 0 0 4px #00000019;
-            border-radius: 5px;
-            margin: 10px;
-        }
-        .tetrisImage{
-            margin-left:33%;
-        }
-
-
-
-        #menu{
-            padding-top: 160px;
-            text-align: center;
-        }
-        body{
-            background-color: #ffcccc;
-
-        }
-
-    </style>
-
-
-    <!-- Here we have our tetris title -->
-    <img src="public/images/tetrisTitle.png" alt="Tetris" class="tetrisImage" />
-
-
-
-    <!-- Here we have our Menu options -->
-
-    <div id="menu">
-        <script>
-            isJoin = false
-            isCreate=false
-            function hideCreateButton() {
-                const create = document.getElementById('createButton');
-                isCreate=!isCreate
-                console.log(isCreate)
-                create.hidden = isCreate;
-            }
-            function hideJoinButton() {
-                const join = document.getElementById('joinButton');
-                isJoin=!isJoin
-                console.log(isJoin)
-                join.hidden = isJoin;
-            }
-            function hideUserInputFields(){
-                const create1 = document.getElementById('createButton');
-                create1.hidden = true;
-                const join1 = document.getElementById('joinButton');
-                join1.hidden = true;
-
-
-            }
-
-        </script>
-        <br>
-        <button class="button" onclick="window.location.href = 'tetris.html'">Play</button>
-
-
-        </button>
-        <br/>
-        <button class="button" onclick={hideJoinButton()} > Join game  </button>
-        <br>
-        <select class="inputBox" id="joinButton" > >
-            <option value="lobby1">Lobby 1</option>
-            <option value="lobby2">Lobby 2</option>
-            <option value="lobby3">Lobby 3</option>
-        </select>
-        <br/>
-        <br>
-        <button class="button" onclick={hideCreateButton()}> Create game </button>
-        <br>
-
-        <input id="createButton"class="inputBox" name="Lobbyname" type="text" placeholder="Lobby name"
-        ></input>
-        <br/>
-
-        <br/>
-
+    <div id="gameBoard1" style="display: inline grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">
+        <!-- Cells will be dynamically inserted here -->
     </div>
+    <div id="gameBoard2" style="display: inline grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">
+        <!-- Cells will be dynamically inserted here -->
+    </div>
+    <div id="gameBoard3" style="display: inline grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">
+        <!-- Cells will be dynamically inserted here -->
+    </div>
+    <div id="gameBoard4" style="display: inline grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">
+        <!-- Cells will be dynamically inserted here -->
+    </div>
+<!--    <div id="player" style="display: grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">-->
+<!--            &lt;!&ndash; Cells will be dynamically inserted here &ndash;&gt;-->
+
+<!--    </div>-->
 
 
-    <script src="js/app.js"></script>
+    <script type="module">
+        import { io } from 'https://cdn.socket.io/4.3.1/socket.io.esm.min.js';
+        import { initializePlayerControls } from './js/playerControl.js';
 
-    <script>hideUserInputFields()</script>
-<!--    <script type="module" src="js/data.js"></script>-->
+        document.addEventListener("DOMContentLoaded", function () {
+            // const socket = io('http://130.225.170.52:10311', {
+            const socket = io('localhost:25565', {
 
-
-    <!-- here we take out user input -->
-
-
-
-
-
+                withCredentials: true
+            });
 
 
+            socket.on('connect', () => {
+                document.getElementById('status').innerText = 'Socket Status: Connected';
+            });
+
+            socket.on('disconnect', () => {
+                document.getElementById('status').innerText = 'Socket Status: Disconnected';
+            });
+
+            socket.on('receive-message', (message) => {
+                console.log("Received from server:", message);
+            });
+
+            socket.on('game-state', (gameState) => {
+                console.log("Index Received game state:", gameState);
+                const gameBoardElements = {}
+                gameBoardElements[0] = document.getElementById('gameBoard1')
+                gameBoardElements[1] = document.getElementById('gameBoard2')
+                gameBoardElements[2] = document.getElementById('gameBoard3')
+                gameBoardElements[3] = document.getElementById('gameBoard4')
+
+
+                // const playerElement = document.getElementById('player')
+
+                // renderGameBoard(gameBoardElements[0], gameState.gameBoards[socket.id].grid); // Corrected access
+
+                let boards = Object.values(gameState.gameBoards)
+
+                for(let i =0;i<boards.length;i++){
+                    renderGameBoard(gameBoardElements[i], boards[i].grid)
+
+
+                }
 
 
 
@@ -125,11 +82,45 @@
 
 
 
+            });
+
+            function renderGameBoard(container, grid) {
+                container.innerHTML = ''; // Clear existing grid cells
+                grid.forEach(row => {
+                    row.forEach(cell => {
+                        const cellElement = document.createElement('div');
+                        cellElement.style.width = '30px';
+                        cellElement.style.height = '30px';
+                        cellElement.style.backgroundColor = getCellColor(cell);
+                        container.appendChild(cellElement);
+                    });
+                });
+            }
 
 
 
+            function getCellColor(cell) {
+                // Define color based on cell value
+                const colorMap = {
+                    0: '#eeeeee', // Empty
+                    1: '#FF6347', // I-tetromino, example
+                    2: '#87CEFA', // T-tetromino, example
+                    3: '#90EE90', // T-tetromino, example
+                    4: '#FFFF99', // T-tetromino, example
+                    5: '#FFBD45', // T-tetromino, example
+                    6: '#E0FFFF', // T-tetromino, example
+                7: '#d8b0d1', // T-tetromino, example
 
+                    // Add more mappings as necessary
+                };
+                return colorMap[cell] || '#000000'; // Default to black if undefined
+            }
 
+            // Initialize player controls with the socket
+            initializePlayerControls(socket);
+        });
+    </script>
 
 </body>
+
 </html>
