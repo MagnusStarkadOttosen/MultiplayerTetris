@@ -3,12 +3,10 @@ export class GameController {
     constructor(io) {
         this.io = io;
         this.players = {};
-        this.width = 10,
-            this.height = 20,
-            this.gameBoard = { //Creates a 2D array with the given size
-                width: this.width,
-                height: this.height,
-                grid: this.initializeGameBoard(),
+        this.width = 10
+        this.height = 20
+            this.gameBoards = { //Creates a 2D array with the given size
+
             };
         this.initGameLoop();
     }
@@ -32,7 +30,18 @@ export class GameController {
             level: 0,
             speed: 48,
         }
-        this.broadcastState();
+
+    }
+
+    addGameboard(socketId){
+        console.log("addGameboard")
+        this.gameBoards[socketId] = {
+            width: this.width,
+            height: this.height,
+            grid: this.initializeGameBoard(),
+        }
+        console.log(this.gameBoards)
+
     }
 
     generatePieceList() {
@@ -99,8 +108,8 @@ export class GameController {
                 break;
         }
 
-        if (!this.pieceCollided(newPiece,player.currentPiece)) {
-            this.updatePiece(player.currentPiece, newPiece);
+        if (!this.pieceCollided(newPiece,player.currentPiece,socketId)) {
+            this.updatePiece(player.currentPiece, newPiece,socketId);
             player.currentPiece = this.copyPiece(newPiece)
 
 
@@ -117,16 +126,16 @@ export class GameController {
 //console.log("new piece: "+newPiece.position.x+" "+newPiece.position.y+" "+newPiece.rotation)
         newPiece.position.y += 1;
 
-            if (!this.pieceCollided(newPiece,player.currentPiece)) {
+            if (!this.pieceCollided(newPiece,player.currentPiece,socketId)) {
             //console.log("not collided")
-            this.updatePiece(player.currentPiece, newPiece);
+            this.updatePiece(player.currentPiece, newPiece,socketId);
             player.currentPiece = newPiece;
             // this.broadcastState();
         } else {
 
             //console.log("test before place")
-            this.placePiece(player.currentPiece);
-            this.checkForLineClears();
+            this.placePiece(player.currentPiece,socketId);
+            this.checkForLineClears(socketId);
             this.shiftToNextPiece(socketId);
             // this.broadcastState();
                 return false
@@ -146,11 +155,11 @@ export class GameController {
         //Broadcast the updated game state to all connected clients
         this.io.emit('game-state', {
             players: this.players,
-            gameBoard: this.gameBoard.grid,
+            gameBoards: this.gameBoards,
         });
     }
 
-    pieceCollided(piece,oldpiece) {
+    pieceCollided(piece,oldpiece,socketId) {
 
         //console.log("before if piece")
         if (!piece) return true;
@@ -173,14 +182,14 @@ export class GameController {
                     //   console.log("Checking position x: ", boardX);
                     // console.log("Checking position y: ", boardY);
                     // Check if the piece is outside the game board horizontally or has reached the bottom
-                    if (boardX < 0 || boardX >= this.gameBoard.width || boardY >= 20) {
+                    if (boardX < 0 || boardX >= this.gameBoards[socketId].width || boardY >= 20) {
 
                         return true;
                     }
                     // Prevent accessing gameBoard.grid[boardY] if boardY is out of bounds
                     // This also implicitly checks if boardY is below the bottom of the game board
                 }}}
-        this.clearPiece(oldpiece);
+        this.clearPiece(oldpiece,socketId);
 
         for (let y = 0; y < tetromino.length; y++) {
             for (let x = 0; x < tetromino[y].length; x++) {
@@ -194,7 +203,7 @@ export class GameController {
 // console.log(this.gameBoard.grid[boardY][boardX])
                     //console.log(this.gameBoard.grid)
 
-                    if (boardY < 0 || !this.gameBoard.grid[boardY] || this.gameBoard.grid[boardY][boardX] !== 0) {
+                    if (boardY < 0 || !this.gameBoards[socketId].grid[boardY] || this.gameBoards[socketId].grid[boardY][boardX] !== 0) {
 
                         return true;
                     }
@@ -204,14 +213,14 @@ export class GameController {
         return false;
     }
 
-    checkForLineClears() {
+    checkForLineClears(socketId) {
         let linesCleared = 0;
-        for (let y = 0; y < this.gameBoard.height; y++) {
-            if (this.gameBoard.grid[y].every(value => value !== 0)) {
+        for (let y = 0; y < this.gameBoards[socketId].height; y++) {
+            if (this.gameBoards[socketId].grid[y].every(value => value !== 0)) {
                 //Remove the full line
-                this.gameBoard.grid.splice(y, 1);
+                this.gameBoards[socketId].grid.splice(y, 1);
                 //Add an empty line at the top
-                this.gameBoard.grid.unshift(new Array(this.gameBoard.width).fill(0));
+                this.gameBoards[socketId].grid.unshift(new Array(this.gameBoards[socketId].width).fill(0));
                 linesCleared++;
                 y--; //Check the new line at the same position
             }
@@ -231,23 +240,23 @@ export class GameController {
             newPiece.rotation = (newPiece.rotation - 1 + 4) % 4;
         }
 
-        if (!this.pieceCollided(newPiece,player.currentPiece)) {
-            this.updatePiece(player.currentPiece, newPiece);
+        if (!this.pieceCollided(newPiece,player.currentPiece,socketId)) {
+            this.updatePiece(player.currentPiece, newPiece,socketId);
             player.currentPiece = newPiece;
             // this.broadcastState();
         }
     }
 
-    updatePiece(oldPiece, newPiece) {
+    updatePiece(oldPiece, newPiece,socketId) {
         //Clear the piece's old position
-        this.clearPiece(oldPiece);
+        this.clearPiece(oldPiece,socketId);
         //Place the piece on the board
-        this.placePiece(newPiece);
+        this.placePiece(newPiece,socketId);
         this.broadcastState();
 
     }
 
-    clearPiece(piece) {
+    clearPiece(piece,socketId) {
         const tetromino = getTetromino(piece.type)[piece.rotation];
         for (let y = 0; y < tetromino.length; y++) {
             for (let x = 0; x < tetromino[y].length; x++) {
@@ -257,25 +266,25 @@ export class GameController {
                     //console.log("ppos x: ", piece.position.x);
                     //console.log("pos x: ", x);
 
-                    this.gameBoard.grid[piece.position.y + y][piece.position.x + x] = 0;
+                    this.gameBoards[socketId].grid[piece.position.y + y][piece.position.x + x] = 0;
                 }
             }
         }
     }
 
-    placePiece(piece) {
+    placePiece(piece,socketId) {
         const tetromino = getTetromino(piece.type)[piece.rotation];
         for (let y = 0; y < tetromino.length; y++) {
             for (let x = 0; x < tetromino[y].length; x++) {
                 if (tetromino[y][x] !== 0) {
-                    this.gameBoard.grid[piece.position.y + y][piece.position.x + x] = tetromino[y][x];
+                    this.gameBoards[socketId].grid[piece.position.y + y][piece.position.x + x] = tetromino[y][x];
                 }
             }
         }
     }
 
     //Updates the game every 1 second
-    initGameLoop() {
+    initGameLoop(socketId) {
         setInterval(() => {
             this.updateGame();
         }, 1000);
@@ -297,8 +306,8 @@ export class GameController {
                 // Handle player's piece falling
                 this.handlePlayerFall(playerId);
 
-                // Check for line clears
-                this.checkForLineClears();
+                // // Check for line clears
+                this.checkForLineClears(playerId);
 
                 // Shift to next piece if necessary
                 // if (this.pieceCollided(player.currentPiece)) {

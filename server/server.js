@@ -35,6 +35,7 @@ io.on("connection", (socket) => {
     console.log("A user connected");
     console.log(socket.connected)
     gameController.addPlayer(socket.id);
+    gameController.addGameboard(socket.id);
     
     socket.on("send-message", (message) => {
         io.emit("receive-message", message);
