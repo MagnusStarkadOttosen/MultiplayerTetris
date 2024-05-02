@@ -83,18 +83,23 @@
         <br/>
         <button class="button" onclick={hideJoinButton()} > Join game  </button>
         <br>
-        <select class="inputBox" id="joinButton" > >
-            <option value="lobby1">Lobby 1</option>
-            <option value="lobby2">Lobby 2</option>
-            <option value="lobby3">Lobby 3</option>
-        </select>
-        <br/>
-        <br>
-        <button class="button" onclick={hideCreateButton()}> Create game </button>
+        <button class="lobbyButton" onclick=
+                "window.location.href = 'index.html'"
+
+        >Lobby 1</button>
         <br>
 
-        <input id="createButton"class="inputBox" name="Lobbyname" type="text" placeholder="Lobby name"
-        ></input>
+        <button class="lobbyButton" onclick="window.location.href = 'index.html'">Lobby 2</button>
+        <br>
+
+        <button class="lobbyButton" onclick="window.location.href = 'index.html'">Lobby 3</button>
+        <br>
+
+        <button class="lobbyButton" onclick="window.location.href = 'index.html'">Lobby 4</button>
+        <br/>
+
+
+
         <br/>
 
         <br/>

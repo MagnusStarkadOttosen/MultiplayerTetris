@@ -178,9 +178,6 @@ export class GameController {
     handleDrop(socketId){
         while(this.handlePlayerFall(socketId)){}
 
-
-
-
 }
 
     broadcastState() {
