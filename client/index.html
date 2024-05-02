@@ -88,21 +88,21 @@
                     });
                 });
 
-                Object.keys(playerPieces).forEach(playerId => {
-                    const piece = playerPieces[playerId];
-                    const tetromino = getTetromino(piece.type)[piece.rotation];
-                    tetromino.forEach((row, py) => {
-                        row.forEach((cell, px) => {
-                            if (cell !== 0) {
-                                const x = piece.position.x + px;
-                                const y = piece.position.y + py;
-                                const cellIndex = y * 10 + x;
-                                const cellElement = container.children[cellIndex];
-                                cellElement.style.backgroundColor = getCellColor(cell);
-                            }
-                        });
-                    });
-                });
+                // Object.keys(playerPieces).forEach(playerId => {
+                //     const piece = playerPieces[playerId];
+                //     const tetromino = getTetromino(piece.type)[piece.rotation];
+                //     tetromino.forEach((row, py) => {
+                //         row.forEach((cell, px) => {
+                //             if (cell !== 0) {
+                //                 const x = piece.position.x + px;
+                //                 const y = piece.position.y + py;
+                //                 const cellIndex = y * 10 + x;
+                //                 const cellElement = container.children[cellIndex];
+                //                 cellElement.style.backgroundColor = getCellColor(cell);
+                //             }
+                //         });
+                //     });
+                // });
             }
 
             function getCellColor(cell) {
