@@ -4,7 +4,7 @@ export class GameController {
         this.io = io;
         this.players = {};
         this.width = 10
-        this.height = 20
+        this.height = 22
             this.gameBoards = { //Creates a 2D array with the given size
 
             };
@@ -13,8 +13,8 @@ export class GameController {
 
     initializeGameBoard() { //Makes a 2D array filled with zero
         let grid = [];
-        for (let y = 0; y < 20; y++) {
-            grid[y] = new Array(10).fill(0);
+        for (let y = 0; y < this.height; y++) {
+            grid[y] = new Array(this.width).fill(0);
         }
         return grid;
     }
@@ -64,6 +64,38 @@ export class GameController {
 
         return list;
     }
+
+    createDropShadow(piece,socketId) {
+        let dropShadow = this.copyPiece(piece)
+        for (let y = 0; y < dropShadow.length; y++) {
+            for (let x = 0; x < dropShadow[y].length; x++) {
+                if (dropShadow[y][x] !== 0) {
+                    dropShadow[y][x] = 8
+
+                }}}
+
+        while (!this.pieceCollided(dropShadow,undefined,socketId)) {
+
+        dropShadow.position.y++
+
+
+
+
+    }
+        dropShadow.position.y-=1
+        this.placePiece(dropShadow,socketId)
+
+     }
+     removeDropShadow(socketId){
+
+         for (let y = 0; y < this.gameBoards[socketId].grid.length; y++) {
+             for (let x = 0; x < this.gameBoards[socketId].grid[y].length; x++) {
+                 if (this.gameBoards[socketId].grid[y][x] === 8) {
+                     this.gameBoards[socketId].grid[y][x] = 0
+                 }
+
+             }
+         }}
 
     updatePieceQueue(socketId) {
         let player = this.players[socketId];
@@ -182,14 +214,16 @@ export class GameController {
                     //   console.log("Checking position x: ", boardX);
                     // console.log("Checking position y: ", boardY);
                     // Check if the piece is outside the game board horizontally or has reached the bottom
-                    if (boardX < 0 || boardX >= this.gameBoards[socketId].width || boardY >= 20) {
+                    if (boardX < 0 || boardX >= this.gameBoards[socketId].width || boardY >= this.height) {
 
                         return true;
                     }
                     // Prevent accessing gameBoard.grid[boardY] if boardY is out of bounds
                     // This also implicitly checks if boardY is below the bottom of the game board
                 }}}
+        if(oldpiece!== undefined)
         this.clearPiece(oldpiece,socketId);
+        this.removeDropShadow(socketId)
 
         for (let y = 0; y < tetromino.length; y++) {
             for (let x = 0; x < tetromino[y].length; x++) {
@@ -216,7 +250,7 @@ export class GameController {
     checkForLineClears(socketId) {
         let linesCleared = 0;
         for (let y = 0; y < this.gameBoards[socketId].height; y++) {
-            if (this.gameBoards[socketId].grid[y].every(value => value !== 0)) {
+            if (this.gameBoards[socketId].grid[y].every(value => value !== 0&&value !==8)) {
                 //Remove the full line
                 this.gameBoards[socketId].grid.splice(y, 1);
                 //Add an empty line at the top
@@ -239,6 +273,7 @@ export class GameController {
         } else {
             newPiece.rotation = (newPiece.rotation - 1 + 4) % 4;
         }
+        newPiece = this.copyPiece(newPiece)
 
         if (!this.pieceCollided(newPiece,player.currentPiece,socketId)) {
             this.updatePiece(player.currentPiece, newPiece,socketId);
@@ -249,9 +284,13 @@ export class GameController {
 
     updatePiece(oldPiece, newPiece,socketId) {
         //Clear the piece's old position
+        this.removeDropShadow(socketId)
         this.clearPiece(oldPiece,socketId);
         //Place the piece on the board
+        this.createDropShadow(newPiece,socketId)
+
         this.placePiece(newPiece,socketId);
+
         this.broadcastState();
 
     }
@@ -273,11 +312,10 @@ export class GameController {
     }
 
     placePiece(piece,socketId) {
-        const tetromino = getTetromino(piece.type)[piece.rotation];
-        for (let y = 0; y < tetromino.length; y++) {
-            for (let x = 0; x < tetromino[y].length; x++) {
-                if (tetromino[y][x] !== 0) {
-                    this.gameBoards[socketId].grid[piece.position.y + y][piece.position.x + x] = tetromino[y][x];
+        for (let y = 0; y < piece.length; y++) {
+            for (let x = 0; x < piece[y].length; x++) {
+                if (piece[y][x] !== 0) {
+                    this.gameBoards[socketId].grid[piece.position.y + y][piece.position.x + x] = piece[y][x];
                 }
             }
         }
