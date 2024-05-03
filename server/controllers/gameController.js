@@ -335,18 +335,19 @@ export class GameController {
     //function to handle pieces will hurry down to the bottom
     // handleDrop will call handlePlayerFall until the piece has collided with another piece
     handleDrop(socketId){
-        const player = this.players[socketId];
-        let newPiece = player.currentPiece
+        while(this.handlePlayerFall(socketId)){}
+        // const player = this.players[socketId];
+        // let newPiece = player.currentPiece
 
-        while (!this.pieceCollided(newPiece)) {
-            newPiece.position.y += 1;
-        }
-        newPiece.position.y -= 1;
-        this.updatePiece(player.currentPiece, newPiece);
-        this.placePiece(player.currentPiece);
-        this.checkForLineClears();
-        this.shiftToNextPiece();
-        this.broadcastState();
+        // while (!this.pieceCollided(newPiece)) {
+        //     newPiece.position.y += 1;
+        // }
+        // newPiece.position.y -= 1;
+        // this.updatePiece(player.currentPiece, newPiece);
+        // this.placePiece(player.currentPiece);
+        // this.checkForLineClears();
+        // this.shiftToNextPiece();
+        // this.broadcastState();
     }
      
     handleHold(socketId){
