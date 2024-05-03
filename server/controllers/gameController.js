@@ -394,6 +394,38 @@ this.greyLineQueue[socketId]--
         }
     }
 
+    //function to handle pieces will hurry down to the bottom
+    // handleDrop will call handlePlayerFall until the piece has collided with another piece
+    handleDrop(socketId){
+        while(this.handlePlayerFall(socketId)){}
+        // const player = this.players[socketId];
+        // let newPiece = player.currentPiece
+
+        // while (!this.pieceCollided(newPiece)) {
+        //     newPiece.position.y += 1;
+        // }
+        // newPiece.position.y -= 1;
+        // this.updatePiece(player.currentPiece, newPiece);
+        // this.placePiece(player.currentPiece);
+        // this.checkForLineClears();
+        // this.shiftToNextPiece();
+        // this.broadcastState();
+    }
+     
+    handleHold(socketId){
+        const player = this.players[socketId];
+        let newPiece = player.currentPiece
+        let holdPiece = player.holdPiece
+
+        if(holdPiece === null){
+            player.holdPiece = newPiece;
+            this.shiftToNextPiece();
+        }else{
+            player.currentPiece = holdPiece;
+            player.holdPiece = newPiece;
+        }
+        this.broadcastState();
+    }
     //Updates the game every 1 second
     initGameLoop() {
         setInterval(() => {
