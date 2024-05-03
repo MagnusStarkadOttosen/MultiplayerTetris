@@ -106,9 +106,10 @@ io.on("connection", (socket) => {
         let control = controllers[findRoom(socket.id)]
         control.room=control.room+1;
         let count=control.room
-        if(count==2|| count==3|| count==4){
+        let players = Object.values(control.players)
+
+        if(count ===players.length){
             for(let i = 1;i<=count;i++) {
-                let players = Object.values(control.players)
                 players[i-1].start=true
 
 
