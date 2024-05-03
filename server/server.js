@@ -17,7 +17,8 @@ const server = http.createServer(app);
 // const io = new SocketIO(server);
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:63342",  // Allows all domains, adjust as needed for security
+        // origin: "http://localhost:63342",  // Allows all domains, adjust as needed for security
+        origin: "http://dtu62597.eduhost.dk:10311/"
         methods: ["GET", "POST"],
         allowedHeaders: ["my-custom-header"],
         credentials: true
