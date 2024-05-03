@@ -1,28 +1,40 @@
-const socket = io();
+import { initializePlayerControls } from './playerControl.js';
+//import { io } from 'https://cdn.socket.io/4.3.1/socket.io.esm.min.js';
+
+//const socket = io();
+//Initialize controls once the socket is connected
+
 
 //Sends the players wants to move the piece
-function emitMove(direction){
+export function emitMove(socket,direction){
     socket.emit("playerMove", direction);
 }
 
 //Sends that the player wants to rotate the piece
-function emitRotate(rotation){
+export function emitRotate(socket,rotation){
     socket.emit("playerRotate", rotation);
 }
 
-function emitFall(){
+export function emitFall(socket){
     socket.emit("playerFall")
 }
 
-function emitHold(){
+export function emitHold(socket){
     socket.emit("playerHold")
 }
 
-function emitDrop(){
+export function emitDrop(socket){
     socket.emit("playerDrop")
 }
 
 //Listen for game state updates from the server
-socket.on('gameState', (gameState) => {
-    //TODO: update rendering based on gamestate
-});
+// socket.on('game-state', (gameState) => {
+//     console.log("Received gamestate from server: ", gameState);
+// });
+
+export function emitTest(socket){
+    socket.emit("test")
+}
+
+
+
