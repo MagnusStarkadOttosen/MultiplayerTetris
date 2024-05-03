@@ -64,7 +64,6 @@ io.on("connection", (socket) => {
 
     socket.on("playerMove", (direction) => {
        if( list1.includes(socket.id,0)){
-           console.log(socket.id)
            gameController.handlePlayerMove(socket.id, direction);}
        else{
            gameController2.handlePlayerMove(socket.id, direction);}
@@ -74,7 +73,6 @@ io.on("connection", (socket) => {
 
     socket.on("playerRotate", (rotationDirection) => {
         if( list1.includes(socket.id,0)){
-            console.log(socket.id)
             gameController.handlePlayerRotation(socket.id, rotationDirection);}
         else{
             gameController2.handlePlayerRotation(socket.id, rotationDirection);}
@@ -83,7 +81,6 @@ io.on("connection", (socket) => {
 
     socket.on("playerFall", () => {
         if( list1.includes(socket.id,0)){
-            console.log(socket.id)
             gameController.handlePlayerFall(socket.id)}
         else{
             gameController2.handlePlayerFall(socket.id)}
@@ -97,7 +94,6 @@ io.on("connection", (socket) => {
 
     socket.on("playerDrop", () => {
         if(list1.includes(socket.id,0)){
-            console.log(socket.id)
             gameController.handleDrop(socket.id)}
         else{
             gameController2.handleDrop(socket.id)
