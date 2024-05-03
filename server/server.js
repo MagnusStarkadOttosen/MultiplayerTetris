@@ -44,12 +44,27 @@ let list4=[]
 
 let lists= [list1,list2,list3,list4]
 
+function findRoom(id){
+    if( list1.includes(id,0)){
+        return 0;}
+    else if( list1.includes(id,0)){
+        return 1;
+    }
+    else  if( list1.includes(id,0)){
+        return 2
+    }
+    else{
+          return 4
+    }
+    }
+
+
 
 io.on("connection", (socket) => {
     console.log("A user connected");
     console.log(socket.connected)
 
-    
+
     socket.on("send-message", (message) => {
         io.emit("receive-message", message);
     });
@@ -59,31 +74,18 @@ io.on("connection", (socket) => {
     });
 
     socket.on("playerMove", (direction) => {
-       if( list1.includes(socket.id,0)){
-           console.log(socket.id)
-           gameController.handlePlayerMove(socket.id, direction);}
-       else{
-           gameController2.handlePlayerMove(socket.id, direction);}
-
-
+        let control = controllers[findRoom(socket.id)]
+        control.handlePlayerMove(socket.id, direction);
     });
 
     socket.on("playerRotate", (rotationDirection) => {
-        if( list1.includes(socket.id,0)){
-            console.log(socket.id)
-            gameController.handlePlayerRotation(socket.id, rotationDirection);}
-        else{
-            gameController2.handlePlayerRotation(socket.id, rotationDirection);}
-
-    });
+        let control = controllers[findRoom(socket.id)]
+        control.handlePlayerRotation(socket.id, rotationDirection)
+        ;});
 
     socket.on("playerFall", () => {
-        if( list1.includes(socket.id,0)){
-            console.log(socket.id)
-            gameController.handlePlayerFall(socket.id)}
-        else{
-            gameController2.handlePlayerFall(socket.id)}
-
+        let control = controllers[findRoom(socket.id)]
+        control.handlePlayerFall(socket.id)
 
     });
     socket.on("roomNumber", (roomSent) => {
@@ -94,8 +96,8 @@ io.on("connection", (socket) => {
 
 
 
-console.log(controllers)
-             room.addPlayer(socket.id);
+            console.log(controllers)
+            room.addPlayer(socket.id);
             room.addGameboard(socket.id);
             realList.push(socket.id)
 
@@ -111,12 +113,8 @@ console.log(controllers)
     });
 
     socket.on("playerDrop", () => {
-        if(list1.includes(socket.id,0)){
-            console.log(socket.id)
-            gameController.handleDrop(socket.id)}
-        else{
-            gameController2.handleDrop(socket.id)
-        }
+        let control = controllers[findRoom(socket.id)]
+        control.handleDrop(socket.id)
 
 
     });
