@@ -47,14 +47,14 @@ let lists= [list1,list2,list3,list4]
 function findRoom(id){
     if( list1.includes(id,0)){
         return 0;}
-    else if( list1.includes(id,0)){
+    else if( list2.includes(id,0)){
         return 1;
     }
-    else  if( list1.includes(id,0)){
+    else  if( list3.includes(id,0)){
         return 2
     }
     else{
-          return 4
+          return 3
     }
     }
 
@@ -81,7 +81,7 @@ io.on("connection", (socket) => {
     socket.on("playerRotate", (rotationDirection) => {
         let control = controllers[findRoom(socket.id)]
         control.handlePlayerRotation(socket.id, rotationDirection)
-        ;});
+        });
 
     socket.on("playerFall", () => {
         let control = controllers[findRoom(socket.id)]
@@ -109,6 +109,8 @@ io.on("connection", (socket) => {
     );
 
     socket.on("playerHold", () => {
+        let control = controllers[findRoom(socket.id)]
+        control.handleHold(socket.id)
 
     });
 

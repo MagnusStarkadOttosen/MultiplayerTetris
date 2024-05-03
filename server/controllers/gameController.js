@@ -32,7 +32,8 @@ export class GameController {
             level: 0,
             speed: 48,
             gameOver:false,
-            socketId: socketId
+            socketId: socketId,
+            holdCooldown: false,
         }
 
     }
@@ -139,6 +140,7 @@ createPieceList(pieceList){
 
         player.currentPiece = player.nextPieces.shift();
         this.updatePieceQueue(socketId);
+        player.holdCooldown = false
         // this.broadcastState();
     }
 
@@ -412,20 +414,34 @@ this.greyLineQueue[socketId]--
         // this.broadcastState();
     }
      
-    handleHold(socketId){
+    handleHold(socketId) {
+
+
         const player = this.players[socketId];
-        let newPiece = player.currentPiece
+        if (!player.holdCooldown) {
+
+        let currentPiece = this.copyPiece(player.currentPiece)
         let holdPiece = player.holdPiece
 
-        if(holdPiece === null){
-            player.holdPiece = newPiece;
-            this.shiftToNextPiece();
-        }else{
-            player.currentPiece = holdPiece;
-            player.holdPiece = newPiece;
+
+        if (holdPiece === null) {
+            player.holdPiece = this.copyPiece(player.currentPiece);
+            this.clearPiece(currentPiece, socketId)
+            this.shiftToNextPiece(socketId);
+        } else {
+            console.log(holdPiece)
+            this.clearPiece(currentPiece, socketId)
+            player.currentPiece = this.copyPiece(player.holdPiece)
+            player.currentPiece.position = {x: 5, y: 0}
+            console.log(currentPiece.type)
+            player.holdPiece = this.copyPiece(currentPiece)
+            player.holdPiece.rotation = 0
         }
-        this.broadcastState();
+        this.broadcastState(socketId);
+        player.holdCooldown = true
     }
+    }
+
     //Updates the game every 1 second
     initGameLoop() {
         setInterval(() => {
