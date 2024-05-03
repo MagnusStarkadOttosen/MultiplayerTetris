@@ -1,54 +1,54 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Tetris</title>
     <style>
-        body{
-            background-color: #ffcccc;
-        }
+      body {
+        background-color: #ffcccc;
+      }
 
-        canvas{
-            margin: 20px; /* Add some margin between canvases */
-            border: 2px solid black;        }
+      canvas {
+        margin: 20px; /* Add some margin between canvases */
+        border: 2px solid black;
+      }
 
-
-        .holdBox {
-            border: 2px solid green;
-            border-radius: 10px;
-
-        }
-        .screen-container{
-            display: grid;
-            grid-template-columns: auto auto auto;
-        }
-
-
-
-
+      .holdBox {
+        border: 2px solid green;
+        border-radius: 10px;
+      }
+      .screen-container {
+        display: grid;
+        grid-template-columns: auto auto auto;
+      }
+      
     </style>
-</head>
-<body>
-<div id="section 2"></div>
-<div class="screen-container">
-    <h2>Hold      </h2>
-    <h2> <span id="gameOverMsg">  </span>    </h2>
-    <h2> Preview   </h2>
-    <p>Highscore: <span id="highscore">0</span></p>
+  </head>
 
-</div>
+  <body>
+   
 
-    <div class="screen-container">
+      <div id="section 2"></div>
+      <div class="screen-container">
+        <h2>Hold</h2>
+        <h2><span id="gameOverMsg"> </span></h2>
+        <h2>Preview</h2>
+        <p>Highscore: <span id="highscore">0</span></p>
+      </div>
 
-    <canvas id="hold" width="120" height="150" class="pre"></canvas >
-    <canvas id="tetris" width="200" height="440" class="tetrisGame" ></canvas >
-    <canvas id="preview" width="120" height="300" class="pre"></canvas >
-
-    </div>
-    <script src="js/socket.js"></script>
-    <script src="js/app.js"></script>
-    <script type="module" src="js/playerControl.js"></script>
-
-
-</body>
-
+      <div class="screen-container">
+        <canvas id="hold" width="120" height="150" class="pre"></canvas>
+        <canvas
+          id="tetris"
+          width="200"
+          height="440"
+          class="tetrisGame"
+        ></canvas>
+        <canvas id="preview" width="120" height="300" class="pre"></canvas>
+      </div>
+      <script src="js/socket.js"></script>
+      <script src="js/app.js"></script>
+      <script type="module" src="js/playerControl.js"></script>
+   
+    
+  </body>
 </html>

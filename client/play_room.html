@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>PLAY-ROOM</title>
+    <style>
+      body {
+        background-color: #ffcccc;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+
+      canvas {
+        margin: 20px; /* Add some margin between canvases */
+        border: 2px solid black;
+      }
+      .section1 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: aquamarine;
+      }
+
+      .Split {
+        height: 100%;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        overflow-x: hidden;
+        padding-top: 20px;
+      }
+      .left {
+        left: 0;
+        width: 65%;
+        background-color: #ffcccc;
+      }
+      .right {
+        right: 0;
+        width: 35%;
+        background-color: #d0d890;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        align-items: center;
+        justify-content: center;
+        padding: 5px;
+        gap: 10px;
+      }
+      .display{
+        display: grid;
+      }
+      .score-board {
+        background: white;
+        border: 2px solid black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 5px;
+      }
+      .score-board {
+        flex: 1;
+      }
+      .screen-container {
+        display: grid;
+        grid-template-columns: auto auto auto;
+      }
+      .status {
+        grid-column: 1 / -1; /* Span across all columns */
+        text-align: center;
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="section1">
+      <title>PAY ROOM</title>
+      <label></label>
+    </div>
+    <div id="section2">
+      <div class="Split left">
+        <div class="screen-container">
+          <h2>Hold</h2>
+          <h2><span id="gameOverMsg"> </span></h2>
+          <h2>Preview</h2>
+          <p>Highscore: <span id="highscore">0</span></p>
+        </div>
+
+        <div class="screen-container">
+          <canvas id="hold" width="120" height="150" class="pre"></canvas>
+          <canvas
+            id="tetris"
+            width="200"
+            height="440"
+            class="tetrisGame"
+          ></canvas>
+          <canvas id="preview" width="120" height="300" class="pre"></canvas>
+        </div>
+        <script src="js/socket.js"></script>
+        <script src="js/app.js"></script>
+        <script type="module" src="js/playerControl.js"></script>
+      </div>
+      <div class="Split right">
+        <div id="status">Players in room</div>
+        <div id="display">
+          <div class="score-board" id="player1">
+            <p>Highscore: <span id="highscore1">0</span></p>
+            <div class="screen-container">
+              <canvas
+                id="tetris"
+                width="100"
+                height="220"
+                class="tetrisGame"
+              ></canvas>
+            </div>
+            <p><span id="name">player</span></p>
+          </div>
+
+          <div class="score-board" id="player2">
+            <p>Highscore: <span id="highscore2">0</span></p>
+            <div class="screen-container">
+              <canvas
+                id="tetris"
+                width="100"
+                height="220"
+                class="tetrisGame"
+              ></canvas>
+            </div>
+            <p><span id="name">player</span></p>
+          </div>
+          <div class="score-board" id="player3">
+            <p>Highscore: <span id="highscore3">0</span></p>
+            <div class="screen-container">
+              <canvas
+                id="tetris"
+                width="100"
+                height="220"
+                class="tetrisGame"
+              ></canvas>
+            </div>
+            <p><span id="name">player</span></p>
+          </div>
+          <div class="score-board" id="player4">
+            <p>Highscore: <span id="highscore4">0</span></p>
+            <div class="screen-container">
+              <canvas
+                id="tetris"
+                width="100"
+                height="220"
+                class="tetrisGame"
+              ></canvas>
+            </div>
+            <p><span id="name">player</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
