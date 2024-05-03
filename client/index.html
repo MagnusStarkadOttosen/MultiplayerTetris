@@ -11,15 +11,21 @@
     <h1>Socket Connection Test</h1>
     <div id="status">Socket Status: Connecting...</div>
 
+    <div id="player1" style="display : inline;"> </div>
     <div id="gameBoard1" style="display: inline grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">
         <!-- Cells will be dynamically inserted here -->
     </div>
+
+
+    <div id="player2" style="display : inline;"> </div>
     <div id="gameBoard2" style="display: inline grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">
         <!-- Cells will be dynamically inserted here -->
     </div>
+    <div id="player3" style="display : inline;"> </div>
     <div id="gameBoard3" style="display: inline grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">
         <!-- Cells will be dynamically inserted here -->
     </div>
+    <div id="player4" style="display : inline;"> </div>
     <div id="gameBoard4" style="display: inline grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">
         <!-- Cells will be dynamically inserted here -->
     </div>
@@ -40,7 +46,7 @@
             });
 
             socket.on('connect', () => {
-                document.getElementById('status').innerText = 'Socket Status: Connected';
+                document.getElementById('status').innerText = '';
             });
 
             socket.on('disconnect', () => {
@@ -54,22 +60,44 @@
             socket.on('game-state', (gameState) => {
                 console.log("Index Received game state:", gameState);
                 const gameBoardElements = {}
+                const playerElements = {}
                 gameBoardElements[0] = document.getElementById('gameBoard1')
                 gameBoardElements[1] = document.getElementById('gameBoard2')
                 gameBoardElements[2] = document.getElementById('gameBoard3')
                 gameBoardElements[3] = document.getElementById('gameBoard4')
 
+                playerElements[0] = document.getElementById('player1')
+                playerElements[1] = document.getElementById('player2')
+                playerElements[2] = document.getElementById('player3')
+                playerElements[3] = document.getElementById('player4')
+
+                // const playerElement = document.getElementById('player')
+
+                // renderGameBoard(gameBoardElements[0], gameState.gameBoards[socket.id].grid); // Corrected access
+
                 let boards = Object.values(gameState.gameBoards)
-                boards.forEach((board, i) => {
-                    if (board && board.grid) {
-                        renderGameBoard(gameBoardElements[i], board.grid, gameState.playerPieces);
-                    } else {
-                        console.error("Invalid board data:", board);
+                let players = Object.values(gameState.players)
+                for(let i =0;i<boards.length;i++){
+                    renderGameBoard(gameBoardElements[i], boards[i].grid)
+                    if (!players[i].gameOver)
+                    playerElements[i].innerText = "Player " + (i+1)
+                    else{
+                        playerElements[i].innerText = "Gameover"
+
+
                     }
-                });
-                // for (let i = 0; i < boards.length; i++) {
-                //     renderGameBoard(gameBoardElements[i], boards[i].grid)
-                // }
+
+
+                }
+
+
+
+
+
+
+
+
+
             });
 
             function renderGameBoard(container, grid, playerPieces) {

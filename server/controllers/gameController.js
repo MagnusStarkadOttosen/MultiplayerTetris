@@ -29,6 +29,7 @@ export class GameController {
             points: 0,
             level: 0,
             speed: 48,
+            gameOver:false,
         }
 
     }
@@ -86,6 +87,18 @@ export class GameController {
         this.placePiece(dropShadow,socketId)
 
      }
+
+     checkGameover(socketId){
+
+         for (let x = 0; x < this.gameBoards[socketId].grid[3].length; x++) {
+
+             if (this.gameBoards[socketId].grid[3][x]!== 0 && this.gameBoards[socketId].grid[3][x]!== 8){
+        this.players[socketId].gameOver = true
+             return}
+
+     }}
+
+
      removeDropShadow(socketId){
 
          for (let y = 0; y < this.gameBoards[socketId].grid.length; y++) {
@@ -178,26 +191,13 @@ export class GameController {
     handleDrop(socketId){
         while(this.handlePlayerFall(socketId)){}
 
-
-
-
 }
 
-    broadcastState() {
-        const playerPieces = {};
-        for (const id in this.players) {
-            playerPieces[id] = {
-                position: this.players[id].currentPiece.position,
-                type: this.players[id].currentPiece.type,
-                rotation: this.players[id].currentPiece.rotation,
-            };
-        }
-
+    broadcastState(socketId) {
         //Broadcast the updated game state to all connected clients
-        this.io.emit('game-state', {
+        this.io.to(socketId).emit('game-state', {
             players: this.players,
             gameBoards: this.gameBoards,
-            playerPieces: playerPieces,
         });
     }
 
@@ -296,12 +296,13 @@ export class GameController {
         //Clear the piece's old position
         this.removeDropShadow(socketId)
         this.clearPiece(oldPiece,socketId);
+        this.checkGameover(socketId)
         //Place the piece on the board
         this.createDropShadow(newPiece,socketId)
 
         this.placePiece(newPiece,socketId);
 
-        this.broadcastState();
+        this.broadcastState(socketId);
 
     }
 
@@ -344,8 +345,39 @@ export class GameController {
         }
     }
 
+    //function to handle pieces will hurry down to the bottom
+    // handleDrop will call handlePlayerFall until the piece has collided with another piece
+    handleDrop(socketId){
+        const player = this.players[socketId];
+        let newPiece = player.currentPiece
+
+        while (!this.pieceCollided(newPiece)) {
+            newPiece.position.y += 1;
+        }
+        newPiece.position.y -= 1;
+        this.updatePiece(player.currentPiece, newPiece);
+        this.placePiece(player.currentPiece);
+        this.checkForLineClears();
+        this.shiftToNextPiece();
+        this.broadcastState();
+    }
+     
+    handleHold(socketId){
+        const player = this.players[socketId];
+        let newPiece = player.currentPiece
+        let holdPiece = player.holdPiece
+
+        if(holdPiece === null){
+            player.holdPiece = newPiece;
+            this.shiftToNextPiece();
+        }else{
+            player.currentPiece = holdPiece;
+            player.holdPiece = newPiece;
+        }
+        this.broadcastState();
+    }
     //Updates the game every 1 second
-    initGameLoop(socketId) {
+    initGameLoop() {
         setInterval(() => {
             this.updateGame();
         }, 1000);
@@ -362,21 +394,26 @@ export class GameController {
 
         for (const playerId in this.players) {
             if (this.players.hasOwnProperty(playerId)) {
-                const player = this.players[playerId];
+                    const player = this.players[playerId];
+                if(!player.gameOver) {
 
-                // Handle player's piece falling
-                this.handlePlayerFall(playerId);
+                    // Handle player's piece falling
+                    this.handlePlayerFall(playerId);
 
-                // // Check for line clears
-                this.checkForLineClears(playerId);
+                    // // Check for line clears
+                    this.checkForLineClears(playerId);
+                    // Shift to next piece if necessary
+                    // if (this.pieceCollided(player.currentPiece)) {
+                    //     this.shiftToNextPiece(playerId);
+                    // }
+                }
+                this.broadcastState(playerId)
 
-                // Shift to next piece if necessary
-                // if (this.pieceCollided(player.currentPiece)) {
-                //     this.shiftToNextPiece(playerId);
-                // }
             }
+
+        }
         }
 
-        this.broadcastState();
-    }
+        //this.broadcastState();
+
 }
