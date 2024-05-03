@@ -147,8 +147,15 @@ createPieceList(pieceList){
     }
 
     removePlayer(socketId) {
-        //Clean up player state
+        let boards = Object.values(this.gameBoards)
+
+        delete this.gameBoards[socketId]
+        delete this.players[socketId]
+        console.log(this.gameBoards)
+
+        console.log(boards)
     }
+
 
     copyPiece(piece){
         let newPiece = getTetromino(piece.type)[piece.rotation]
