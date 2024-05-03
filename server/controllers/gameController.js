@@ -27,6 +27,7 @@ export class GameController {
             currentPiece: pieceList.shift(), //Takes the first element in the list
             holdPiece: null,
             nextPieces: pieceList, //The rest of the pieces
+            nextPiecesReal: this.createPieceList(pieceList),
             points: 0,
             level: 0,
             speed: 48,
@@ -35,7 +36,14 @@ export class GameController {
         }
 
     }
-
+createPieceList(pieceList){
+    let newPieceList=[]
+    for(let i =0;i<pieceList.length;i++){
+        console.log(pieceList[i])
+    newPieceList.push(getTetromino(pieceList[i].type)[pieceList[i].rotation])
+}
+        return newPieceList;
+}
 
     addGameboard(socketId){
         console.log("addGameboard")
@@ -122,6 +130,8 @@ export class GameController {
             let newPieces = this.generatePieceList();
             player.nextPieces.push(...newPieces);
         }
+        player.nextPiecesReal = this.createPieceList(player.nextPieces)
+
     }
 
     shiftToNextPiece(socketId) {

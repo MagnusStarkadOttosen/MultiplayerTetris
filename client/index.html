@@ -15,21 +15,30 @@
     <div id="gameBoard1" style="display: inline grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">
         <!-- Cells will be dynamically inserted here -->
     </div>
+<div id="preview1" style="display: inline grid; grid-template-columns: repeat(3, 30px); grid-gap: 1px;"></div>
 
 
     <div id="player2" style="display : inline;"> </div>
     <div id="gameBoard2" style="display: inline grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">
+
         <!-- Cells will be dynamically inserted here -->
     </div>
+    <div id="preview2" style="display: inline grid; grid-template-columns: repeat(3, 30px); grid-gap: 1px;"></div>
+
     <div id="player3" style="display : inline;"> </div>
     <div id="gameBoard3" style="display: inline grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">
+
         <!-- Cells will be dynamically inserted here -->
     </div>
+    <div id="preview3" style="display: inline grid; grid-template-columns: repeat(3, 30px); grid-gap: 1px;"></div>
+
     <div id="player4" style="display : inline;"> </div>
     <div id="gameBoard4" style="display: inline grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">
         <!-- Cells will be dynamically inserted here -->
     </div>
-<!--    <div id="player" style="display: grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">-->
+    <div id="preview4" style="display: inline grid; grid-template-columns: repeat(3 , 30px); grid-gap: 1px;" ></div>
+
+    <!--    <div id="player" style="display: grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">-->
 <!--            &lt;!&ndash; Cells will be dynamically inserted here &ndash;&gt;-->
 
 <!--    </div>-->
@@ -63,6 +72,7 @@
                 console.log("Index Received game state:", gameState);
                 const gameBoardElements = {}
                 const playerElements = {}
+                const previewElements = {}
                 gameBoardElements[0] = document.getElementById('gameBoard1')
                 gameBoardElements[1] = document.getElementById('gameBoard2')
                 gameBoardElements[2] = document.getElementById('gameBoard3')
@@ -73,6 +83,11 @@
                 playerElements[2] = document.getElementById('player3')
                 playerElements[3] = document.getElementById('player4')
 
+                previewElements[0] = document.getElementById('preview1')
+                previewElements[1] = document.getElementById('preview2')
+                previewElements[2] = document.getElementById('preview3')
+                previewElements[3] = document.getElementById('preview4')
+
                 // const playerElement = document.getElementById('player')
 
                 // renderGameBoard(gameBoardElements[0], gameState.gameBoards[socket.id].grid); // Corrected access
@@ -80,9 +95,16 @@
                 let boards = Object.values(gameState.gameBoards)
                 let players = Object.values(gameState.players)
                 for(let i =0;i<boards.length;i++){
-                    renderGameBoard(gameBoardElements[i], boards[i].grid)
-                    if (!players[i].gameOver)
+                    renderGameBoard(gameBoardElements[i], boards[i].grid,true)
+                    if (!players[i].gameOver){
                     playerElements[i].innerText = "Player " + (i+1)
+                        console.log(players[i].nextPiecesReal[0])
+                    renderGameBoard(previewElements[i],players[i].nextPiecesReal[0],true)
+                        renderGameBoard(previewElements[i],players[i].nextPiecesReal[1],false)
+                        renderGameBoard(previewElements[i],players[i].nextPiecesReal[2],false)
+
+
+                    }
                     else{
                         playerElements[i].innerText = "Gameover"
 
@@ -100,10 +122,13 @@
 
 
 
+
             });
 
-            function renderGameBoard(container, grid) {
+            function renderGameBoard(container, grid,clear) {
+                if(clear){
                 container.innerHTML = ''; // Clear existing grid cells
+                     }
                 grid.forEach(row => {
                     row.forEach(cell => {
                         const cellElement = document.createElement('div');
