@@ -8,6 +8,7 @@ export class GameController {
             this.gameBoards = { //Creates a 2D array with the given size
 
             };
+        this.greyLineQueue= {}
         this.initGameLoop();
     }
 
@@ -26,13 +27,23 @@ export class GameController {
             currentPiece: pieceList.shift(), //Takes the first element in the list
             holdPiece: null,
             nextPieces: pieceList, //The rest of the pieces
+            nextPiecesReal: this.createPieceList(pieceList),
             points: 0,
             level: 0,
             speed: 48,
             gameOver:false,
+            socketId: socketId
         }
 
     }
+createPieceList(pieceList){
+    let newPieceList=[]
+    for(let i =0;i<pieceList.length;i++){
+        console.log(pieceList[i])
+    newPieceList.push(getTetromino(pieceList[i].type)[pieceList[i].rotation])
+}
+        return newPieceList;
+}
 
     addGameboard(socketId){
         console.log("addGameboard")
@@ -41,6 +52,7 @@ export class GameController {
             height: this.height,
             grid: this.initializeGameBoard(),
         }
+        this.greyLineQueue[socketId] =0
         console.log(this.gameBoards)
 
     }
@@ -118,6 +130,8 @@ export class GameController {
             let newPieces = this.generatePieceList();
             player.nextPieces.push(...newPieces);
         }
+        player.nextPiecesReal = this.createPieceList(player.nextPieces)
+
     }
 
     shiftToNextPiece(socketId) {
@@ -182,7 +196,9 @@ export class GameController {
             this.placePiece(player.currentPiece,socketId);
             this.checkForLineClears(socketId);
             this.shiftToNextPiece(socketId);
-            // this.broadcastState();
+                this.applyGreyLines(socketId)
+
+                // this.broadcastState();
                 return false
         }
     }
@@ -269,10 +285,55 @@ export class GameController {
                 y--; //Check the new line at the same position
             }
         }
-
-
+        this.addGreyLines(linesCleared,socketId)
         // Increase score based on linesCleared, adjust game speed, etc.
     }
+
+    addGreyLines(linesCleared,socketId){
+
+        if (linesCleared>1&& Object.values(this.players).length>1) {
+            let players = Object.values(this.players)
+            let availablePlayers = []
+            console.log(socketId)
+            for (let i = 0; i < players.length; i++) {
+                console.log(players[i].socketId)
+                console.log(players[i].gameOver)
+                console.log(players[i].socketId==socketId)
+                if (!(players[i].socketId===socketId) && (players[i].gameOver === false)) {
+                    console.log("test")
+
+                    availablePlayers.push(players[i])
+                }
+            }
+            if (availablePlayers.length > 0) {
+            let random =Math.floor(Math.random()*availablePlayers.length)
+                this.greyLineQueue[availablePlayers[random].socketId]+=linesCleared-1
+
+        }
+        }
+
+    }
+
+    applyGreyLines(socketId){
+        while(this.greyLineQueue[socketId]>0){
+            console.log("greylinequeue")
+            for (let i = 0; i < this.height-1; i++) {
+
+                this.gameBoards[socketId].grid[i] = this.gameBoards[socketId].grid[i + 1].slice()
+
+            }
+            let random =Math.floor(Math.random()*9)
+            console.log(random)
+            for (let i = 0; i < 10; i++) {
+                this.gameBoards[socketId].grid[this.height-1][i] =0
+                if( random !== i){
+                    this.gameBoards[socketId].grid[this.height-1][i] = 9}
+
+
+        }
+
+this.greyLineQueue[socketId]--
+    }}
 
     handlePlayerRotation(socketId, direction) {
         let player = this.players[socketId];
@@ -297,6 +358,7 @@ export class GameController {
         this.removeDropShadow(socketId)
         this.clearPiece(oldPiece,socketId);
         this.checkGameover(socketId)
+
         //Place the piece on the board
         this.createDropShadow(newPiece,socketId)
 
@@ -332,6 +394,38 @@ export class GameController {
         }
     }
 
+    //function to handle pieces will hurry down to the bottom
+    // handleDrop will call handlePlayerFall until the piece has collided with another piece
+    handleDrop(socketId){
+        while(this.handlePlayerFall(socketId)){}
+        // const player = this.players[socketId];
+        // let newPiece = player.currentPiece
+
+        // while (!this.pieceCollided(newPiece)) {
+        //     newPiece.position.y += 1;
+        // }
+        // newPiece.position.y -= 1;
+        // this.updatePiece(player.currentPiece, newPiece);
+        // this.placePiece(player.currentPiece);
+        // this.checkForLineClears();
+        // this.shiftToNextPiece();
+        // this.broadcastState();
+    }
+     
+    handleHold(socketId){
+        const player = this.players[socketId];
+        let newPiece = player.currentPiece
+        let holdPiece = player.holdPiece
+
+        if(holdPiece === null){
+            player.holdPiece = newPiece;
+            this.shiftToNextPiece();
+        }else{
+            player.currentPiece = holdPiece;
+            player.holdPiece = newPiece;
+        }
+        this.broadcastState();
+    }
     //Updates the game every 1 second
     initGameLoop() {
         setInterval(() => {
