@@ -10,6 +10,7 @@
             border-radius: 5px;
             width: 250px;
             height: 30px;
+            padding: 5px;
 
             text-align: center;
             margin-bottom: 60px;
@@ -51,58 +52,22 @@
 
     <div id="menu">
         <script>
-            isJoin = false
-            isCreate=false
-            function hideCreateButton() {
-                const create = document.getElementById('createButton');
-                isCreate=!isCreate
-                console.log(isCreate)
-                create.hidden = isCreate;
-            }
-            function hideJoinButton() {
-                const join = document.getElementById('joinButton');
-                isJoin=!isJoin
-                console.log(isJoin)
-                join.hidden = isJoin;
-            }
-            function hideUserInputFields(){
-                const create1 = document.getElementById('createButton');
-                create1.hidden = true;
-                const join1 = document.getElementById('joinButton');
-                join1.hidden = true;
 
-
-            }
 
         </script>
+
         <br>
-        <button class="button" onclick="window.location.href = 'tetris.html'">Play</button>
+        <button class="button" onclick="window.location.href = 'tetris.html'">Single Player</button>
 
 
         </button>
         <br/>
-        <button class="button" onclick={hideJoinButton()} > Join game  </button>
-        <br>
-        <button class="lobbyButton" onclick=
-                "window.location.href = 'index.html'"
-
-        >Lobby 1</button>
-        <br>
-
-        <button class="lobbyButton" onclick="window.location.href = 'index.html'">Lobby 2</button>
-        <br>
-
-        <button class="lobbyButton" onclick="window.location.href = 'index.html'">Lobby 3</button>
-        <br>
-
-        <button class="lobbyButton" onclick="window.location.href = 'index.html'">Lobby 4</button>
-        <br/>
+        <button class="button" onclick= "window.location.href = 'index.html'"
+        } > Multiplayer   </button>
 
 
 
-        <br/>
 
-        <br/>
 
     </div>
 
@@ -110,7 +75,6 @@
     <script src="js/app.js"></script>
     <script type="module" src="js/playerControl.js"></script>
 
-    <script>hideUserInputFields()</script>
 <!--    <script type="module" src="js/data.js"></script>-->
 
 

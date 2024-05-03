@@ -26,6 +26,10 @@ export function emitHold(socket){
 export function emitDrop(socket){
     socket.emit("playerDrop")
 }
+export function emitRoom(socket,room){
+    socket.emit(room)
+}
+
 
 //Listen for game state updates from the server
 // socket.on('game-state', (gameState) => {
