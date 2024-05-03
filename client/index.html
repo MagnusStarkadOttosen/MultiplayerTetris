@@ -146,6 +146,8 @@
                 document.getElementById("btn1").addEventListener("click",test)
                 document.getElementById("btn2").addEventListener("click",test)
                 document.getElementById("btn3").addEventListener("click",test)
+                document.getElementById("playButton").addEventListener("click",test2)
+
 
                 function test(){
                    let number = document.getElementById("value").innerText
@@ -161,7 +163,8 @@
 
 
                 }
-                function hide(){
+                function test2(){
+                    socket.emit("Ready")
 
                 }
                 // Initialize player controls with the socket
@@ -180,9 +183,12 @@
         document.getElementById("value").innerText = number
 
     }
+
+
 </script>
 
 <div id="value"></div>
+
 
 <button onclick= {sendRoomNumber(1)} id="btn" class="lobbyButton">Lobby 1</button>
 <br>
@@ -195,6 +201,9 @@
 
     <button onclick= {sendRoomNumber(4)} id="btn3" class="lobbyButton" >Lobby 4</button>
     <br/>
+    <button onclick= {sendReady()} id="playButton" class="lobbyButton" >Ready</button>
+
+
     <br/>
 
     <h1 >Socket Connection Test</h1>

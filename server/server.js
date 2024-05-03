@@ -88,21 +88,26 @@ io.on("connection", (socket) => {
         control.handlePlayerFall(socket.id)
 
     });
+    socket.on("Ready", () => {
+        let control = controllers[findRoom(socket.id)]
+        control.room=control.room+1;
+        let count=control.room
+        if(count==3){
+            for(let i = 1;i<=count;i++) {
+                let players = Object.values(control.players)
+                players[i-1].start=true
+
+            }
+
+        }
+
+    });
     socket.on("roomNumber", (roomSent) => {
             roomNumber = roomSent;
-            console.log(roomNumber);
-            let room = controllers[roomNumber-1]
-            let realList = lists[roomNumber-1]
-
-
-
-            console.log(controllers)
-            room.addPlayer(socket.id);
-            room.addGameboard(socket.id);
-            realList.push(socket.id)
-
-
-
+        let control = controllers[findRoom(socket.id)]
+        control.addPlayer(socket.id);
+        control.addGameboard(socket.id);
+        console.log(roomNumber);
         }
 
 

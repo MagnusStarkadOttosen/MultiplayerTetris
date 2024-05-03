@@ -4,6 +4,7 @@ export class GameController {
         this.io = io;
         this.players = {};
         this.width = 10
+        this.room=0
         this.height = 22
             this.gameBoards = { //Creates a 2D array with the given size
 
@@ -28,6 +29,7 @@ export class GameController {
             holdPiece: null,
             nextPieces: pieceList, //The rest of the pieces
             nextPiecesReal: this.createPieceList(pieceList),
+            start:false,
             points: 0,
             level: 0,
             speed: 48,
@@ -461,7 +463,7 @@ this.greyLineQueue[socketId]--
         for (const playerId in this.players) {
             if (this.players.hasOwnProperty(playerId)) {
                     const player = this.players[playerId];
-                if(!player.gameOver) {
+                if(!player.gameOver && player.start) {
 
                     // Handle player's piece falling
                     this.handlePlayerFall(playerId);
