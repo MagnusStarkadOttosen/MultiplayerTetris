@@ -99,6 +99,14 @@
 
 
                     }
+                    if(boards.length<4){
+                        for(let i=boards.length;i<=3;i++){
+                            gameBoardElements[i].innerText="";
+                            playerElements[i].innerText="";
+                            holdElement[i].innerText="";
+                            previewElements[i].innerText="";
+                        }
+                    }
 
 
                 });
@@ -165,6 +173,8 @@
                 }
                 function test2(){
                     socket.emit("Ready")
+                    document.getElementById("playButton").hidden=true
+
 
                 }
                 // Initialize player controls with the socket

@@ -53,9 +53,11 @@ function findRoom(id){
     else  if( list3.includes(id,0)){
         return 2
     }
-    else{
+    else if (list4.includes(id,0)){
           return 3
     }
+    else
+        console.log("error in rooms")
     }
 
 
@@ -67,32 +69,44 @@ io.on("connection", (socket) => {
 
     socket.on("send-message", (message) => {
         io.emit("receive-message", message);
+
     });
 
     socket.on("disconnect", () => {
         console.log('User disconnected');
+        let roomNum = findRoom(socket.id)
+        controllers[roomNum].room= controllers[roomNum].room-1
+        controllers[roomNum].removePlayer(socket.id)
     });
 
+
     socket.on("playerMove", (direction) => {
+
         let control = controllers[findRoom(socket.id)]
-        control.handlePlayerMove(socket.id, direction);
+        if(control.players[socket.id].start && !(control.players[socket.id].gameOver))
+            control.handlePlayerMove(socket.id, direction);
+
     });
 
     socket.on("playerRotate", (rotationDirection) => {
         let control = controllers[findRoom(socket.id)]
-        control.handlePlayerRotation(socket.id, rotationDirection)
+        if(control.players[socket.id].start && !(control.players[socket.id].gameOver))
+
+            control.handlePlayerRotation(socket.id, rotationDirection)
         });
 
     socket.on("playerFall", () => {
         let control = controllers[findRoom(socket.id)]
-        control.handlePlayerFall(socket.id)
+        if(control.players[socket.id].start && !(control.players[socket.id].gameOver))
+
+            control.handlePlayerFall(socket.id)
 
     });
     socket.on("Ready", () => {
         let control = controllers[findRoom(socket.id)]
         control.room=control.room+1;
         let count=control.room
-        if(count==3){
+        if(count==2|| count==3|| count==4){
             for(let i = 1;i<=count;i++) {
                 let players = Object.values(control.players)
                 players[i-1].start=true
@@ -104,6 +118,9 @@ io.on("connection", (socket) => {
     });
     socket.on("roomNumber", (roomSent) => {
             roomNumber = roomSent;
+        let list = lists[roomSent-1];
+        list.push(socket.id)
+
         let control = controllers[findRoom(socket.id)]
         control.addPlayer(socket.id);
         control.addGameboard(socket.id);
@@ -115,13 +132,17 @@ io.on("connection", (socket) => {
 
     socket.on("playerHold", () => {
         let control = controllers[findRoom(socket.id)]
-        control.handleHold(socket.id)
+        if(control.players[socket.id].start && !(control.players[socket.id].gameOver))
+
+            control.handleHold(socket.id)
 
     });
 
     socket.on("playerDrop", () => {
         let control = controllers[findRoom(socket.id)]
-        control.handleDrop(socket.id)
+        if(control.players[socket.id].start && !(control.players[socket.id].gameOver))
+
+            control.handleDrop(socket.id)
 
 
     });
