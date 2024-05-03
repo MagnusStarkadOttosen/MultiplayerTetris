@@ -8,8 +8,173 @@
 </head>
 
 <body>
-    <h1>Socket Connection Test</h1>
-    <div id="status">Socket Status: Connecting...</div>
+
+
+<script>
+
+
+</script>
+
+
+    <script type="module">
+
+        import { io } from 'https://cdn.socket.io/4.3.1/socket.io.esm.min.js';
+        import { initializePlayerControls } from './js/playerControl.js';
+        let socket = io('localhost:25565', {
+
+            withCredentials: true
+        });
+        let scket2= socket
+            document.addEventListener("DOMContentLoaded", function () {
+                // const socket = io('http://130.225.170.52:10311', {
+
+
+                socket.on('connect', () => {
+                    document.getElementById('status').innerText = '';
+                });
+
+                socket.on('disconnect', () => {
+                    document.getElementById('status').innerText = 'Socket Status: Disconnected';
+                });
+
+                socket.on('receive-message', (message) => {
+                    console.log("Received from server:", message);
+                });
+                socket.on('receive-message', (message) => {
+                    console.log("Received from server:", message);
+                });
+
+
+                socket.on('game-state', (gameState) => {
+                    console.log("Index Received game state:", gameState);
+                    const gameBoardElements = {}
+                    const playerElements = {}
+                    gameBoardElements[0] = document.getElementById('gameBoard1')
+                    gameBoardElements[1] = document.getElementById('gameBoard2')
+                    gameBoardElements[2] = document.getElementById('gameBoard3')
+                    gameBoardElements[3] = document.getElementById('gameBoard4')
+
+                    playerElements[0] = document.getElementById('player1')
+                    playerElements[1] = document.getElementById('player2')
+                    playerElements[2] = document.getElementById('player3')
+                    playerElements[3] = document.getElementById('player4')
+
+                    // const playerElement = document.getElementById('player')
+
+                    // renderGameBoard(gameBoardElements[0], gameState.gameBoards[socket.id].grid); // Corrected access
+
+                    let boards = Object.values(gameState.gameBoards)
+                    let players = Object.values(gameState.players)
+                    for (let i = 0; i < boards.length; i++) {
+                        renderGameBoard(gameBoardElements[i], boards[i].grid)
+                        if (!players[i].gameOver)
+                            playerElements[i].innerText = "Player " + (i + 1)
+                        else {
+                            playerElements[i].innerText = "Gameover"
+
+
+                        }
+
+
+                    }
+
+
+                });
+
+
+
+                function renderGameBoard(container, grid) {
+                    container.innerHTML = ''; // Clear existing grid cells
+                    grid.forEach(row => {
+                        row.forEach(cell => {
+                            const cellElement = document.createElement('div');
+                            cellElement.style.width = '30px';
+                            cellElement.style.height = '30px';
+                            cellElement.style.backgroundColor = getCellColor(cell);
+                            container.appendChild(cellElement);
+                        });
+                    });
+                }
+
+
+
+
+
+                function getCellColor(cell) {
+                    // Define color based on cell value
+                    const colorMap = {
+                        0: '#eeeeee', // Empty
+                        1: '#FF6347', // I-tetromino, example
+                        2: '#87CEFA', // T-tetromino, example
+                        3: '#90EE90', // T-tetromino, example
+                        4: '#FFFF99', // T-tetromino, example
+                        5: '#FFBD45', // T-tetromino, example
+                        6: '#E0FFFF', // T-tetromino, example
+                        7: '#d8b0d1', // T-tetromino, example
+                        8: '#000000',
+
+                        // Add more mappings as necessary
+                    };
+                    return colorMap[cell] || '#000000'; // Default to black if undefined
+                }
+
+                document.getElementById("btn").addEventListener("click",test)
+                document.getElementById("btn1").addEventListener("click",test)
+                document.getElementById("btn2").addEventListener("click",test)
+                document.getElementById("btn3").addEventListener("click",test)
+
+                function test(){
+                   let number = document.getElementById("value").innerText
+                    socket.emit("roomNumber",number)
+                    document.getElementById("btn").hidden=true
+                    document.getElementById("btn1").hidden=true
+                    document.getElementById("btn2").hidden=true
+                    document.getElementById("btn3").hidden=true
+
+
+
+
+
+
+                }
+                function hide(){
+
+                }
+                // Initialize player controls with the socket
+                initializePlayerControls(socket);
+
+
+            });
+
+
+
+    </script>
+
+
+<script>
+    function sendRoomNumber(number) {
+        document.getElementById("value").innerText = number
+
+    }
+</script>
+
+<div id="value"></div>
+
+<button onclick= {sendRoomNumber(1)} id="btn" class="lobbyButton">Lobby 1</button>
+<br>
+
+    <button onclick= {sendRoomNumber(2)} id="btn1" class="lobbyButton" >Lobby 2</button>
+    <br>
+
+    <button onclick= {sendRoomNumber(3)} id="btn2" class="lobbyButton">Lobby 3</button>
+    <br>
+
+    <button onclick= {sendRoomNumber(4)} id="btn3" class="lobbyButton" >Lobby 4</button>
+    <br/>
+    <br/>
+
+    <h1 >Socket Connection Test</h1>
+    <div id="status" >Socket Status: Connecting...</div>
 
     <div id="player1" style="display : inline;"> </div>
     <div id="gameBoard1" style="display: inline grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">
@@ -35,110 +200,7 @@
 <!--    </div>-->
 
 
-    <script type="module">
-        import { io } from 'https://cdn.socket.io/4.3.1/socket.io.esm.min.js';
-        import { initializePlayerControls } from './js/playerControl.js';
 
-        document.addEventListener("DOMContentLoaded", function () {
-            // const socket = io('http://130.225.170.52:10311', {
-            const socket = io('localhost:25565', {
-
-                withCredentials: true
-            });
-
-
-            socket.on('connect', () => {
-                document.getElementById('status').innerText = '';
-            });
-
-            socket.on('disconnect', () => {
-                document.getElementById('status').innerText = 'Socket Status: Disconnected';
-            });
-
-            socket.on('receive-message', (message) => {
-                console.log("Received from server:", message);
-            });
-
-            socket.on('game-state', (gameState) => {
-                console.log("Index Received game state:", gameState);
-                const gameBoardElements = {}
-                const playerElements = {}
-                gameBoardElements[0] = document.getElementById('gameBoard1')
-                gameBoardElements[1] = document.getElementById('gameBoard2')
-                gameBoardElements[2] = document.getElementById('gameBoard3')
-                gameBoardElements[3] = document.getElementById('gameBoard4')
-
-                playerElements[0] = document.getElementById('player1')
-                playerElements[1] = document.getElementById('player2')
-                playerElements[2] = document.getElementById('player3')
-                playerElements[3] = document.getElementById('player4')
-
-                // const playerElement = document.getElementById('player')
-
-                // renderGameBoard(gameBoardElements[0], gameState.gameBoards[socket.id].grid); // Corrected access
-
-                let boards = Object.values(gameState.gameBoards)
-                let players = Object.values(gameState.players)
-                for(let i =0;i<boards.length;i++){
-                    renderGameBoard(gameBoardElements[i], boards[i].grid)
-                    if (!players[i].gameOver)
-                    playerElements[i].innerText = "Player " + (i+1)
-                    else{
-                        playerElements[i].innerText = "Gameover"
-
-
-                    }
-
-
-                }
-
-
-
-
-
-
-
-
-
-            });
-
-            function renderGameBoard(container, grid) {
-                container.innerHTML = ''; // Clear existing grid cells
-                grid.forEach(row => {
-                    row.forEach(cell => {
-                        const cellElement = document.createElement('div');
-                        cellElement.style.width = '30px';
-                        cellElement.style.height = '30px';
-                        cellElement.style.backgroundColor = getCellColor(cell);
-                        container.appendChild(cellElement);
-                    });
-                });
-            }
-
-
-
-            function getCellColor(cell) {
-                // Define color based on cell value
-                const colorMap = {
-                    0: '#eeeeee', // Empty
-                    1: '#FF6347', // I-tetromino, example
-                    2: '#87CEFA', // T-tetromino, example
-                    3: '#90EE90', // T-tetromino, example
-                    4: '#FFFF99', // T-tetromino, example
-                    5: '#FFBD45', // T-tetromino, example
-                    6: '#E0FFFF', // T-tetromino, example
-                7: '#d8b0d1', // T-tetromino, example
-                    8:'#000000',
-
-                    // Add more mappings as necessary
-                };
-                return colorMap[cell] || '#000000'; // Default to black if undefined
-            }
-
-            // Initialize player controls with the socket
-            initializePlayerControls(socket);
-        });
-    </script>
 
 </body>
 

@@ -12,6 +12,7 @@ import { fileURLToPath } from 'url';
 // const path = require('path');
 
 const app = express();
+let roomNumber;
 
 const server = http.createServer(app);
 // const io = new SocketIO(server);
@@ -31,28 +32,23 @@ app.use(express.static(clientPath));
 
 const gameController = new GameController(io);
 const gameController2 = new GameController(io);
-let swit = 0;
+const gameController3 = new GameController(io);
+const gameController4 = new GameController(io);
+
+const controllers =[gameController,gameController2,gameController3,gameController4]
+
 let list1=[]
 let list2=[]
+let list3=[]
+let list4=[]
+
+let lists= [list1,list2,list3,list4]
 
 
 io.on("connection", (socket) => {
     console.log("A user connected");
     console.log(socket.connected)
-    if(swit==0) {
-        gameController.addPlayer(socket.id);
-        gameController.addGameboard(socket.id);
-        console.log(socket.id)
-        list1.push(socket.id)
-        swit=1
-    }else
-    {
-        gameController2.addPlayer(socket.id);
-        gameController2.addGameboard(socket.id);
-        list2.push(socket.id)
-        swit=0
 
-    }
     
     socket.on("send-message", (message) => {
         io.emit("receive-message", message);
@@ -90,6 +86,25 @@ io.on("connection", (socket) => {
 
 
     });
+    socket.on("roomNumber", (roomSent) => {
+            roomNumber = roomSent;
+            console.log(roomNumber);
+            let room = controllers[roomNumber-1]
+            let realList = lists[roomNumber-1]
+
+
+
+console.log(controllers)
+             room.addPlayer(socket.id);
+            room.addGameboard(socket.id);
+            realList.push(socket.id)
+
+
+
+        }
+
+
+    );
 
     socket.on("playerHold", () => {
 
