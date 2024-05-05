@@ -5,11 +5,11 @@
     <style>
       body {
         background-color: #ffcccc;
-        display: flex;
+        font-family: sans-serif;
+        margin: 0;
+        padding: 0;
         justify-content: center;
         align-items: center;
-        height: 100vh;
-        margin: 0;
       }
 
       canvas {
@@ -17,31 +17,29 @@
         border: 2px solid black;
       }
       .section1 {
-        display: flex;
+        /* display: flex; */
         justify-content: center;
         align-items: center;
-        height: 100vh;
-        margin: 0;
-        background-color: aquamarine;
+        background-color: #802b2b;
       }
 
       .Split {
         height: 100%;
         position: fixed;
         z-index: 1;
-        top: 0;
-        overflow-x: hidden;
         padding-top: 20px;
       }
       .left {
-        left: 0;
-        width: 65%;
+        left: 15xp;
+        width: 70%;
+        justify-content: center;
+        /* align-items: center; */
         background-color: #ffcccc;
       }
       .right {
         right: 0;
-        width: 35%;
-        background-color: #d0d890;
+        width: 30%;
+        background-color: #c65e5e;
         grid-template-columns: 1fr 1fr;
         grid-template-rows: 1fr 1fr;
         align-items: center;
@@ -49,20 +47,25 @@
         padding: 5px;
         gap: 10px;
       }
-      .display{
-        display: grid;
+      .display {
+        margin-top: 20px;
+      }
+      .in-score-board-left {
+        float: left;
+      }
+      .in-score-board-right {
+        float: right;
       }
       .score-board {
-        background: white;
-        border: 2px solid black;
+        /* border: 2px solid black; */
         display: flex;
         justify-content: center;
         align-items: center;
         flex-direction: column;
-        padding: 5px;
+        padding: 10px;
       }
       .score-board {
-        flex: 1;
+        width: 45%;
       }
       .screen-container {
         display: grid;
@@ -73,14 +76,42 @@
         text-align: center;
         margin-bottom: 20px;
       }
+      label {
+        font-weight: bold;
+        font-size: 3em;
+        color: white;
+        align-items: center;
+        text-align: center;
+        margin: 30px;
+        
+      }
+      .tetrisGamemultiplay {
+        width: 60%;
+        height: 180px;
+        margin: auto;
+      }
+      #start {
+        float: right;
+        margin: 20px;
+        margin-right: 100px;
+        background-color: rgb(255, 111, 0);
+        padding: 20px;
+        border-radius: 10px;
+        font-weight: 900;
+        color: white;
+      }
     </style>
   </head>
 
   <body>
     <div id="section1">
-      <title>PAY ROOM</title>
-      <label></label>
+      <div style="max-width: 100%; height: 120px; background-color: #802b2b">
+        <label>ROOM: <span style="color: red" id="roomName">ROOM 1</span></label
+        >
+        <button id="start" onclick="start()">START</button>
+      </div>
     </div>
+
     <div id="section2">
       <div class="Split left">
         <div class="screen-container">
@@ -106,58 +137,50 @@
       </div>
       <div class="Split right">
         <div id="status">Players in room</div>
-        <div id="display">
-          <div class="score-board" id="player1">
+        <div id="display" class="display">
+          <div class="score-board in-score-board-left" id="player1">
             <p>Highscore: <span id="highscore1">0</span></p>
             <div class="screen-container">
-              <canvas
-                id="tetris"
-                width="100"
-                height="220"
-                class="tetrisGame"
-              ></canvas>
+              <canvas id="tetris" class="tetrisGamemultiplay"></canvas>
             </div>
-            <p><span id="name">player</span></p>
+            <p><span id="name1">player</span></p>
           </div>
 
-          <div class="score-board" id="player2">
+          <div class="score-board in-score-board-right" id="player2">
             <p>Highscore: <span id="highscore2">0</span></p>
             <div class="screen-container">
-              <canvas
-                id="tetris"
-                width="100"
-                height="220"
-                class="tetrisGame"
-              ></canvas>
+              <canvas id="tetris" class="tetrisGamemultiplay"></canvas>
             </div>
-            <p><span id="name">player</span></p>
+            <p><span id="name2">player</span></p>
           </div>
-          <div class="score-board" id="player3">
+          <div class="score-board in-score-board-left" id="player3">
             <p>Highscore: <span id="highscore3">0</span></p>
             <div class="screen-container">
-              <canvas
-                id="tetris"
-                width="100"
-                height="220"
-                class="tetrisGame"
-              ></canvas>
+              <canvas id="tetris" class="tetrisGamemultiplay"></canvas>
             </div>
-            <p><span id="name">player</span></p>
+            <p><span id="name3">player</span></p>
           </div>
-          <div class="score-board" id="player4">
+          <div class="score-board in-score-board-right" id="player4">
             <p>Highscore: <span id="highscore4">0</span></p>
             <div class="screen-container">
-              <canvas
-                id="tetris"
-                width="100"
-                height="220"
-                class="tetrisGame"
-              ></canvas>
+              <canvas id="tetris" class="tetrisGamemultiplay"></canvas>
             </div>
-            <p><span id="name">player</span></p>
+            <p><span id="name4">player</span></p>
           </div>
         </div>
       </div>
     </div>
   </body>
 </html>
+<!-- here to avoid players double clicking the start button -->
+<script>
+  let startGame = false;
+  function start() {
+    if (!startGame) {
+      initializeGameBoard();
+      update();
+      document.getElementById("start").style.backgroundColor = "blue";
+      startGame = true;
+    }
+  }
+</script>

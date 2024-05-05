@@ -32,30 +32,48 @@ app.use(express.static(clientPath));
 const gameController = new GameController(io);
 const gameController2 = new GameController(io);
 let swit = 0;
-let list1=[]
-let list2=[]
+let room1=[]
+let room2=[]
+let room3=[]
+let room4=[]
 
 
 io.on("connection", (socket) => {
-    console.log("A user connected");
+    // console.log("A user connected");
     console.log(socket.connected)
-    if(swit==0) {
-        gameController.addPlayer(socket.id);
-        gameController.addGameboard(socket.id);
-        console.log(socket.id)
-        list1.push(socket.id)
-        swit=1
-    }else
-    {
-        gameController2.addPlayer(socket.id);
-        gameController2.addGameboard(socket.id);
-        list2.push(socket.id)
-        swit=0
+    // if(swit==0) {
+    //     gameController.addPlayer(socket.id);
+    //     gameController.addGameboard(socket.id);
+    //     console.log(socket.id)
+    //     list1.push(socket.id)
+    //     swit=1
+    // }else
+    // {
+    //     gameController2.addPlayer(socket.id);
+    //     gameController2.addGameboard(socket.id);
+    //     list2.push(socket.id)
+    //     swit=0
 
-    }
+    // }
     
     socket.on("send-message", (message) => {
-        io.emit("receive-message", message);
+        console.log("init-game" + message);
+        io.emit("init-game", message);
+        let myArray = message.split("|");
+        let name = myArray[0];
+        let room = myArray[1];
+        gameController.addPlayer(socket.id, name);
+        gameController.addGameboard(socket.id);
+        console.log(socket.id)
+        if(roomId=="room1")
+        room1.push(socket.id)
+        if(roomId=="room2")
+        room2.push(socket.id)
+        if(roomId=="room3")
+        room3.push(socket.id)
+        if(roomId=="room4")
+        room4.push(socket.id)
+
     });
 
     socket.on("disconnect", () => {
