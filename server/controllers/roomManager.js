@@ -1,23 +1,25 @@
-class Room {
-    constructor(id,io) {
+import { GameController } from './gameController.js';
+export class Room {
+    constructor(id, io) {
         this.id = id;
-        this.players = [];
-        this.gameController = new GameController(io);
+        this.gameController = new GameController(io, id);
     }
 
-    addPlayer(playerId) {
-        this.players.push(playerId);
-        this.gameController.addPlayer(playerId);
+    addPlayer(playerId, name) {
+        this.gameController.addPlayer(playerId, name);
+        this.gameController.addGameboard(playerId);
     }
 
     removePlayer(playerId) {
-        this.players = this.players.filter(id => id !== playerId);
         this.gameController.removePlayer(playerId);
     }
 
     getOpponents(playerId) {
-        return this.players.filter(id => id !== playerId);
 
+    }
+
+    getState() {
+        return this.gameController.getState();
     }
     handlePlayerAction(playerId, action, payload) {
         //Handle player actions
@@ -40,14 +42,15 @@ class Room {
         }
     }
 }
-class RoomManager {
+export class RoomManager {
     constructor(io) {
         this.rooms = {};
         this.io = io;
+        this.init();
     }
 
     createRoom(roomId) {
-        this.rooms[roomId] = new Room(roomId), this.io;
+        this.rooms[roomId] = new Room(roomId, this.io);
     }
 
     deleteRoom(roomId) {
@@ -55,25 +58,48 @@ class RoomManager {
              delete this.rooms[roomId];
         }
     }
+    init() {
+        setInterval(() => {
+            let arr = [];
+            for (const key in this.rooms) {
+                arr.push(this.rooms[key].getState())
+            }
+            this.io.emit("room-state", arr);
+        }, 1000);
+    }
 
-    addPlayerToRoom(roomId, playerId) {
+    addPlayerToRoom(roomId, playerId, name) {
         if (!this.rooms[roomId]) {
             this.createRoom(roomId);
         }
-        this.rooms[roomId].addPlayer(playerId);
+        this.rooms[roomId].addPlayer(playerId, name);
     }
 
     removePlayerFromRoom(roomId, playerId) {
         if (this.rooms[roomId]) {
             this.rooms[roomId].removePlayer(playerId);
-            if (this.rooms[roomId].players.lenght===0){
-                this.deleteRoom(roomId);
-            }
+            // if (this.rooms[roomId].players.length===0){
+            //     this.deleteRoom(roomId);
+            // }
         }
     }
 
+    removePlayer(playerId) {
+        for (const key in this.rooms) {
+            this.rooms[key].removePlayer(playerId)
+        }
+    }
     getRoom(roomId) {
         return this.rooms[roomId];
+    }
+
+    getGameController(playerId) {
+        for (const key in this.rooms) {
+            if (this.rooms[key].gameController.isPlayer(playerId)) {
+                console.log( this.rooms[key].gameController);
+                return this.rooms[key].gameController;
+            }
+        }
     }
     executePlayerAction(roomId, playerId, action, payload) {
         const room = this.rooms[roomId];

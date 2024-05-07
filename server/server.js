@@ -29,99 +29,53 @@ const __dirname = path.dirname(__filename);
 const clientPath = path.join(__dirname, '..', 'client');
 app.use(express.static(clientPath));
 
-const gameController = new GameController(io);
-const gameController2 = new GameController(io);
-let swit = 0;
-let room1=[]
-let room2=[]
-let room3=[]
-let room4=[]
+const roomManager = new RoomManager(io);
+for (let i = 1; i <= 4 ; i++) {
+    roomManager.createRoom("room" + i);
+}
 
 
 io.on("connection", (socket) => {
     // console.log("A user connected");
     console.log(socket.connected)
-    // if(swit==0) {
-    //     gameController.addPlayer(socket.id);
-    //     gameController.addGameboard(socket.id);
-    //     console.log(socket.id)
-    //     list1.push(socket.id)
-    //     swit=1
-    // }else
-    // {
-    //     gameController2.addPlayer(socket.id);
-    //     gameController2.addGameboard(socket.id);
-    //     list2.push(socket.id)
-    //     swit=0
-
-    // }
     
     socket.on("send-message", (message) => {
+    });
+    socket.on("init-game", (message) => {
         console.log("init-game" + message);
         io.emit("init-game", message);
         let myArray = message.split("|");
         let name = myArray[0];
-        let room = myArray[1];
-        gameController.addPlayer(socket.id, name);
-        gameController.addGameboard(socket.id);
-        console.log(socket.id)
-        if(roomId=="room1")
-        room1.push(socket.id)
-        if(roomId=="room2")
-        room2.push(socket.id)
-        if(roomId=="room3")
-        room3.push(socket.id)
-        if(roomId=="room4")
-        room4.push(socket.id)
-
+        let roomId = myArray[1]; 
+        roomManager.getRoom(roomId).addPlayer(socket.id, name);
     });
 
     socket.on("disconnect", () => {
         console.log('User disconnected');
+        roomManager.removePlayer(socket.id);
     });
 
     socket.on("playerMove", (direction) => {
-       if( list1.includes(socket.id,0)){
-           console.log(socket.id)
-           gameController.handlePlayerMove(socket.id, direction);}
-       else{
-           gameController2.handlePlayerMove(socket.id, direction);}
-
+        console.log(direction)
+        roomManager.getGameController(socket.id).handlePlayerMove(socket.id, direction);
 
     });
 
     socket.on("playerRotate", (rotationDirection) => {
-        if( list1.includes(socket.id,0)){
-            console.log(socket.id)
-            gameController.handlePlayerRotation(socket.id, rotationDirection);}
-        else{
-            gameController2.handlePlayerRotation(socket.id, rotationDirection);}
+        roomManager.getGameController(socket.id).handlePlayerRotation(socket.id, rotationDirection);
 
     });
 
     socket.on("playerFall", () => {
-        if( list1.includes(socket.id,0)){
-            console.log(socket.id)
-            gameController.handlePlayerFall(socket.id)}
-        else{
-            gameController2.handlePlayerFall(socket.id)}
-
-
+        roomManager.getGameController(socket.id).handlePlayerFall(socket.id);
     });
 
     socket.on("playerHold", () => {
-
+        roomManager.getGameController(socket.id).handleHold(socket.id);
     });
 
     socket.on("playerDrop", () => {
-        if(list1.includes(socket.id,0)){
-            console.log(socket.id)
-            gameController.handleDrop(socket.id)}
-        else{
-            gameController2.handleDrop(socket.id)
-        }
-
-
+        roomManager.getGameController(socket.id).handleDrop(socket.id);
     });
 
     socket.on("test", () => {

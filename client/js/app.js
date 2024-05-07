@@ -755,8 +755,8 @@ function setGameOverMsg (msg){
         }
     }
 
-    initializeGameBoard();
-    update();
+    // initializeGameBoard();
+    // update();
 
 
 
