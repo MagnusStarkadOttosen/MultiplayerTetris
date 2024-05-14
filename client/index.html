@@ -49,6 +49,8 @@
 
             socket.on('connect', () => {
                 document.getElementById('status').innerText = '';
+                console.log(socket.id)
+                socket.emit("init-game", 'name' + (Math.floor(Math.random() * 6) + 1)  + '|room1');
             });
 
             socket.on('disconnect', () => {
@@ -59,7 +61,7 @@
                 console.log("Received from server:", message);
             });
 
-            socket.on('game-state', (gameState) => {
+            socket.on('game-stateroom1', (gameState) => {
                 console.log("Index Received game state:", gameState);
                 const gameBoardElements = {}
                 const playerElements = {}
@@ -86,12 +88,9 @@
                     else{
                         playerElements[i].innerText = "Gameover"
 
-
                     }
 
-
                 }
-
 
             });
 
@@ -120,7 +119,7 @@
                     4: '#FFFF99', // T-tetromino, example
                     5: '#FFBD45', // T-tetromino, example
                     6: '#E0FFFF', // T-tetromino, example
-                7: '#d8b0d1', // T-tetromino, example
+                    7: '#d8b0d1', // T-tetromino, example
                     8:'#000000',
 
                     // Add more mappings as necessary
