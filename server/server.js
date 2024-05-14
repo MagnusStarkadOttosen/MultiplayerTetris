@@ -3,8 +3,8 @@ import http from 'http';
 import express from 'express';
 import { Server } from 'socket.io';
 import path from 'path';
-import { GameController } from './controllers/gameController.js';
 import { fileURLToPath } from 'url';
+import { RoomManager } from './controllers/roomManager.js';
 
 // const http = require("http");
 // const expraess = require("express");
@@ -33,7 +33,6 @@ const roomManager = new RoomManager(io);
 for (let i = 1; i <= 4 ; i++) {
     roomManager.createRoom("room" + i);
 }
-
 
 io.on("connection", (socket) => {
     // console.log("A user connected");
@@ -82,7 +81,21 @@ io.on("connection", (socket) => {
         console.log('testing');
         io.emit("receive-message", "testing ack");
     });
-
+    socket.on('ready',(roomId) => {
+        roomManager.getGameController(socket.id).playerReady(socket.id);
+    });
+    socket.on("game-board",(gameBoard) => {
+        let controller = roomManager.getGameController(socket.id);
+        if(controller!=null) {
+            controller.updateGameBoard(socket.id, gameBoard);
+        }
+    });
+    socket.on("game-over", (player) => {
+        let controller = roomManager.getGameController(socket.id);
+        if(controller!=null) {
+            controller.handleGameOver(socket.id, player);
+        }
+    });
 });
 
 const PORT = 25565;
