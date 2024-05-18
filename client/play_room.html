@@ -188,12 +188,13 @@
 
 <script type="module">
   import { io } from 'https://cdn.socket.io/4.3.1/socket.io.esm.min.js';
-  // import { initializePlayerControls } from './js/playerControl.js';
+  import { initializePlayerControls } from './js/playerControl.js';
+  
 
   document.addEventListener("DOMContentLoaded", function () {
-    const socket = io('localhost:25565', {
-      withCredentials: true
-    });
+    const socket =io('http://130.225.170.52:10311', {
+    withCredentials: true
+  });
 
     socket.on('connect', () => {
       document.getElementById('status').innerText = '';
@@ -222,6 +223,9 @@
       // console.log("Index Received game state:", gameState);
       const gameBoardElements = {}
       const playerElements = {}
+      const previewElements = {}
+      const holdElements = {}
+
       gameBoardElements[0] = document.getElementById('gameBoard1')
       gameBoardElements[1] = document.getElementById('gameBoard2')
       gameBoardElements[2] = document.getElementById('gameBoard3')

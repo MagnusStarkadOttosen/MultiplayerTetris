@@ -3,8 +3,9 @@ import http from 'http';
 import express from 'express';
 import { Server } from 'socket.io';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import { RoomManager } from './controllers/roomManager.js';
+import { fileURLToPath } from 'url';
+
 
 // const http = require("http");
 // const expraess = require("express");
@@ -98,5 +99,5 @@ io.on("connection", (socket) => {
     });
 });
 
-const PORT = 25565;
+const PORT = 3000;
 server.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));

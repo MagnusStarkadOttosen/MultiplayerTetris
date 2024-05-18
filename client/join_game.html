@@ -68,7 +68,7 @@
     <script type="module">
         import { io } from 'https://cdn.socket.io/4.3.1/socket.io.esm.min.js';
         document.addEventListener("DOMContentLoaded", function () {
-            const socket = io('localhost:25565', {
+            const socket = io('http://130.225.170.52:10311', {
                 withCredentials: true
             });
             socket.on('room-state', (message) => {
