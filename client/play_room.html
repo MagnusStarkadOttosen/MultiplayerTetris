@@ -189,12 +189,12 @@
 <script type="module">
   import { io } from 'https://cdn.socket.io/4.3.1/socket.io.esm.min.js';
   import { initializePlayerControls } from './js/playerControl.js';
-  
-
-  document.addEventListener("DOMContentLoaded", function () {
-    const socket =io('http://130.225.170.52:10311', {
+  const socket =io('http://130.225.170.52:10311', {
     withCredentials: true
   });
+
+  document.addEventListener("DOMContentLoaded", function () {
+    
 
     socket.on('connect', () => {
       document.getElementById('status').innerText = '';
@@ -241,6 +241,8 @@
       highscores[2]= document.getElementById('highscore3')
       highscores[3]= document.getElementById('highscore4')
 
+      
+
       // const playerElement = document.getElementById('player')
       // renderGameBoard(gameBoardElements[0], gameState.gameBoards[socket.id].grid); // Corrected access
       let keys = Object.keys(gameState.players);
@@ -248,7 +250,7 @@
       for(let i =0;i<5; i++){
         if (socket.id == keys[i]) continue;
         if(keys.length>1){
-        renderGameBoard(gameBoardElements[numberRoom], gameState.gameBoards[keys[i]].grid)
+        renderGameBoard(gameBoardElements[numberRoom], gameState.gameBoards[keys[i]].grid, true)
         if (!gameState.players[keys[i]].gameOver)
           playerElements[numberRoom].innerText = "Player: " + gameState.players[keys[i]].name
         else{
@@ -264,8 +266,10 @@
     }
     
     });
-    function renderGameBoard(container, grid) {
+    function renderGameBoard(container, grid,clean) {
+      if (clean){
       container.innerHTML = ''; // Clear existing grid cells
+      }
       grid.forEach(row => {
         row.forEach(cell => {
           const cellElement = document.createElement('div');
