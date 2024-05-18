@@ -40,9 +40,8 @@
         import { initializePlayerControls } from './js/playerControl.js';
 
         document.addEventListener("DOMContentLoaded", function () {
-            // const socket = io('http://130.225.170.52:10311', {
-            const socket = io('localhost:25565', {
-
+            const socket = io('http://130.225.170.52:10311', {
+        
                 withCredentials: true
             });
 
@@ -62,7 +61,7 @@
             });
 
             socket.on('game-stateroom1', (gameState) => {
-                console.log("Index Received game state:", gameState);
+                // console.log("Index Received game state:", gameState);
                 const gameBoardElements = {}
                 const playerElements = {}
                 gameBoardElements[0] = document.getElementById('gameBoard1')
