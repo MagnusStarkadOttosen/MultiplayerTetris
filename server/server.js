@@ -3,8 +3,9 @@ import http from 'http';
 import express from 'express';
 import { Server } from 'socket.io';
 import path from 'path';
-import { GameController } from './controllers/gameController.js';
+import { RoomManager } from './controllers/roomManager.js';
 import { fileURLToPath } from 'url';
+
 
 // const http = require("http");
 // const expraess = require("express");
@@ -30,77 +31,45 @@ const __dirname = path.dirname(__filename);
 const clientPath = path.join(__dirname, '..', 'client');
 app.use(express.static(clientPath));
 
-const gameController = new GameController(io);
-const gameController2 = new GameController(io);
-const gameController3 = new GameController(io);
-const gameController4 = new GameController(io);
-
-const controllers =[gameController,gameController2,gameController3,gameController4]
-
-let list1=[]
-let list2=[]
-let list3=[]
-let list4=[]
-
-let lists= [list1,list2,list3,list4]
-
-function findRoom(id){
-    if( list1.includes(id,0)){
-        return 0;}
-    else if( list2.includes(id,0)){
-        return 1;
-    }
-    else  if( list3.includes(id,0)){
-        return 2
-    }
-    else if (list4.includes(id,0)){
-          return 3
-    }
-    else
-        console.log("error in rooms")
-    }
-
-
+const roomManager = new RoomManager(io);
+for (let i = 1; i <= 4 ; i++) {
+    roomManager.createRoom("room" + i);
+}
 
 io.on("connection", (socket) => {
-    console.log("A user connected");
+    // console.log("A user connected");
     console.log(socket.connected)
-
-
+    
     socket.on("send-message", (message) => {
-        io.emit("receive-message", message);
-
+    });
+    socket.on("init-game", (message) => {
+        console.log("init-game" + message);
+        io.emit("init-game", message);
+        let myArray = message.split("|");
+        let name = myArray[0];
+        let roomId = myArray[1]; 
+        roomManager.getRoom(roomId).addPlayer(socket.id, name);
     });
 
     socket.on("disconnect", () => {
         console.log('User disconnected');
-        let roomNum = findRoom(socket.id)
-        controllers[roomNum].room= controllers[roomNum].room-1
-        controllers[roomNum].removePlayer(socket.id)
+        roomManager.removePlayer(socket.id);
     });
 
-
     socket.on("playerMove", (direction) => {
-
-        let control = controllers[findRoom(socket.id)]
-        if(control.players[socket.id].start && !(control.players[socket.id].gameOver))
-            control.handlePlayerMove(socket.id, direction);
+        console.log(direction)
+        roomManager.getGameController(socket.id).handlePlayerMove(socket.id, direction);
 
     });
 
     socket.on("playerRotate", (rotationDirection) => {
-        let control = controllers[findRoom(socket.id)]
-        if(control.players[socket.id].start && !(control.players[socket.id].gameOver))
+        roomManager.getGameController(socket.id).handlePlayerRotation(socket.id, rotationDirection);
 
             control.handlePlayerRotation(socket.id, rotationDirection)
         });
 
     socket.on("playerFall", () => {
-        let control = controllers[findRoom(socket.id)]
-        if(control.players[socket.id].start && !(control.players[socket.id].gameOver))
-
-            control.handlePlayerFall(socket.id)
-
+        roomManager.getGameController(socket.id).handlePlayerFall(socket.id);
     });
     socket.on("Ready", () => {
         let control = controllers[findRoom(socket.id)]
@@ -133,28 +102,32 @@ io.on("connection", (socket) => {
     );
 
     socket.on("playerHold", () => {
-        let control = controllers[findRoom(socket.id)]
-        if(control.players[socket.id].start && !(control.players[socket.id].gameOver))
-
-            control.handleHold(socket.id)
-
+        roomManager.getGameController(socket.id).handleHold(socket.id);
     });
 
     socket.on("playerDrop", () => {
-        let control = controllers[findRoom(socket.id)]
-        if(control.players[socket.id].start && !(control.players[socket.id].gameOver))
-
-            control.handleDrop(socket.id)
-
-
-
+        roomManager.getGameController(socket.id).handleDrop(socket.id);
     });
 
     socket.on("test", () => {
         console.log('testing');
         io.emit("receive-message", "testing ack");
     });
-
+    socket.on('ready',(roomId) => {
+        roomManager.getGameController(socket.id).playerReady(socket.id);
+    });
+    socket.on("game-board",(gameBoard) => {
+        let controller = roomManager.getGameController(socket.id);
+        if(controller!=null) {
+            controller.updateGameBoard(socket.id, gameBoard);
+        }
+    });
+    socket.on("game-over", (player) => {
+        let controller = roomManager.getGameController(socket.id);
+        if(controller!=null) {
+            controller.handleGameOver(socket.id, player);
+        }
+    });
 });
 
 const PORT = 3000;
