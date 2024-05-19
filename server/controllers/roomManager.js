@@ -3,6 +3,7 @@ export class Room {
     constructor(id, io) {
         this.id = id;
         this.gameController = new GameController(io, id);
+        console.log(this.gameController);
     }
 
     addPlayer(playerId, name) {
@@ -19,7 +20,11 @@ export class Room {
     }
 
     getState() {
-        return this.gameController.getState();
+        try {
+            return this.gameController.getState();
+        } catch (error) {
+            console.error('Failed to get state from GameController:', error);
+        }
     }
     handlePlayerAction(playerId, action, payload) {
         //Handle player actions
