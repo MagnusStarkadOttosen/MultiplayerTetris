@@ -67,10 +67,11 @@
 
     <script type="module">
         import { io } from 'https://cdn.socket.io/4.3.1/socket.io.esm.min.js';
-        document.addEventListener("DOMContentLoaded", function () {
-            const socket = io('http://130.225.170.52:10311', {
+        const socket = io('http://130.225.170.52:10311', {
                 withCredentials: true
             });
+        document.addEventListener("DOMContentLoaded", function () {
+            
             socket.on('room-state', (message) => {
                 for (let i = 0; i < message.length; i++) {
                     if (message[i].isFull) {
@@ -90,7 +91,7 @@
     function change(roomId){
         let name  = document.getElementById("username").value;
         if (name == "") return;
-        window.location.href = 'js/play_room.html' + name + "&roomId=" + roomId;
+        window.location.href = 'play_room.html?name=' + encodeURIComponent(name) + '&roomId=' + roomId;
     }
 </script>
 

@@ -7,12 +7,13 @@ import { RoomManager } from './controllers/roomManager.js';
 import { fileURLToPath } from 'url';
 
 
-// const http = require("http");
-// const expraess = require("express");
-// const socketIo = require("socket.io");
+const http = require("http");
+const expraess = require("express");
+const socketIo = require("socket.io");
 // const path = require('path');
 
 const app = express();
+
 let roomNumber;
 
 const server = http.createServer(app);

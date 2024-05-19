@@ -1,8 +1,9 @@
 import { initializePlayerControls } from './playerControl.js';
-//import { io } from 'https://cdn.socket.io/4.3.1/socket.io.esm.min.js';
+import { io } from 'https://cdn.socket.io/4.3.1/socket.io.esm.min.js';
 
-//const socket = io();
-//Initialize controls once the socket is connected
+const socket = io('http://dtu62597.eduhost.dk:10311/');
+export default socket;
+
 
 
 //Sends the players wants to move the piece
