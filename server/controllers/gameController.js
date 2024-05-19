@@ -13,6 +13,12 @@ export class GameController {
         this.initGameLoop();
     }
 
+    getState() {
+        return {
+            players: this.players,
+            gameBoards: this.gameBoards,
+        };
+    }
     initializeGameBoard() { //Makes a 2D array filled with zero
         let grid = [];
         for (let y = 0; y < this.height; y++) {
