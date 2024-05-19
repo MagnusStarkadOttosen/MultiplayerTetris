@@ -8,32 +8,43 @@
 </head>
 
 <body>
-    <h1>Socket Connection Test</h1>
-    <div id="status">Socket Status: Connecting...</div>
-
-    <div id="player1" style="display : inline;"> </div>
-    <div id="gameBoard1" style="display: inline grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">
-        <!-- Cells will be dynamically inserted here -->
-    </div>
-
-
-    <div id="player2" style="display : inline;"> </div>
-    <div id="gameBoard2" style="display: inline grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">
-        <!-- Cells will be dynamically inserted here -->
-    </div>
-    <div id="player3" style="display : inline;"> </div>
-    <div id="gameBoard3" style="display: inline grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">
-        <!-- Cells will be dynamically inserted here -->
-    </div>
-    <div id="player4" style="display : inline;"> </div>
-    <div id="gameBoard4" style="display: inline grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">
-        <!-- Cells will be dynamically inserted here -->
-    </div>
-<!--    <div id="player" style="display: grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">-->
-<!--            &lt;!&ndash; Cells will be dynamically inserted here &ndash;&gt;-->
-
-<!--    </div>-->
-
+    <style>
+        .button{
+            border-radius: 5px;
+            width: 250px;
+            height: 30px;
+            padding: 5px;
+    
+            text-align: center;
+            margin-bottom: 60px;
+        }
+    
+        .inputBox{
+            width: 250px;
+            padding: 8px 12px;
+            font-size: 16px;
+            border: 1px solid #ced4da;
+            box-shadow: 0 0 4px #00000019;
+            border-radius: 5px;
+            margin: 10px;
+        }
+        .tetrisImage{
+            margin-left:33%;
+        }
+    
+    
+        #menu{
+            padding-top: 160px;
+            text-align: center;
+        }
+        body{
+            background-color: #ffcccc;
+    
+        }
+    
+    </style>
+    
+    
     <script type="module">
 
         import { io } from 'https://cdn.socket.io/4.3.1/socket.io.esm.min.js';
@@ -169,107 +180,44 @@
                     return colorMap[cell] || '#000000'; // Default to black if undefined
                 }
 
-                // document.getElementById("btn").addEventListener("click",test)
-                // document.getElementById("btn1").addEventListener("click",test)
-                // document.getElementById("btn2").addEventListener("click",test)
-                // document.getElementById("btn3").addEventListener("click",test)
-                // document.getElementById("playButton").addEventListener("click",test2)
-
-                // function test(){
-                //    let number = document.getElementById("value").innerText
-                //     socket.emit("roomNumber",number)
-                //     document.getElementById("btn").hidden=true
-                //     document.getElementById("btn1").hidden=true
-                //     document.getElementById("btn2").hidden=true
-                //     document.getElementById("btn3").hidden=true
-
-
-                // }
-                // function test2(){
-                //     socket.emit("Ready")
-                //     document.getElementById("playButton").hidden=true
-
-
-                // }
-                // Initialize player controls with the socket
+                
                 initializePlayerControls(socket);
 
     
             });
 
     </script>
-<!-- 
-
-<!-- <script>
-    function sendRoomNumber(number) {
-        document.getElementById("value").innerText = number
-
-    }
 
 
-</script>
 
-<div id="value"></div>
+<!-- Here we have our tetris title -->
+    <img src="public/images/tetrisTitle.png" alt="Tetris" class="tetrisImage" />
 
 
-<button onclick= {sendRoomNumber(1)} id="btn" class="lobbyButton">Lobby 1</button>
-<br>
 
-    <button onclick= {sendRoomNumber(2)} id="btn1" class="lobbyButton" >Lobby 2</button>
+<!-- Here we have our Menu options -->
+
+    <div id="menu">
+      
+
     <br>
+    <button class="button" onclick="window.location.href = 'tetris.html'">Single Player</button>
 
-    <button onclick= {sendRoomNumber(3)} id="btn2" class="lobbyButton">Lobby 3</button>
-    <br>
 
-    <button onclick= {sendRoomNumber(4)} id="btn3" class="lobbyButton" >Lobby 4</button>
+    </button>
     <br/>
-    <button onclick= {sendReady()} id="playButton" class="lobbyButton" >Ready</button>
+    <button class="button" onclick= "window.location.href = 'join_game.html'"
+     > Multiplayer   </button>
 
 
-    <br/>
+</div>
 
-    <div id="status" >Socket Status: Connecting...</div>
-
-
-    <div id="player1" style="display : inline;"> </div>
-<div></div>
-<div id="hold1" style="display: inline grid; grid-template-columns: repeat(3, 20px); grid-gap: 1px;"></div>
-
-    <div id="gameBoard1" style="display: inline grid; grid-template-columns: repeat(10, 20px); grid-gap: 1px;">
-        Cells will be dynamically inserted here
-    </div>
-<div id="preview1" style="display: inline grid; grid-template-columns: repeat(3, 20px); grid-gap: 1px;"></div>
-
-
-    <div id="player2" style="display : inline;"> </div>
-<div id="hold2" style="display: inline grid; grid-template-columns: repeat(3, 20px); grid-gap: 1px;"></div>
-
-    <div id="gameBoard2" style="display: inline grid; grid-template-columns: repeat(10, 20px); grid-gap: 1px;">
-        Cells will be dynamically inserted here
-    </div>
-<div id="preview2" style="display: inline grid; grid-template-columns: repeat(3, 20px); grid-gap: 1px;"></div>
-    <div id="player3" style="display : inline;"> </div>
-<div id="hold3" style="display: inline grid; grid-template-columns: repeat(3, 20px); grid-gap: 1px;"></div>
-
-    <div id="gameBoard3" style="display: inline grid; grid-template-columns: repeat(10, 20px); grid-gap: 1px;">
-        Cells will be dynamically inserted here
-    </div>
-<div id="preview3" style="display: inline grid; grid-template-columns: repeat(3, 20px); grid-gap: 1px;"></div>
-    <div id="player4" style="display : inline;"> </div>
-<div id="hold4" style="display: inline grid; grid-template-columns: repeat(3, 20px); grid-gap: 1px;"></div>
-
-    <div id="gameBoard4" style="display: inline grid; grid-template-columns: repeat(10, 20px); grid-gap: 1px;">
-        Cells will be dynamically inserted here
-    </div>
-<div id="preview4" style="display: inline grid; grid-template-columns: repeat(3 , 20px); grid-gap: 1px;" ></div>
-   <div id="player" style="display: grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">
-           &lt;!&ndash; Cells will be dynamically inserted here &ndash;&gt;
-
-   </div> -->
-
+<script src="js/socket.js"></script>
+<script src="js/app.js"></script>
+<script type="module" src="js/playerControl.js"></script>
 
 
 
 </body>
 
-</html> -->
+</html> 
