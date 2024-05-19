@@ -8,30 +8,49 @@
 </head>
 
 <body>
+    <h1>Socket Connection Test</h1>
+    <div id="status">Socket Status: Connecting...</div>
+
+    <div id="player1" style="display : inline;"> </div>
+    <div id="gameBoard1" style="display: inline grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">
+        <!-- Cells will be dynamically inserted here -->
+    </div>
 
 
-<script>
+    <div id="player2" style="display : inline;"> </div>
+    <div id="gameBoard2" style="display: inline grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">
+        <!-- Cells will be dynamically inserted here -->
+    </div>
+    <div id="player3" style="display : inline;"> </div>
+    <div id="gameBoard3" style="display: inline grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">
+        <!-- Cells will be dynamically inserted here -->
+    </div>
+    <div id="player4" style="display : inline;"> </div>
+    <div id="gameBoard4" style="display: inline grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">
+        <!-- Cells will be dynamically inserted here -->
+    </div>
+<!--    <div id="player" style="display: grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">-->
+<!--            &lt;!&ndash; Cells will be dynamically inserted here &ndash;&gt;-->
 
-
-</script>
-
+<!--    </div>-->
 
     <script type="module">
 
         import { io } from 'https://cdn.socket.io/4.3.1/socket.io.esm.min.js';
         import { initializePlayerControls } from './js/playerControl.js';
-        let socket = io('localhost:25565', {
-
-            withCredentials: true
+        const socket = io('http://130.225.170.52:10311', {
+        
+        withCredentials: true
         });
         let scket2= socket
-            document.addEventListener("DOMContentLoaded", function () {
-                // const socket = io('http://130.225.170.52:10311', {
 
+        document.addEventListener("DOMContentLoaded", function () {
 
-                socket.on('connect', () => {
-                    document.getElementById('status').innerText = '';
-                });
+            socket.on('connect', () => {
+                document.getElementById('status').innerText = '';
+                console.log(socket.id)
+                socket.emit("init-game", 'name' + (Math.floor(Math.random() * 6) + 1)  + '|room1');
+            });
 
                 socket.on('disconnect', () => {
                     document.getElementById('status').innerText = 'Socket Status: Disconnected';
@@ -44,6 +63,14 @@
                     console.log("Received from server:", message);
                 });
 
+            socket.on('game-stateroom1', (gameState) => {
+                // console.log("Index Received game state:", gameState);
+                const gameBoardElements = {}
+                const playerElements = {}
+                gameBoardElements[0] = document.getElementById('gameBoard1')
+                gameBoardElements[1] = document.getElementById('gameBoard2')
+                gameBoardElements[2] = document.getElementById('gameBoard3')
+                gameBoardElements[3] = document.getElementById('gameBoard4')
 
                 socket.on('game-state', (gameState) => {
                     console.log("Index Received game state:", gameState);
@@ -89,29 +116,22 @@
                             renderGameBoard(holdElement[i],players[i].holdPiece,true)
                         }
 
-
                         }
                         else{
                             playerElements[i].innerText = "Gameover"
-
-
-                        }
-
-
-                    }
-                    if(boards.length<4){
-                        for(let i=boards.length;i<=3;i++){
-                            gameBoardElements[i].innerText="";
-                            playerElements[i].innerText="";
-                            holdElement[i].innerText="";
-                            previewElements[i].innerText="";
                         }
                     }
-
+                });
+                    // if(boards.length<4){
+                    //     for(let i=boards.length;i<=3;i++){
+                    //         gameBoardElements[i].innerText="";
+                    //         playerElements[i].innerText="";
+                    //         holdElement[i].innerText="";
+                    //         previewElements[i].innerText="";
+                    //     }
+                    // }
 
                 });
-
-
 
                 function renderGameBoard(container, grid,clear) {
                     if(clear){
@@ -127,10 +147,6 @@
                         });
                     });
                 }
-
-
-
-
 
                 function getCellColor(cell) {
                     // Define color based on cell value
@@ -151,45 +167,38 @@
                     return colorMap[cell] || '#000000'; // Default to black if undefined
                 }
 
-                document.getElementById("btn").addEventListener("click",test)
-                document.getElementById("btn1").addEventListener("click",test)
-                document.getElementById("btn2").addEventListener("click",test)
-                document.getElementById("btn3").addEventListener("click",test)
-                document.getElementById("playButton").addEventListener("click",test2)
+                // document.getElementById("btn").addEventListener("click",test)
+                // document.getElementById("btn1").addEventListener("click",test)
+                // document.getElementById("btn2").addEventListener("click",test)
+                // document.getElementById("btn3").addEventListener("click",test)
+                // document.getElementById("playButton").addEventListener("click",test2)
+
+                // function test(){
+                //    let number = document.getElementById("value").innerText
+                //     socket.emit("roomNumber",number)
+                //     document.getElementById("btn").hidden=true
+                //     document.getElementById("btn1").hidden=true
+                //     document.getElementById("btn2").hidden=true
+                //     document.getElementById("btn3").hidden=true
 
 
-                function test(){
-                   let number = document.getElementById("value").innerText
-                    socket.emit("roomNumber",number)
-                    document.getElementById("btn").hidden=true
-                    document.getElementById("btn1").hidden=true
-                    document.getElementById("btn2").hidden=true
-                    document.getElementById("btn3").hidden=true
+                // }
+                // function test2(){
+                //     socket.emit("Ready")
+                //     document.getElementById("playButton").hidden=true
 
 
-
-
-
-
-                }
-                function test2(){
-                    socket.emit("Ready")
-                    document.getElementById("playButton").hidden=true
-
-
-                }
+                // }
                 // Initialize player controls with the socket
                 initializePlayerControls(socket);
 
-
+    
             });
 
-
-
     </script>
+<!-- 
 
-
-<script>
+<!-- <script>
     function sendRoomNumber(number) {
         document.getElementById("value").innerText = number
 
@@ -225,7 +234,7 @@
 <div id="hold1" style="display: inline grid; grid-template-columns: repeat(3, 20px); grid-gap: 1px;"></div>
 
     <div id="gameBoard1" style="display: inline grid; grid-template-columns: repeat(10, 20px); grid-gap: 1px;">
-        <!-- Cells will be dynamically inserted here -->
+        Cells will be dynamically inserted here
     </div>
 <div id="preview1" style="display: inline grid; grid-template-columns: repeat(3, 20px); grid-gap: 1px;"></div>
 
@@ -254,11 +263,11 @@
 <!--    <div id="player" style="display: grid; grid-template-columns: repeat(10, 30px); grid-gap: 1px;">-->
 <!--            &lt;!&ndash; Cells will be dynamically inserted here &ndash;&gt;-->
 
-<!--    </div>-->
+   </div> -->
 
 
 
 
 </body>
 
-</html>
+</html> -->

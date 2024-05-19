@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>JOIN GAME</title>
+</head>
+<body>
+    <style>
+       
+        body {
+            font-family: Arial, sans-serif; 
+            display: flex;
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh;
+            margin: 0;
+            background-color: #ffcccc; 
+        }
+        .login-form {
+            background-color: #ffffff; 
+            padding: 20px;
+            border-radius: 5px; 
+            box-shadow: 0 0 10px #00000029;
+            width: 300px;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%; 
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px; 
+            border: 1px solid #ddd; 
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #5C67F2; 
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer; 
+        }
+        button:hover {
+            background-color: #4a54e1; 
+        }
+       
+    </style>
+
+    <div>
+        <div class="login-form">
+            <h2>JOIN GAME</h2>
+            <input type="text" id="username" placeholder="Username" required>
+            <br>
+            <button id="room1" onclick="change('room1')" >Room 1</button>
+            </br>
+            <br>
+            <button  id="room2" onclick="change('room2')">Room 2</button>
+            </br>
+            <br>
+            <button  id="room3" onclick="change('room3')">Room 3</button>
+            </br>
+            <br>
+            <button id="room4" onclick="change('room4')">Room 4</button>
+            </br>
+        </div>
+        
+
+    </div>
+
+    <script type="module">
+        import { io } from 'https://cdn.socket.io/4.3.1/socket.io.esm.min.js';
+        document.addEventListener("DOMContentLoaded", function () {
+            const socket = io('http://130.225.170.52:10311', {
+                withCredentials: true
+            });
+            socket.on('room-state', (message) => {
+                for (let i = 0; i < message.length; i++) {
+                    if (message[i].isFull) {
+                        document.getElementById(message[i].roomId).setAttribute("disabled","disabled");
+                        document.getElementById(message[i].roomId).style.backgroundColor="red";
+                    } else  {
+                        document.getElementById(message[i].roomId).removeAttribute("disabled");
+                        document.getElementById(message[i].roomId).style.backgroundColor="#5C67F2";
+                    }
+                }
+            });
+        })
+
+
+    </script>
+<script>
+    function change(roomId){
+        let name  = document.getElementById("username").value;
+        if (name == "") return;
+        window.location.href = "/play_room.html" + name + "&roomId=" + roomId;
+    }
+</script>
+
+
+</body>
+</html>

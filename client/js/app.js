@@ -12,9 +12,6 @@ context2.scale(20,20);
 context3.scale(20,20);
 
 
-
-
-
 const player = {
     position: {x:0,y:0},
     piece: null,
@@ -220,11 +217,12 @@ document.addEventListener("keydown", event => {
 
     function updateHighScores (newhighScores){
         const highscoresElement = document.getElementById("highscore") ;
-    highscoresElement.textContent = ""+newhighScores;
-    console.log(newhighScores)
-    }
-    let highscore =0;
-    updateHighScores(highscore);
+        highscoresElement.textContent = ""+newhighScores;
+        if (gameBoardBK != undefined)
+             gameBoardBK.highScore = newhighScores;
+        }
+    // let highscore =0;
+    // updateHighScores(highscore);
 
     function getTetrominoWidth(matrix) {
         return matrix[0].length;
@@ -242,7 +240,6 @@ document.addEventListener("keydown", event => {
         freezePiece();
         checkFullLine();
         spawnNewPiece(queue.shift());
-
 
     }
 
@@ -265,7 +262,6 @@ function endGame (newhighScores){
         shadow.piece.forEach((row, y) => {
             row.forEach((value, x) => {
                 if (value !== 0) {
-
                     shadow.piece[y][x] = 8
                 }
             })
@@ -367,10 +363,24 @@ function endGame (newhighScores){
         height: 22,
         grid: []
     };
+    const gameBoardBK = {
+        width: 10,
+        height: 22,
+        grid: [],
+        highScore: 0
+    };
+
+    function emitGameBoard(socket) {
+        socket.emit("game-board", gameBoardBK);
+        if (player.gameOver) {
+            socket.emit("game-over", player);
+        }
+    }
 
     function initializeGameBoard() {
         for (let row = 0; row < gameBoard.height; row++) {
             gameBoard.grid[row] = new Array(gameBoard.width).fill(0);
+            gameBoardBK.grid[row] = new Array(gameBoardBK.width).fill(0);
         }
         randomPieceGenerator(player)
         for (let i = 0; i <= 4; i++) {
@@ -399,16 +409,15 @@ function endGame (newhighScores){
         const deltaTime = time - lastFall;
 
         if (deltaTime > fallInterval) {
-
             fall();
             lastFall = time;
         }
 
         if (chechTopLine()) {
             setGameOverMsg("Game over")
-
             player.position.y = 120
             player.gamePhase = 1
+            player.gameOver = true;
             throw new Error('Game is over!');
 
 
@@ -457,8 +466,6 @@ function endGame (newhighScores){
 
     function chechTopLine() {
         for (let i = 0; i < gameBoard.width; i++) {
-
-
             if (gameBoard.grid[1][i] !== 0)
                 return true
         }
@@ -638,11 +645,7 @@ function endGame (newhighScores){
 function getRandomPieceType() {
     if(set.length==0)
         set=["T", "L", "J", "S", "Z", "O", "I"];
-
-
         drawGameBoard();
-
-
         const index = Math.floor(Math.random() * set.length);
         let value = set[index]
         set.splice(    index,1)
@@ -703,9 +706,9 @@ function getRandomPieceType() {
 
         // Draw the moving piece
         if (player.piece) {
-            if (player.gamePhase == 0)
-
+            if (player.gamePhase == 0){
                     dropShadow();
+        }
                     drawTetromino(player.piece, player.position, context);
                     player.pieceMoved = false
                 }
@@ -746,8 +749,6 @@ function setGameOverMsg (msg){
         drawTetromino(matrix, {x: 1, y: 2}, context2)
     }
 
-
-
     function drawPreviewPiece() {
 
         for (let i = 0; i < queue.length; i++) {
@@ -755,8 +756,8 @@ function setGameOverMsg (msg){
         }
     }
 
-    initializeGameBoard();
-    update();
+    // initializeGameBoard();
+    // update();
 
 
 
