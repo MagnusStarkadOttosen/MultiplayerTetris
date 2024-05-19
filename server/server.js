@@ -106,7 +106,9 @@ io.on("connection", (socket) => {
     });
 
     socket.on("playerDrop", () => {
+
         roomManager.getGameController(socket.id).handleDrop(socket.id);
+
     });
 
     socket.on("test", () => {
