@@ -81,6 +81,7 @@ io.on("connection", (socket) => {
             for(let i = 1;i<=count;i++) {
                 players[i-1].start=true
 
+
             }
 
         }
@@ -105,7 +106,9 @@ io.on("connection", (socket) => {
     });
 
     socket.on("playerDrop", () => {
+
         roomManager.getGameController(socket.id).handleDrop(socket.id);
+
     });
 
     socket.on("test", () => {

@@ -39,18 +39,22 @@
         import { io } from 'https://cdn.socket.io/4.3.1/socket.io.esm.min.js';
         import { initializePlayerControls } from './js/playerControl.js';
         const socket = io('http://130.225.170.52:10311', {
+
         
         withCredentials: true
         });
         let scket2= socket
 
+
         document.addEventListener("DOMContentLoaded", function () {
+
 
             socket.on('connect', () => {
                 document.getElementById('status').innerText = '';
                 console.log(socket.id)
                 socket.emit("init-game", 'name' + (Math.floor(Math.random() * 6) + 1)  + '|room1');
             });
+
 
                 socket.on('disconnect', () => {
                     document.getElementById('status').innerText = 'Socket Status: Disconnected';
