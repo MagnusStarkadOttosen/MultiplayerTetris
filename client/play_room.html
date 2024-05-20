@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="UTF-8">
     <title>PLAY-ROOM</title>
+    <link rel="stylesheet" href="styles.css">
     <style>
       body {
         background-color: #ffcccc;
@@ -202,19 +204,23 @@
 
 <script type="module">
   import { io } from "https://cdn.socket.io/4.3.1/socket.io.esm.min.js";
-  import { initializePlayerControls } from "./js/playerControl.js";
-  const socket = io("http://130.225.170.52:10311", {
-    withCredentials: true,
-  });
+  // import { initializePlayerControls } from "./js/playerControl.js";
 
   document.addEventListener("DOMContentLoaded", function () {
+
+    const socket = io("http://130.225.170.52:10311", {
+      withCredentials: true,
+    });
+
     socket.on("connect", () => {
+      console.log('Connected to server');
       document.getElementById("status").innerText = "";
       socket.emit("init-game", userName + "|" + roomId);
       socketPL = socket;
     });
 
     socket.on("disconnect", () => {
+      console.log('Disconnected from server');
       document.getElementById("status").innerText =
         "Socket Status: Disconnected";
     });
@@ -234,7 +240,7 @@
     });
 
     socket.on("game-state" + roomId, (gameState) => {
-      // console.log("Index Received game state:", gameState);
+      console.log("Index Received game state:", gameState);
       const gameBoardElements = {};
       const playerElements = {};
       const previewElements = {};
@@ -320,7 +326,13 @@
         emitGameState(socket);
       }
     }, 500);
+    
+    socket.on('error', (errorMessage) => {
+     console.log('Error:', errorMessage);
+    });
+
   });
+  
 </script>
 <script>
   function start() {
