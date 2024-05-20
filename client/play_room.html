@@ -83,7 +83,6 @@
         align-items: center;
         text-align: center;
         margin: 30px;
-        
       }
       .tetrisGamemultiplay {
         width: 60%;
@@ -109,8 +108,7 @@
   <body>
     <div id="section1">
       <div style="max-width: 100%; height: 120px; background-color: #802b2b">
-        <label>ROOM<span style="color: rgb(16, 2, 2)" id="roomName"></span></label
-        >
+        <label><span style="color: rgb(16, 2, 2)" id="roomName"></span></label>
         <button id="start" onclick="start()">START</button>
       </div>
     </div>
@@ -141,27 +139,42 @@
       <div class="Split right">
         <!-- <div id="status">Players in room</div> -->
         <div id="display" class="display">
-          <div class="score-board in-score-board-left" >
-            <span>Highscore: <span id="highscore1">0</span>, <span id="player1">player</span></span>
+          <div class="score-board in-score-board-left">
+            <span
+              >Highscore: <span id="highscore1">0</span>,
+              <span id="player1">player</span></span
+            >
             <div class="screen-container">
               <div id="gameBoard1" class="tetrisGamemultiplay"></div>
             </div>
           </div>
 
-          <div class="score-board in-score-board-right" >
-            <span>Highscore: <span id="highscore2">0</span>, <span id="player2">player</span></span>
+          <div class="score-board in-score-board-right">
+            <span
+              >Highscore: <span id="highscore2">0</span>,
+              <span id="player2">player</span></span
+            >
             <div class="screen-container">
               <div id="gameBoard2" class="tetrisGamemultiplay"></div>
             </div>
           </div>
-          <div class="score-board in-score-board-left" style="margin-top: 60px" >
-            <p>Highscore: <span id="highscore3">0</span>, <span id="player3">player</span></p>
+          <div class="score-board in-score-board-left" style="margin-top: 60px">
+            <p>
+              Highscore: <span id="highscore3">0</span>,
+              <span id="player3">player</span>
+            </p>
             <div class="screen-container">
               <div id="gameBoard3" class="tetrisGamemultiplay"></div>
             </div>
           </div>
-          <div class="score-board in-score-board-right" style="margin-top: 60px" >
-            <p>Highscore: <span id="highscore4">0</span>, <span id="player4">player</span></p>
+          <div
+            class="score-board in-score-board-right"
+            style="margin-top: 60px"
+          >
+            <p>
+              Highscore: <span id="highscore4">0</span>,
+              <span id="player4">player</span>
+            </p>
             <div class="screen-container">
               <div id="gameBoard4" class="tetrisGamemultiplay"></div>
             </div>
@@ -174,7 +187,7 @@
 <!-- here to avoid players double clicking the start button -->
 <script>
   let startGame = false;
-  let startButton=false;
+  let startButton = false;
 
   const params = new Proxy(new URLSearchParams(window.location.search), {
     get: (searchParams, prop) => searchParams.get(prop),
@@ -184,97 +197,101 @@
   let roomId = params.roomId;
   document.getElementById("roomName").innerHTML = roomId.toUpperCase();
   document.getElementById("username").innerHTML = userName.toUpperCase();
+  let socketPL = null;
 </script>
 
 <script type="module">
-  import { io } from 'https://cdn.socket.io/4.3.1/socket.io.esm.min.js';
-  import { initializePlayerControls } from './js/playerControl.js';
-  const socket =io('http://130.225.170.52:10311', {
-    withCredentials: true
+  import { io } from "https://cdn.socket.io/4.3.1/socket.io.esm.min.js";
+  import { initializePlayerControls } from "./js/playerControl.js";
+  const socket = io("http://130.225.170.52:10311", {
+    withCredentials: true,
   });
 
   document.addEventListener("DOMContentLoaded", function () {
-    
-
-    socket.on('connect', () => {
-      document.getElementById('status').innerText = '';
-      socket.emit("init-game", userName  + '|' + roomId);
+    socket.on("connect", () => {
+      document.getElementById("status").innerText = "";
+      socket.emit("init-game", userName + "|" + roomId);
+      socketPL = socket;
     });
 
-    socket.on('disconnect', () => {
-      document.getElementById('status').innerText = 'Socket Status: Disconnected';
+    socket.on("disconnect", () => {
+      document.getElementById("status").innerText =
+        "Socket Status: Disconnected";
     });
 
-    socket.on('victory', (message) => {
-      if(socket.id == message){
-        setGameOverMsg("You Win")
+    socket.on("victory", (message) => {
+      if (socket.id == message) {
+        setGameOverMsg("You Win");
       }
       console.log("Received from server:", message);
     });
 
-    socket.on ('playing',+ roomId,()=>{
+    socket.on("playing", +roomId, () => {
       update();
-      document.getElementById('start').style.backgroundColor="green";
-      document.getElementById('start').innerText="Playing";
+      document.getElementById("start").style.backgroundColor = "green";
+      document.getElementById("start").innerText = "Playing";
       startGame = true;
     });
 
-    socket.on('game-state' + roomId, (gameState) => {
+    socket.on("game-state" + roomId, (gameState) => {
       // console.log("Index Received game state:", gameState);
-      const gameBoardElements = {}
-      const playerElements = {}
-      const previewElements = {}
-      const holdElements = {}
+      const gameBoardElements = {};
+      const playerElements = {};
+      const previewElements = {};
+      const holdElements = {};
+      const highscores = {};
 
-      gameBoardElements[0] = document.getElementById('gameBoard1')
-      gameBoardElements[1] = document.getElementById('gameBoard2')
-      gameBoardElements[2] = document.getElementById('gameBoard3')
-      gameBoardElements[3] = document.getElementById('gameBoard4')
+      gameBoardElements[0] = document.getElementById("gameBoard1");
+      gameBoardElements[1] = document.getElementById("gameBoard2");
+      gameBoardElements[2] = document.getElementById("gameBoard3");
+      gameBoardElements[3] = document.getElementById("gameBoard4");
 
-      playerElements[0] = document.getElementById('player1')
-      playerElements[1] = document.getElementById('player2')
-      playerElements[2] = document.getElementById('player3')
-      playerElements[3] = document.getElementById('player4')
+      playerElements[0] = document.getElementById("player1");
+      playerElements[1] = document.getElementById("player2");
+      playerElements[2] = document.getElementById("player3");
+      playerElements[3] = document.getElementById("player4");
 
-      highscores[0]= document.getElementById('highscore1')
-      highscores[1]= document.getElementById('highscore2')
-      highscores[2]= document.getElementById('highscore3')
-      highscores[3]= document.getElementById('highscore4')
-
-      
+      highscores[0] = document.getElementById("highscore1");
+      highscores[1] = document.getElementById("highscore2");
+      highscores[2] = document.getElementById("highscore3");
+      highscores[3] = document.getElementById("highscore4");
 
       // const playerElement = document.getElementById('player')
       // renderGameBoard(gameBoardElements[0], gameState.gameBoards[socket.id].grid); // Corrected access
       let keys = Object.keys(gameState.players);
-      var numberRoom =0;
-      for(let i =0;i<5; i++){
+      var numberRoom = 0;
+      for (let i = 0; i < 5; i++) {
         if (socket.id == keys[i]) continue;
-        if(keys.length>1){
-        renderGameBoard(gameBoardElements[numberRoom], gameState.gameBoards[keys[i]].grid, true)
-        if (!gameState.players[keys[i]].gameOver)
-          playerElements[numberRoom].innerText = "Player: " + gameState.players[keys[i]].name
-        else{
-          playerElements[numberRoom].innerText = "Gameover"
+        if (keys.length > 1) {
+          renderGameBoard(
+            gameBoardElements[numberRoom],
+            gameState.gameBoards[keys[i]].grid,
+            true
+          )
+          if (!gameState.players[keys[i]].gameOver)
+            playerElements[numberRoom].innerText =
+              "Player: " + gameState.players[keys[i]].name;
+          else {
+            playerElements[numberRoom].innerText = "Gameover";
+          }
+          if (gameState.gameBoards[keys[i]].highScore != undefined)
+            highscores[numberRoom].innerHTML =
+              gameState.gameBoards[keys[i]].highScore;
+          numberRoom++;
+        } else {
+          gameBoardElements[numberRoom].innerHTML = "";
+          highscores[numberRoom].innerHTML = 0;
         }
-        if (gameState.gameBoards[keys[i]].highScore!=undefined)
-          highscores[numberRoom].innerHTML = gameState.gameBoards[keys[i]].highScore;
-        numberRoom++;
-      }else{
-        gameBoardElements[numberRoom].innerHTML = '';
-        highscores[numberRoom].innerHTML = 0;
       }
-    }
-    
     });
-    function renderGameBoard(container, grid,clean) {
-      if (clean){
-      container.innerHTML = ''; // Clear existing grid cells
-      }
-      grid.forEach(row => {
-        row.forEach(cell => {
-          const cellElement = document.createElement('div');
-          cellElement.style.width = '10px';
-          cellElement.style.height = '10px';
+
+    function renderGameBoard(container, grid) {
+      container.innerHTML = ""; // Clear existing grid cells
+      grid.forEach((row) => {
+        row.forEach((cell) => {
+          const cellElement = document.createElement("div");
+          cellElement.style.width = "10px";
+          cellElement.style.height = "10px";
           cellElement.style.backgroundColor = getCellColor(cell);
           container.appendChild(cellElement);
         });
@@ -283,18 +300,18 @@
     function getCellColor(cell) {
       // Define color based on cell value
       const colorMap = {
-        0: '#eeeeee', // Empty
-        1: '#FF6347', // I-tetromino, example
-        2: '#87CEFA', // T-tetromino, example
-        3: '#90EE90', // T-tetromino, example
-        4: '#FFFF99', // T-tetromino, example
-        5: '#FFBD45', // T-tetromino, example
-        6: '#E0FFFF', // T-tetromino, example
-        7: '#d8b0d1', // T-tetromino, example
-        8:'#000000',
+        0: "#eeeeee", // Empty
+        1: "#FF6347", // I-tetromino, example
+        2: "#87CEFA", // T-tetromino, example
+        3: "#90EE90", // T-tetromino, example
+        4: "#FFFF99", // T-tetromino, example
+        5: "#FFBD45", // T-tetromino, example
+        6: "#E0FFFF", // T-tetromino, example
+        7: "#d8b0d1", // T-tetromino, example
+        8: "#000000",
         // Add more mappings as necessary
       };
-      return colorMap[cell] || '#000000'; // Default to black if undefined
+      return colorMap[cell] || "#000000"; // Default to black if undefined
     }
 
     // Initialize player controls with the socket
@@ -309,9 +326,9 @@
   function start() {
     if (!startGame) {
       initializeGameBoard();
-      socketPL.emit('Ready', roomId);
+      socketPL.emit("Ready", roomId);
       document.getElementById("start").style.backgroundColor = "blue";
-      document.getElementById("start").innerHTML = "Ready";
+      document.getElementById("start").innerHTML = "READY";
       startButton = true;
     }
   }
