@@ -241,7 +241,7 @@ function instantDrop() {
     }
     player.position.y -= 1;
     freezePiece();
-    checkFullLine();
+    //checkFullLine();
     spawnNewPiece(queue.shift());
 }
 

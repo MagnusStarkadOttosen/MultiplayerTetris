@@ -329,6 +329,7 @@ export class GameController {
                 this.gameBoards[socketId].grid.splice(y, 1);
                 //Add an empty line at the top
                 this.gameBoards[socketId].grid.unshift(new Array(this.gameBoards[socketId].width).fill(0));
+                console.log("test lineclear")
                 linesCleared++;
                 y--; //Check the new line at the same position
             }
@@ -338,7 +339,7 @@ export class GameController {
     }
 
     addGreyLines(linesCleared,socketId){
-console.log(linesCleared)
+//console.log(linesCleared)
 
         if (linesCleared>1&& Object.values(this.players).length>1) {
             let players = Object.values(this.players)
