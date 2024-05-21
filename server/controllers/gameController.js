@@ -321,7 +321,7 @@ export class GameController {
     }
 
     checkForLineClears(socketId) {
-        console.log("test for line clears")
+        //console.log("test for line clears")
         let linesCleared = 0;
         for (let y = 0; y < this.gameBoards[socketId].height; y++) {
             if (this.gameBoards[socketId].grid[y].every(value => value !== 0&&value !==8)) {
@@ -338,7 +338,8 @@ export class GameController {
     }
 
     addGreyLines(linesCleared,socketId){
-console.log("greylineTest")
+console.log(Object.values(this.players).length)
+        console.log(this.playersg)
         if (linesCleared>1&& Object.values(this.players).length>1) {
             let players = Object.values(this.players)
             let availablePlayers = []
