@@ -47,7 +47,7 @@ export class GameController {
         return grid;
     }
 
-    addPlayer(socketId) {
+    addPlayer(socketId,name) {
         let pieceList = this.generatePieceList();
         console.log("addPlayer")
         this.players[socketId] = {
