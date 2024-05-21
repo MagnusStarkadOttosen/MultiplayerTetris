@@ -1,16 +1,15 @@
 import { getTetromino } from './tetronimoes.js';
 export class GameController {
-    constructor(io) {
+    constructor(io, roomName) {
         this.io = io;
         this.players = {};
         this.width = 10
         this.roomName = roomName;
-        this.room=0
+        this.room = 0
         this.height = 22
         this.gameBoards = { //Creates a 2D array with the given size
-
-            };
-        this.greyLineQueue= {}
+        };
+        this.greyLineQueue = {}
         this.initGameLoop();
     }
     updateGameBoards(gameBoard, socketId) {
