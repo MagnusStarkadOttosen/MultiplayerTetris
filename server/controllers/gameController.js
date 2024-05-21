@@ -257,7 +257,7 @@ export class GameController {
 
     broadcastState(socketId) {
         //Broadcast the updated game state to all connected clients
-        this.io.to(socketId).emit('game-state', {
+        this.io.to(socketId).emit('game-state'+ this.roomName, {
             players: this.players,
             gameBoards: this.gameBoards,
         });
