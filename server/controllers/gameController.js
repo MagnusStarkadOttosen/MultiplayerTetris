@@ -338,8 +338,8 @@ export class GameController {
     }
 
     addGreyLines(linesCleared,socketId){
-console.log(Object.values(this.players).length)
-        console.log(this.playersg)
+console.log(linesCleared)
+
         if (linesCleared>1&& Object.values(this.players).length>1) {
             let players = Object.values(this.players)
             let availablePlayers = []
