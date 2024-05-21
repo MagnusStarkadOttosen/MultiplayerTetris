@@ -49,7 +49,7 @@ export class GameController {
 
     addPlayer(socketId,name) {
         let pieceList = this.generatePieceList();
-        console.log("addPlayer")
+        //console.log("addPlayer")
         this.players[socketId] = {
             currentPiece: pieceList.shift(), //Takes the first element in the list
             holdPiece: null,
@@ -74,21 +74,21 @@ export class GameController {
     createPieceList(pieceList){
         let newPieceList=[]
         for(let i =0;i<pieceList.length;i++){
-            console.log(pieceList[i])
+            //console.log(pieceList[i])
             newPieceList.push(getTetromino(pieceList[i].type)[pieceList[i].rotation])
         }
         return newPieceList;
     }
 
     addGameboard(socketId){
-        console.log("addGameboard")
+       // console.log("addGameboard")
         this.gameBoards[socketId] = {
             width: this.width,
             height: this.height,
             grid: this.initializeGameBoard(),
         }
         this.greyLineQueue[socketId] =0
-        console.log(this.gameBoards)
+        //console.log(this.gameBoards)
 
     }
 
@@ -159,7 +159,7 @@ export class GameController {
         let player = this.players[socketId];
         if (player.nextPieces.length <= 3) {//generates new list if the player only have 3 pieces left
             //Generate new piece list and append it to the last
-            console.log("piece queue");
+            //console.log("piece queue");
             let newPieces = this.generatePieceList();
             player.nextPieces.push(...newPieces);
         }
@@ -181,9 +181,9 @@ export class GameController {
 
         delete this.gameBoards[socketId]
         delete this.players[socketId]
-        console.log(this.gameBoards)
+       // console.log(this.gameBoards)
 
-        console.log(boards)
+        //console.log(boards)
     }
     isPlayer(socketId) {
         if (this.players.hasOwnProperty(socketId))
@@ -242,7 +242,8 @@ export class GameController {
             this.placePiece(player.currentPiece,socketId);
             this.checkForLineClears(socketId);
             this.shiftToNextPiece(socketId);
-                this.applyGreyLines(socketId)
+
+            this.applyGreyLines(socketId)
 
                 // this.broadcastState();
                 return false
@@ -369,7 +370,7 @@ export class GameController {
 
             }
             let random =Math.floor(Math.random()*9)
-            console.log(random)
+            //console.log(random)
             for (let i = 0; i < 10; i++) {
                 this.gameBoards[socketId].grid[this.height-1][i] =0
                 if( random !== i){
@@ -474,11 +475,11 @@ export class GameController {
             this.clearPiece(currentPiece, socketId)
             this.shiftToNextPiece(socketId);
         } else {
-            console.log(holdPiece)
+           // console.log(holdPiece)
             this.clearPiece(currentPiece, socketId)
             player.currentPiece = this.copyPiece(player.holdPiece)
             player.currentPiece.position = {x: 5, y: 0}
-            console.log(currentPiece.type)
+           // console.log(currentPiece.type)
             player.holdPiece = this.copyPiece(currentPiece)
             player.holdPiece.rotation = 0
         }
