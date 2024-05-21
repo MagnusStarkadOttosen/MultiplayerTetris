@@ -1,7 +1,8 @@
 import { initializePlayerControls } from './playerControl.js';
 import { io } from 'https://cdn.socket.io/4.3.1/socket.io.esm.min.js';
 
-const socket = io('http://dtu62597.eduhost.dk:10311/');
+// const socket = io('http://dtu62597.eduhost.dk:10311/');
+const socket = io('localhost:3000');
 export default socket;
 
 

@@ -4,20 +4,41 @@ export class GameController {
         this.io = io;
         this.players = {};
         this.width = 10
+        this.roomName = roomName;
         this.room=0
         this.height = 22
-            this.gameBoards = { //Creates a 2D array with the given size
+        this.gameBoards = { //Creates a 2D array with the given size
 
             };
         this.greyLineQueue= {}
         this.initGameLoop();
     }
+    updateGameBoards(gameBoard, socketId) {
+        this.gameBoards[socketId] = gameBoard;
+    }
+
+    updateGameOver(socketId) {
+        this.players[socketId].gameOver = true;
+        let k = null;
+        let keys = Object.keys(this.players);
+        let isSent = false;
+        for (let i = 0; i < keys.length; i++) {
+            if (this.players[keys[i]].gameOver == false) {
+                if (k == null) {
+                    k = keys[i];
+                    isSent = true
+                } else {
+                    isSent = false
+                }
+            }
+        }
+        if (isSent)
+            this.io.emit("victory", k);
+    }
 
     getState() {
-        return {
-            players: this.players,
-            gameBoards: this.gameBoards,
-        };
+        let isFull = Object.keys(this.players).length >= 5;
+        return {roomId: this.roomName, isFull: isFull, players: Object.keys(this.players).length}
     }
     initializeGameBoard() { //Makes a 2D array filled with zero
         let grid = [];
@@ -35,24 +56,30 @@ export class GameController {
             holdPiece: null,
             nextPieces: pieceList, //The rest of the pieces
             nextPiecesReal: this.createPieceList(pieceList),
-            start:false,
+            start: false,
             points: 0,
             level: 0,
             speed: 48,
-            gameOver:false,
+            gameOver: false,
             socketId: socketId,
             holdCooldown: false,
+            ready: false,
+            name: name
         }
 
     }
-createPieceList(pieceList){
-    let newPieceList=[]
-    for(let i =0;i<pieceList.length;i++){
-        console.log(pieceList[i])
-    newPieceList.push(getTetromino(pieceList[i].type)[pieceList[i].rotation])
-}
+
+    playerReady(socketId) {
+        this.players[socketId].ready = true;
+    }
+    createPieceList(pieceList){
+        let newPieceList=[]
+        for(let i =0;i<pieceList.length;i++){
+            console.log(pieceList[i])
+            newPieceList.push(getTetromino(pieceList[i].type)[pieceList[i].rotation])
+        }
         return newPieceList;
-}
+    }
 
     addGameboard(socketId){
         console.log("addGameboard")
@@ -100,9 +127,6 @@ createPieceList(pieceList){
 
         dropShadow.position.y++
 
-
-
-
     }
         dropShadow.position.y-=1
         this.placePiece(dropShadow,socketId)
@@ -110,14 +134,14 @@ createPieceList(pieceList){
      }
 
      checkGameover(socketId){
+        for (let x = 0; x < this.gameBoards[socketId].grid[3].length; x++) {
 
-         for (let x = 0; x < this.gameBoards[socketId].grid[3].length; x++) {
-
-             if (this.gameBoards[socketId].grid[3][x]!== 0 && this.gameBoards[socketId].grid[3][x]!== 8){
-        this.players[socketId].gameOver = true
-             return}
-
-     }}
+            if (this.gameBoards[socketId].grid[3][x] !== 0 && this.gameBoards[socketId].grid[3][x] !== 8) {
+                this.players[socketId].gameOver = true
+                return
+            }
+        }
+    }
 
 
      removeDropShadow(socketId){
@@ -129,7 +153,8 @@ createPieceList(pieceList){
                  }
 
              }
-         }}
+        }
+    }
 
     updatePieceQueue(socketId) {
         let player = this.players[socketId];
@@ -161,7 +186,12 @@ createPieceList(pieceList){
 
         console.log(boards)
     }
-
+    isPlayer(socketId) {
+        if (this.players.hasOwnProperty(socketId))
+            return true;
+        else
+            return false;
+    }
 
     copyPiece(piece){
         let newPiece = getTetromino(piece.type)[piece.rotation]
@@ -344,13 +374,14 @@ createPieceList(pieceList){
             for (let i = 0; i < 10; i++) {
                 this.gameBoards[socketId].grid[this.height-1][i] =0
                 if( random !== i){
-                    this.gameBoards[socketId].grid[this.height-1][i] = 9}
+                    this.gameBoards[socketId].grid[this.height-1][i] = 9
+                }
 
+            }
 
-        }
-
-this.greyLineQueue[socketId]--
-    }}
+             this.greyLineQueue[socketId]--
+         }
+    }
 
     handlePlayerRotation(socketId, direction) {
         let player = this.players[socketId];
@@ -472,14 +503,15 @@ this.greyLineQueue[socketId]--
         //         }
         //     });
         // }
-
+        let isready = false;
         for (const playerId in this.players) {
             if (this.players.hasOwnProperty(playerId)) {
                     const player = this.players[playerId];
-                if(!player.gameOver && player.start) {
+                    isready = player.ready;
+                    if(!player.gameOver) {
 
                     // Handle player's piece falling
-                    this.handlePlayerFall(playerId);
+                    // this.handlePlayerFall(playerId);
 
                     // // Check for line clears
                     this.checkForLineClears(playerId);
@@ -492,6 +524,9 @@ this.greyLineQueue[socketId]--
 
             }
 
+        }
+        if (isready){
+            this.io.emit('playing' + this.roomName, "ready");
         }
         }
 

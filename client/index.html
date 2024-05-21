@@ -48,140 +48,23 @@
     <script type="module">
 
         import { io } from 'https://cdn.socket.io/4.3.1/socket.io.esm.min.js';
-        import { initializePlayerControls } from './js/playerControl.js';
-        const socket = io('http://130.225.170.52:10311', {
-        
-        withCredentials: true
-        });
-        let scket2= socket
 
 
         document.addEventListener("DOMContentLoaded", function () {
 
+            const socket = io('http://130.225.170.52:10311', {
+                withCredentials: true
 
+            });
             socket.on('connect', () => {
-                document.getElementById('status').innerText = '';
                 console.log(socket.id)
-                socket.emit("init-game", 'name' + (Math.floor(Math.random() * 6) + 1)  + '|room1');
+                
             });
 
                 socket.on('disconnect', () => {
-                    document.getElementById('status').innerText = 'Socket Status: Disconnected';
+                   
                 });
 
-                socket.on('receive-message', (message) => {
-                    console.log("Received from server:", message);
-                });
-                socket.on('receive-message', (message) => {
-                    console.log("Received from server:", message);
-                });
-
-            socket.on('game-stateroom1', (gameState) => {
-                // console.log("Index Received game state:", gameState);
-                const gameBoardElements = {}
-                const playerElements = {}
-                gameBoardElements[0] = document.getElementById('gameBoard1')
-                gameBoardElements[1] = document.getElementById('gameBoard2')
-                gameBoardElements[2] = document.getElementById('gameBoard3')
-                gameBoardElements[3] = document.getElementById('gameBoard4')
-
-                socket.on('game-state', (gameState) => {
-                    console.log("Index Received game state:", gameState);
-                    const gameBoardElements = {}
-                    const playerElements = {}
-                    const previewElements = {}
-                    const holdElement = {}
-                    gameBoardElements[0] = document.getElementById('gameBoard1')
-                    gameBoardElements[1] = document.getElementById('gameBoard2')
-                    gameBoardElements[2] = document.getElementById('gameBoard3')
-                    gameBoardElements[3] = document.getElementById('gameBoard4')
-
-                    playerElements[0] = document.getElementById('player1')
-                    playerElements[1] = document.getElementById('player2')
-                    playerElements[2] = document.getElementById('player3')
-                    playerElements[3] = document.getElementById('player4')
-
-                    previewElements[0] = document.getElementById('preview1')
-                    previewElements[1] = document.getElementById('preview2')
-                    previewElements[2] = document.getElementById('preview3')
-                    previewElements[3] = document.getElementById('preview4')
-
-
-                    holdElement[0] = document.getElementById("hold1")
-                    holdElement[1] = document.getElementById("hold2")
-                    holdElement[2] = document.getElementById("hold3")
-                    holdElement[3] = document.getElementById("hold4")
-                    // const playerElement = document.getElementById('player')
-
-                    // renderGameBoard(gameBoardElements[0], gameState.gameBoards[socket.id].grid); // Corrected access
-
-                    let boards = Object.values(gameState.gameBoards)
-                    let players = Object.values(gameState.players)
-                    for(let i =0;i<boards.length;i++){
-                        renderGameBoard(gameBoardElements[i], boards[i].grid,true)
-                        if (!players[i].gameOver){
-                            playerElements[i].innerText = "Player " + (i+1)
-                            console.log(players[i].nextPiecesReal[0])
-                            renderGameBoard(previewElements[i],players[i].nextPiecesReal[0],true)
-                            renderGameBoard(previewElements[i],players[i].nextPiecesReal[1],false)
-                            renderGameBoard(previewElements[i],players[i].nextPiecesReal[2],false)
-                            if(players[i].holdPiece!=null){
-                            renderGameBoard(holdElement[i],players[i].holdPiece,true)
-                        }
-
-                        }
-                        else{
-                            playerElements[i].innerText = "Gameover"
-                        }
-                    }
-                });
-                    // if(boards.length<4){
-                    //     for(let i=boards.length;i<=3;i++){
-                    //         gameBoardElements[i].innerText="";
-                    //         playerElements[i].innerText="";
-                    //         holdElement[i].innerText="";
-                    //         previewElements[i].innerText="";
-                    //     }
-                    // }
-
-                });
-
-                function renderGameBoard(container, grid,clear) {
-                    if(clear){
-                        container.innerHTML = ''; // Clear existing grid cells
-                    }
-                    grid.forEach(row => {
-                        row.forEach(cell => {
-                            const cellElement = document.createElement('div');
-                            cellElement.style.width = '20px';
-                            cellElement.style.height = '20px';
-                            cellElement.style.backgroundColor = getCellColor(cell);
-                            container.appendChild(cellElement);
-                        });
-                    });
-                }
-
-                function getCellColor(cell) {
-                    // Define color based on cell value
-                    const colorMap = {
-                        0: '#eeeeee', // Empty
-                        1: '#FF6347', // I-tetromino, example
-                        2: '#87CEFA', // T-tetromino, example
-                        3: '#90EE90', // T-tetromino, example
-                        4: '#FFFF99', // T-tetromino, example
-                        5: '#FFBD45', // T-tetromino, example
-                        6: '#00008B', // T-tetromino, example
-                        7: '#d8b0d1', // T-tetromino, example
-                        8: '#000000',
-                        9: '#A9A9A9'
-
-                        // Add more mappings as necessary
-                    };
-                    return colorMap[cell] || '#000000'; // Default to black if undefined
-                }
-
-                
-                initializePlayerControls(socket);
 
     
             });
@@ -212,9 +95,9 @@
 
 </div>
 
-<script src="js/socket.js"></script>
+<!-- <script src="js/socket.js"></script>
 <script src="js/app.js"></script>
-<script type="module" src="js/playerControl.js"></script>
+<script type="module" src="js/playerControl.js"></script> -->
 
 
 

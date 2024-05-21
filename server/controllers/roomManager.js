@@ -101,7 +101,7 @@ export class RoomManager {
     getGameController(playerId) {
         for (const key in this.rooms) {
             if (this.rooms[key].gameController.isPlayer(playerId)) {
-                console.log( this.rooms[key].gameController);
+                // console.log( this.rooms[key].gameController);
                 return this.rooms[key].gameController;
             }
         }

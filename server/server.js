@@ -66,41 +66,11 @@ io.on("connection", (socket) => {
     socket.on("playerRotate", (rotationDirection) => {
         roomManager.getGameController(socket.id).handlePlayerRotation(socket.id, rotationDirection);
 
-            control.handlePlayerRotation(socket.id, rotationDirection)
         });
 
     socket.on("playerFall", () => {
         roomManager.getGameController(socket.id).handlePlayerFall(socket.id);
     });
-    socket.on("Ready", () => {
-        let control = controllers[findRoom(socket.id)]
-        control.room=control.room+1;
-        let count=control.room
-        let players = Object.values(control.players)
-
-        if(count ===players.length){
-            for(let i = 1;i<=count;i++) {
-                players[i-1].start=true
-
-
-            }
-
-        }
-
-    });
-    socket.on("roomNumber", (roomSent) => {
-            roomNumber = roomSent;
-        let list = lists[roomSent-1];
-        list.push(socket.id)
-
-        let control = controllers[findRoom(socket.id)]
-        control.addPlayer(socket.id);
-        control.addGameboard(socket.id);
-        console.log(roomNumber);
-        }
-
-
-    );
 
     socket.on("playerHold", () => {
         roomManager.getGameController(socket.id).handleHold(socket.id);

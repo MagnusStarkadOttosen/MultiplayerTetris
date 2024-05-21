@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>PLAY-ROOM</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css" />
     <style>
       body {
         background-color: #ffcccc;
@@ -124,23 +124,22 @@
 
         <div class="screen-container">
           <div>
-            <h2 >Hold</h2>
+            <h2>Hold</h2>
             <canvas id="hold" width="120" height="150" class="pre"></canvas>
           </div>
-         <div>
-          <h2><span id="gameOverMsg"> </span></h2>
-          <canvas
-          id="tetris"
-          width="200"
-          height="440"
-          class="tetrisGame"
-        ></canvas>
-         </div>
+          <div>
+            <h2><span id="gameOverMsg"> </span></h2>
+            <canvas
+              id="tetris"
+              width="200"
+              height="440"
+              class="tetrisGame"
+            ></canvas>
+          </div>
           <div>
             <h2>Preview</h2>
             <canvas id="preview" width="120" height="300" class="pre"></canvas>
           </div>
-          
         </div>
         <!-- <script src="js/socket.js"></script> -->
         <script src="js/app.js"></script>
@@ -215,20 +214,19 @@
   // import { initializePlayerControls } from "./js/playerControl.js";
 
   document.addEventListener("DOMContentLoaded", function () {
-
     const socket = io("http://130.225.170.52:10311", {
       withCredentials: true,
     });
 
     socket.on("connect", () => {
-      console.log('Connected to server');
+      console.log("Connected to server");
       document.getElementById("status").innerText = "";
       socket.emit("init-game", userName + "|" + roomId);
       socketPL = socket;
     });
 
     socket.on("disconnect", () => {
-      console.log('Disconnected from server');
+      console.log("Disconnected from server");
       document.getElementById("status").innerText =
         "Socket Status: Disconnected";
     });
@@ -281,7 +279,7 @@
             gameBoardElements[numberRoom],
             gameState.gameBoards[keys[i]].grid,
             true
-          )
+          );
           if (!gameState.players[keys[i]].gameOver)
             playerElements[numberRoom].innerText =
               "Player: " + gameState.players[keys[i]].name;
@@ -334,13 +332,11 @@
         emitGameState(socket);
       }
     }, 500);
-    
-    socket.on('error', (errorMessage) => {
-     console.log('Error:', errorMessage);
-    });
 
+    socket.on("error", (errorMessage) => {
+      console.log("Error:", errorMessage);
+    });
   });
-  
 </script>
 <script>
   function start() {
@@ -350,8 +346,7 @@
       document.getElementById("startButton").style.backgroundColor = "blue";
       document.getElementById("start").innerHTML = "READY";
       startButton = true;
-    } else{
-      console.log("Game has started!")
+    
     }
   }
 </script>

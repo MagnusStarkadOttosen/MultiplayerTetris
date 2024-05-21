@@ -700,6 +700,8 @@ function getRandomPieceType() {
                     context.fillRect(x, y, 1, 1);
                     drawBlock(x, y, value, {x: 0, y: 0}, context);
 
+                }else{
+                    gameBoardBK.grid[y][x]=0;
                 }
             });
         });
