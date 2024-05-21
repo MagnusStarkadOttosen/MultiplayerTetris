@@ -321,6 +321,7 @@ export class GameController {
     }
 
     checkForLineClears(socketId) {
+        console.log("test for line clears")
         let linesCleared = 0;
         for (let y = 0; y < this.gameBoards[socketId].height; y++) {
             if (this.gameBoards[socketId].grid[y].every(value => value !== 0&&value !==8)) {
