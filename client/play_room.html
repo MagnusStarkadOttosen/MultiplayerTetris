@@ -129,23 +129,31 @@
     <div id="section2">
       <div class="Split left">
         <div class="screen-container">
-          <h2 id="username">Hold</h2>
-          <h2><span id="gameOverMsg"> </span></h2>
-          <h2>Preview</h2>
+          <h2 id="username"></h2>
           <p>Highscore: <span id="highscore">0</span></p>
         </div>
 
         <div class="screen-container">
-          <canvas id="hold" width="120" height="150" class="pre"></canvas>
+          <div>
+            <h2 >Hold</h2>
+            <canvas id="hold" width="120" height="150" class="pre"></canvas>
+          </div>
+         <div>
+          <h2><span id="gameOverMsg"> </span></h2>
           <canvas
-            id="tetris"
-            width="200"
-            height="440"
-            class="tetrisGame"
-          ></canvas>
-          <canvas id="preview" width="120" height="300" class="pre"></canvas>
+          id="tetris"
+          width="200"
+          height="440"
+          class="tetrisGame"
+        ></canvas>
+         </div>
+          <div>
+            <h2>Preview</h2>
+            <canvas id="preview" width="120" height="300" class="pre"></canvas>
+          </div>
+          
         </div>
-        <script src="js/app_me.js"></script>
+        <script src="js/app.js"></script>
       </div>
       <div class="Split right">
         <div id="status">Players in room</div>
@@ -215,7 +223,7 @@
   import { io } from "https://cdn.socket.io/4.3.1/socket.io.esm.min.js";
 
   document.addEventListener("DOMContentLoaded", function () {
-    const socket = io("http://dtu62597.eduhost.dk", {
+    const socket = io("http://dtu62597.eduhost.dk:10311", {
       withCredentials: true,
     });
     // const socket =io('localhost:3000', {
